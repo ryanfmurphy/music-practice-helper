@@ -1,0 +1,19 @@
+{
+  "name": "music-practice-helper-backend",
+  "version": "1.0.0",
+  "description": "Backend API for the music practice helper",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "sqlite3": "^5.1.7",
+    "cors": "^2.8.5"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
