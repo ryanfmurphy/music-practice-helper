@@ -10,6 +10,7 @@ function App() {
   const [selectedSong, setSelectedSong] = useState(null)
   const [pages, setPages] = useState([])
   const [firstPagePosition, setFirstPagePosition] = useState('left')
+  const [measureConfidence, setMeasureConfidence] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -23,6 +24,7 @@ function App() {
   useEffect(() => {
     if (selectedSong) {
       fetchPages(selectedSong.song_id)
+      fetchMeasureConfidence(selectedSong.song_id)
     }
   }, [selectedSong])
 
@@ -101,6 +103,25 @@ function App() {
     }
   }
 
+  const fetchMeasureConfidence = async (songId) => {
+    try {
+      const response = await fetch(`${API_BASE}/songs/${songId}/measures`)
+      if (!response.ok) throw new Error('Failed to fetch measure confidence')
+      const measures = await response.json()
+      
+      // Convert to lookup object: {page-line-measure: confidence}
+      const confidenceMap = {}
+      measures.forEach(measure => {
+        const key = `${measure.page_number}-${measure.line_number}-${measure.measure_number}`
+        confidenceMap[key] = measure.confidence
+      })
+      setMeasureConfidence(confidenceMap)
+    } catch (err) {
+      console.warn('Failed to fetch measure confidence:', err.message)
+      setMeasureConfidence({})
+    }
+  }
+
   if (loading) return <div className="container">Loading...</div>
   if (error) return <div className="container">Error: {error}</div>
 
@@ -165,12 +186,12 @@ function App() {
                   {isFirstRow && startsOnRight ? (
                     <div className="page-placeholder left-blank"></div>
                   ) : pageIndex < pages.length ? (
-                    <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} />
+                    <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} measureConfidence={measureConfidence} />
                   ) : null}
                   
                   {/* Right slot */}
                   {pageIndex < pages.length ? (
-                    <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} />
+                    <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} measureConfidence={measureConfidence} />
                   ) : isLastPage ? (
                     <div className="page-placeholder right-blank"></div>
                   ) : null}

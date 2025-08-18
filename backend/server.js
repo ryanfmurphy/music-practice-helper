@@ -199,6 +199,22 @@ app.get('/api/songs/:id/measures/:from/:to/sessions', async (req, res) => {
   }
 });
 
+// Get measure confidence data for a song
+app.get('/api/songs/:id/measures', async (req, res) => {
+  try {
+    const measures = await dbAll(
+      `SELECT page_number, line_number, measure_number, confidence, time, notes, practicer
+       FROM song_measure 
+       WHERE song_id = ?
+       ORDER BY page_number, line_number, measure_number`,
+      [req.params.id]
+    );
+    res.json(measures);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
