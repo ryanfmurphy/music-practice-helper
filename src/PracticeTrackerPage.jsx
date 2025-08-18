@@ -1,16 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureConfidence = {} }) {
+function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetails = {} }) {
+  const [selectedMeasure, setSelectedMeasure] = useState(null)
   let currentMeasure = startingMeasure
 
   const getConfidenceStyle = (pageNum, lineNum, measureNum) => {
     const key = `${pageNum}-${lineNum}-${measureNum}`
-    const confidence = measureConfidence[key]
+    const details = measureDetails[key]
     
-    if (confidence === undefined) return {}
+    if (!details) return {}
+    
+    const confidence = details.confidence
     
     // Create traffic light gradient: red (0) → yellow (5) → green #00bb00 (10)
-    const ratio = confidence / 10
     let red, green, blue
     
     if (confidence <= 5) {
@@ -30,18 +32,34 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureConfid
     return {
       backgroundColor: `rgb(${red}, ${green}, ${blue})`,
       color: confidence <= 2 || confidence >= 8 ? 'white' : 'black',
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      cursor: 'pointer'
     }
   }
 
   const getConfidenceContent = (pageNum, lineNum, measureNum) => {
     const key = `${pageNum}-${lineNum}-${measureNum}`
-    const confidence = measureConfidence[key]
+    const details = measureDetails[key]
     
-    if (confidence === 10) {
+    if (!details) return measureNum
+    
+    if (details.confidence === 10) {
       return `${measureNum} ⭐`
     }
     return measureNum
+  }
+
+  const handleMeasureClick = (pageNum, lineNum, measureNum) => {
+    const key = `${pageNum}-${lineNum}-${measureNum}`
+    const details = measureDetails[key]
+    
+    if (details) {
+      setSelectedMeasure(details)
+    }
+  }
+
+  const closePopup = () => {
+    setSelectedMeasure(null)
   }
 
   return (
@@ -64,6 +82,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureConfid
                   key={measureNumber} 
                   className="measure"
                   style={getConfidenceStyle(pageNumber, lineNumber, measureNumber)}
+                  onClick={() => handleMeasureClick(pageNumber, lineNumber, measureNumber)}
                 >
                   {getConfidenceContent(pageNumber, lineNumber, measureNumber)}
                 </div>
@@ -72,6 +91,49 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureConfid
           </div>
         )
       })}
+      
+      {/* Measure Details Popup */}
+      {selectedMeasure && (
+        <div className="popup-overlay" onClick={closePopup}>
+          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+            <div className="popup-header">
+              <h3>Measure {selectedMeasure.measure} Details</h3>
+              <button className="popup-close" onClick={closePopup}>×</button>
+            </div>
+            <div className="popup-body">
+              <div className="detail-item">
+                <label>Page:</label>
+                <span>{selectedMeasure.page}</span>
+              </div>
+              <div className="detail-item">
+                <label>Line:</label>
+                <span>{selectedMeasure.line}</span>
+              </div>
+              <div className="detail-item">
+                <label>Confidence Level:</label>
+                <span className="confidence-value">
+                  {selectedMeasure.confidence}/10
+                  {selectedMeasure.confidence === 10 && ' ⭐'}
+                </span>
+              </div>
+              <div className="detail-item">
+                <label>Practiced By:</label>
+                <span>{selectedMeasure.practicer || 'Unknown'}</span>
+              </div>
+              <div className="detail-item">
+                <label>Last Updated:</label>
+                <span>{new Date(selectedMeasure.time).toLocaleString()}</span>
+              </div>
+              {selectedMeasure.notes && (
+                <div className="detail-item notes">
+                  <label>Notes:</label>
+                  <p>{selectedMeasure.notes}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

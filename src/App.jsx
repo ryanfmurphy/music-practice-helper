@@ -10,7 +10,7 @@ function App() {
   const [selectedSong, setSelectedSong] = useState(null)
   const [pages, setPages] = useState([])
   const [firstPagePosition, setFirstPagePosition] = useState('left')
-  const [measureConfidence, setMeasureConfidence] = useState({})
+  const [measureDetails, setMeasureDetails] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -24,7 +24,7 @@ function App() {
   useEffect(() => {
     if (selectedSong) {
       fetchPages(selectedSong.song_id)
-      fetchMeasureConfidence(selectedSong.song_id)
+      fetchMeasureDetails(selectedSong.song_id)
     }
   }, [selectedSong])
 
@@ -103,22 +103,31 @@ function App() {
     }
   }
 
-  const fetchMeasureConfidence = async (songId) => {
+  const fetchMeasureDetails = async (songId) => {
     try {
       const response = await fetch(`${API_BASE}/songs/${songId}/measures`)
-      if (!response.ok) throw new Error('Failed to fetch measure confidence')
+      if (!response.ok) throw new Error('Failed to fetch measure details')
       const measures = await response.json()
       
-      // Convert to lookup object: {page-line-measure: confidence}
-      const confidenceMap = {}
+      // Convert to lookup object: {page-line-measure: measureDetails}
+      const detailsMap = {}
       measures.forEach(measure => {
         const key = `${measure.page_number}-${measure.line_number}-${measure.measure_number}`
-        confidenceMap[key] = measure.confidence
+        detailsMap[key] = {
+          id: measure.song_measure_id,
+          confidence: measure.confidence,
+          time: measure.time,
+          notes: measure.notes,
+          practicer: measure.practicer,
+          page: measure.page_number,
+          line: measure.line_number,
+          measure: measure.measure_number
+        }
       })
-      setMeasureConfidence(confidenceMap)
+      setMeasureDetails(detailsMap)
     } catch (err) {
-      console.warn('Failed to fetch measure confidence:', err.message)
-      setMeasureConfidence({})
+      console.warn('Failed to fetch measure details:', err.message)
+      setMeasureDetails({})
     }
   }
 
@@ -186,12 +195,12 @@ function App() {
                   {isFirstRow && startsOnRight ? (
                     <div className="page-placeholder left-blank"></div>
                   ) : pageIndex < pages.length ? (
-                    <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} measureConfidence={measureConfidence} />
+                    <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} measureDetails={measureDetails} />
                   ) : null}
                   
                   {/* Right slot */}
                   {pageIndex < pages.length ? (
-                    <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} measureConfidence={measureConfidence} />
+                    <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} measureDetails={measureDetails} />
                   ) : isLastPage ? (
                     <div className="page-placeholder right-blank"></div>
                   ) : null}

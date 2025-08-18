@@ -203,7 +203,8 @@ app.get('/api/songs/:id/measures/:from/:to/sessions', async (req, res) => {
 app.get('/api/songs/:id/measures', async (req, res) => {
   try {
     const measures = await dbAll(
-      `SELECT page_number, line_number, measure_number, confidence, time, notes, practicer
+      `SELECT song_measure_id, page_number, line_number, measure_number, 
+              confidence, time, notes, practicer
        FROM song_measure 
        WHERE song_id = ?
        ORDER BY page_number, line_number, measure_number`,
