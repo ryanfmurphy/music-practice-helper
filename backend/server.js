@@ -54,6 +54,16 @@ const dbRun = (sql, params = []) => {
 
 // Routes
 
+// Get all books
+app.get('/api/books', async (req, res) => {
+  try {
+    const books = await dbAll('SELECT * FROM music_book ORDER BY title');
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get all songs
 app.get('/api/songs', async (req, res) => {
   try {

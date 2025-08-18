@@ -3,7 +3,10 @@ import './App.css'
 import PracticeTrackerPage from './PracticeTrackerPage'
 
 function App() {
+  const [books, setBooks] = useState([])
+  const [selectedBook, setSelectedBook] = useState('')
   const [songs, setSongs] = useState([])
+  const [filteredSongs, setFilteredSongs] = useState([])
   const [selectedSong, setSelectedSong] = useState(null)
   const [pages, setPages] = useState([])
   const [firstPagePosition, setFirstPagePosition] = useState('left')
@@ -13,6 +16,7 @@ function App() {
   const API_BASE = 'http://localhost:3001/api'
 
   useEffect(() => {
+    fetchBooks()
     fetchSongs()
   }, [])
 
@@ -22,27 +26,67 @@ function App() {
     }
   }, [selectedSong])
 
+  useEffect(() => {
+    filterSongs()
+  }, [songs, selectedBook])
+
+  const fetchBooks = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/books`)
+      if (!response.ok) throw new Error('Failed to fetch books')
+      const booksData = await response.json()
+      setBooks(booksData)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
   const fetchSongs = async () => {
     try {
       const response = await fetch(`${API_BASE}/songs`)
       if (!response.ok) throw new Error('Failed to fetch songs')
       const songsData = await response.json()
       setSongs(songsData)
-      
-      // Auto-select Köln Concert Part I if available
-      const kolnConcert = songsData.find(song => 
-        song.title.includes('Köln') && song.title.includes('Part I')
-      )
-      if (kolnConcert) {
-        setSelectedSong(kolnConcert)
-      } else if (songsData.length > 0) {
-        setSelectedSong(songsData[0])
-      }
     } catch (err) {
       setError(err.message)
     } finally {
       setLoading(false)
     }
+  }
+
+  const filterSongs = () => {
+    let filtered = songs
+    
+    if (selectedBook) {
+      filtered = songs.filter(song => song.book_id === parseInt(selectedBook))
+    }
+    
+    setFilteredSongs(filtered)
+    
+    // Auto-select song when filtering changes
+    if (filtered.length > 0 && (!selectedSong || !filtered.find(s => s.song_id === selectedSong.song_id))) {
+      // Try to auto-select Köln Concert Part I if available
+      const kolnConcert = filtered.find(song => 
+        song.title.includes('Köln') && song.title.includes('Part I')
+      )
+      if (kolnConcert) {
+        setSelectedSong(kolnConcert)
+      } else {
+        setSelectedSong(filtered[0])
+      }
+    } else if (filtered.length === 0) {
+      setSelectedSong(null)
+      setPages([])
+    }
+  }
+
+  const handleBookChange = (e) => {
+    setSelectedBook(e.target.value)
+  }
+
+  const handleSongChange = (e) => {
+    const song = filteredSongs.find(s => s.song_id === parseInt(e.target.value))
+    setSelectedSong(song)
   }
 
   const fetchPages = async (songId) => {
@@ -62,22 +106,39 @@ function App() {
 
   return (
     <div className="container">
-      <div className="song-selector">
-        <label htmlFor="song-select">Song: </label>
-        <select 
-          id="song-select"
-          value={selectedSong?.song_id || ''} 
-          onChange={(e) => {
-            const song = songs.find(s => s.song_id === parseInt(e.target.value))
-            setSelectedSong(song)
-          }}
-        >
-          {songs.map(song => (
-            <option key={song.song_id} value={song.song_id}>
-              {song.title} - {song.artist}
-            </option>
-          ))}
-        </select>
+      <div className="selectors">
+        <div className="book-selector">
+          <label htmlFor="book-select">Book: </label>
+          <select 
+            id="book-select"
+            value={selectedBook} 
+            onChange={handleBookChange}
+          >
+            <option value="">-- Select Book --</option>
+            {books.map(book => (
+              <option key={book.book_id} value={book.book_id}>
+                {book.title}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="song-selector">
+          <label htmlFor="song-select">Song: </label>
+          <select 
+            id="song-select"
+            value={selectedSong?.song_id || ''} 
+            onChange={handleSongChange}
+            disabled={filteredSongs.length === 0}
+          >
+            <option value="">-- Select Song --</option>
+            {filteredSongs.map(song => (
+              <option key={song.song_id} value={song.song_id}>
+                {song.title} - {song.artist}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {selectedSong && (
