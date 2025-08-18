@@ -10,7 +10,8 @@ A web application for tracking music practice sessions, built with React fronten
 - **Köln Concert Integration**: Auto-loads Keith Jarrett's Köln Concert data when available
 - **Book Filtering**: Filter songs by music book for organized navigation
 - **Confidence Visualization**: See practice progress with color-coded measures
-- **Detailed Practice Tracking**: Click measures to view confidence levels, notes, and practice history
+- **Interactive Practice Tracking**: Click any measure to open an editable form for confidence levels, notes, and practitioner info
+- **Unified Editing Experience**: Same intuitive popup form for all measures - existing data is pre-populated for easy editing
 
 ## Architecture
 
@@ -83,9 +84,12 @@ The app displays practice progress through an intuitive color-coding system:
 - **⭐ Star**: Perfect confidence level (10.0)
 
 ### **Interactive Details**
-- **Click any colored measure** to view detailed information
-- **Popup shows**: Confidence level, practice notes, who practiced, and timestamps
-- **Visual feedback**: Pointer cursor indicates clickable measures
+- **Click any measure** (colored or uncolored) to open editable form popup
+- **Unified interface**: Same form layout for all measures with consistent editing experience
+- **Smart pre-population**: Existing measures automatically fill form fields with current data for easy editing
+- **New measure entry**: Empty form ready for confidence level (0-10), practitioner name, and optional notes
+- **Real-time updates**: Changes immediately appear with correct traffic light colors after saving
+- **Visual feedback**: Pointer cursor indicates all measures are clickable and editable
 
 ## API Endpoints
 
@@ -94,3 +98,4 @@ The app displays practice progress through an intuitive color-coding system:
 - `GET /api/songs/:id` - Get song details
 - `GET /api/songs/:id/pages` - Get page/measure layout for a song
 - `GET /api/songs/:id/measures` - Get measure confidence data for a song
+- `POST /api/songs/:id/measures` - Create or update measure confidence record

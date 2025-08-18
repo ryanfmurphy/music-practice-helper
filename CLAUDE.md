@@ -12,8 +12,10 @@ A fully functional React-based web application for interactive music practice tr
 - **Book & Song Navigation**: Dropdown selectors for filtering by music books and songs
 - **Dynamic Page Layout**: Displays actual sheet music pages with proper left/right book positioning
 - **Confidence Visualization**: Traffic light color system (red → yellow → green) showing practice progress on individual measures
-- **Interactive Measure Details**: Click any colored measure to view confidence levels, practice notes, timestamps, and practitioner information
-- **Real-time Database Integration**: Connects directly to existing practice tracking system without schema changes
+- **Unified Measure Editing**: Click any measure to open the same editable form interface for consistent user experience
+- **Smart Form Pre-population**: Existing measures automatically fill form fields, new measures start with empty fields
+- **Real-time Updates**: All changes immediately appear with correct color coding without page refresh
+- **Real-time Database Integration**: Connects directly to existing practice tracking system with automatic book_id resolution
 
 ## Quick Start
 ```bash
@@ -38,7 +40,7 @@ npm install && npm run dev
 - **Page Positioning**: Supports songs starting on left or right pages for realistic book layout
 
 ## Development Status
-Production-ready with complete confidence visualization, interactive popups, book filtering, and full database integration. Ready for use with existing Köln Concert and Goldberg Variations data.
+Production-ready with complete confidence visualization, unified measure editing interface, and full database integration. Features a consistent editable form experience where all measures (existing and new) use the same intuitive popup interface with smart pre-population. Ready for use with existing Köln Concert and Goldberg Variations data.
 
 ## Component Structure
 - `App.jsx` - Main application with book/song selection and data fetching
@@ -51,5 +53,6 @@ Production-ready with complete confidence visualization, interactive popups, boo
 - `GET /api/songs` - List all songs
 - `GET /api/songs/:id/pages` - Get page/measure layout for a song
 - `GET /api/songs/:id/measures` - Get measure confidence data for a song
+- `POST /api/songs/:id/measures` - Create or update measure confidence record (with automatic book_id lookup)
 - `GET /api/songs/:id/practice-sessions` - Get practice sessions for a song
 - `POST /api/practice-sessions` - Create new practice session

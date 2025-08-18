@@ -1,13 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetails = {}, songId, onMeasureUpdate }) {
   const [selectedMeasure, setSelectedMeasure] = useState(null)
-  const [isEditing, setIsEditing] = useState(false)
   const [confidenceInput, setConfidenceInput] = useState('')
   const [notesInput, setNotesInput] = useState('')
   const [practicerInput, setPracticerInput] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+  const confidenceInputRef = useRef(null)
   let currentMeasure = startingMeasure
+
+  // Focus confidence input when popup opens
+  useEffect(() => {
+    if (selectedMeasure && confidenceInputRef.current) {
+      // Small delay to ensure the popup is fully rendered
+      const timer = setTimeout(() => {
+        confidenceInputRef.current.focus()
+        // Select all text if there's existing data for easy replacement
+        if (confidenceInput) {
+          confidenceInputRef.current.select()
+        }
+      }, 100)
+      return () => clearTimeout(timer)
+    }
+  }, [selectedMeasure, confidenceInput])
 
   const getConfidenceStyle = (pageNum, lineNum, measureNum) => {
     const key = `${pageNum}-${lineNum}-${measureNum}`
@@ -59,11 +74,13 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
     const details = measureDetails[key]
     
     if (details) {
-      // Existing measure with details
+      // Existing measure with details - pre-populate form
       setSelectedMeasure(details)
-      setIsEditing(false)
+      setConfidenceInput(details.confidence.toString())
+      setNotesInput(details.notes || '')
+      setPracticerInput(details.practicer || 'User')
     } else {
-      // New measure without details - show input form
+      // New measure without details - empty form
       setSelectedMeasure({
         page: pageNum,
         line: lineNum,
@@ -73,10 +90,26 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
         practicer: null,
         time: null
       })
-      setIsEditing(true)
       setConfidenceInput('')
       setNotesInput('')
       setPracticerInput('User')
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    // Handle Enter key for regular inputs, Ctrl+Enter or Shift+Enter for textarea
+    if (e.key === 'Enter') {
+      if (e.target.tagName === 'TEXTAREA') {
+        // For textarea, only save on Ctrl+Enter or Shift+Enter to allow normal line breaks
+        if (e.ctrlKey || e.shiftKey) {
+          e.preventDefault()
+          handleSave()
+        }
+      } else {
+        // For regular inputs, save on Enter
+        e.preventDefault()
+        handleSave()
+      }
     }
   }
 
@@ -129,7 +162,6 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
   
   const closePopup = () => {
     setSelectedMeasure(null)
-    setIsEditing(false)
     setConfidenceInput('')
     setNotesInput('')
     setPracticerInput('')
@@ -171,7 +203,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
         <div className="popup-overlay" onClick={closePopup}>
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>
             <div className="popup-header">
-              <h3>Measure {selectedMeasure.measure} {isEditing ? '- Add Confidence' : 'Details'}</h3>
+              <h3>Measure {selectedMeasure.measure} - {selectedMeasure.confidence !== null ? 'Edit' : 'Add'} Confidence</h3>
               <button className="popup-close" onClick={closePopup}>×</button>
             </div>
             <div className="popup-body">
@@ -184,106 +216,90 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
                 <span>{selectedMeasure.line}</span>
               </div>
               
-              {isEditing ? (
-                // Input form for new confidence
-                <>
-                  <div className="detail-item">
-                    <label>Confidence Level (0-10):</label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="10"
-                      step="0.1"
-                      value={confidenceInput}
-                      onChange={(e) => setConfidenceInput(e.target.value)}
-                      placeholder="e.g. 7.5"
-                      style={{ padding: '5px', marginLeft: '10px', width: '80px' }}
-                    />
-                  </div>
-                  <div className="detail-item">
-                    <label>Practiced By:</label>
-                    <input
-                      type="text"
-                      value={practicerInput}
-                      onChange={(e) => setPracticerInput(e.target.value)}
-                      placeholder="Your name"
-                      style={{ padding: '5px', marginLeft: '10px', width: '150px' }}
-                    />
-                  </div>
-                  <div className="detail-item notes">
-                    <label>Notes (optional):</label>
-                    <textarea
-                      value={notesInput}
-                      onChange={(e) => setNotesInput(e.target.value)}
-                      placeholder="Practice notes..."
-                      rows="3"
-                      style={{ 
-                        padding: '5px', 
-                        marginTop: '5px', 
-                        width: '100%', 
-                        resize: 'vertical',
-                        fontFamily: 'inherit'
-                      }}
-                    />
-                  </div>
-                  <div className="popup-buttons">
-                    <button 
-                      onClick={handleSave} 
-                      disabled={isSaving || !confidenceInput.trim()}
-                      style={{
-                        backgroundColor: '#4CAF50',
-                        color: 'white',
-                        border: 'none',
-                        padding: '8px 16px',
-                        borderRadius: '4px',
-                        cursor: isSaving || !confidenceInput.trim() ? 'not-allowed' : 'pointer',
-                        marginRight: '8px',
-                        opacity: isSaving || !confidenceInput.trim() ? 0.6 : 1
-                      }}
-                    >
-                      {isSaving ? 'Saving...' : 'Save'}
-                    </button>
-                    <button 
-                      onClick={closePopup}
-                      style={{
-                        backgroundColor: '#f44336',
-                        color: 'white',
-                        border: 'none',
-                        padding: '8px 16px',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </>
-              ) : (
-                // Display existing confidence data
-                <>
-                  <div className="detail-item">
-                    <label>Confidence Level:</label>
-                    <span className="confidence-value">
-                      {selectedMeasure.confidence}/10
-                      {selectedMeasure.confidence === 10 && ' ⭐'}
-                    </span>
-                  </div>
-                  <div className="detail-item">
-                    <label>Practiced By:</label>
-                    <span>{selectedMeasure.practicer || 'Unknown'}</span>
-                  </div>
-                  <div className="detail-item">
-                    <label>Last Updated:</label>
-                    <span>{new Date(selectedMeasure.time).toLocaleString()}</span>
-                  </div>
-                  {selectedMeasure.notes && (
-                    <div className="detail-item notes">
-                      <label>Notes:</label>
-                      <p>{selectedMeasure.notes}</p>
-                    </div>
-                  )}
-                </>
+              {/* Always show editable form */}
+              <div className="detail-item">
+                <label>Confidence Level (0-10):</label>
+                <input
+                  ref={confidenceInputRef}
+                  type="number"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                  value={confidenceInput}
+                  onChange={(e) => setConfidenceInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="e.g. 7.5"
+                  style={{ padding: '5px', marginLeft: '10px', width: '80px' }}
+                />
+              </div>
+              <div className="detail-item">
+                <label>Practiced By:</label>
+                <input
+                  type="text"
+                  value={practicerInput}
+                  onChange={(e) => setPracticerInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Your name"
+                  style={{ padding: '5px', marginLeft: '10px', width: '150px' }}
+                />
+              </div>
+              <div className="detail-item notes">
+                <label>Notes (optional):</label>
+                <textarea
+                  value={notesInput}
+                  onChange={(e) => setNotesInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Practice notes... (Ctrl+Enter or Shift+Enter to save)"
+                  rows="3"
+                  style={{ 
+                    padding: '5px', 
+                    marginTop: '5px', 
+                    width: '100%', 
+                    resize: 'vertical',
+                    fontFamily: 'inherit'
+                  }}
+                />
+              </div>
+              
+              {/* Show last updated info for existing measures */}
+              {selectedMeasure.time && (
+                <div className="detail-item">
+                  <label>Last Updated:</label>
+                  <span>{new Date(selectedMeasure.time).toLocaleString()}</span>
+                </div>
               )}
+              
+              <div className="popup-buttons">
+                <button 
+                  onClick={handleSave} 
+                  disabled={isSaving || !confidenceInput.trim()}
+                  style={{
+                    backgroundColor: '#4CAF50',
+                    color: 'white',
+                    border: 'none',
+                    padding: '8px 16px',
+                    borderRadius: '4px',
+                    cursor: isSaving || !confidenceInput.trim() ? 'not-allowed' : 'pointer',
+                    marginRight: '8px',
+                    opacity: isSaving || !confidenceInput.trim() ? 0.6 : 1
+                  }}
+                >
+                  {isSaving ? 'Saving...' : selectedMeasure.confidence !== null ? 'Update' : 'Save'}
+                </button>
+                <button 
+                  onClick={closePopup}
+                  style={{
+                    backgroundColor: '#f44336',
+                    color: 'white',
+                    border: 'none',
+                    padding: '8px 16px',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>
