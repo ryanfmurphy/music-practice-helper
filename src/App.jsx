@@ -96,12 +96,13 @@ function App() {
             
             while (pageIndex < pages.length) {
               const isFirstRow = result.length === 0;
+              const isLastPage = pageIndex === pages.length - 1;
               
               result.push(
                 <div key={`row-${result.length}`} className="pages-container">
                   {/* Left slot */}
                   {isFirstRow && startsOnRight ? (
-                    <div className="page-placeholder"></div>
+                    <div className="page-placeholder left-blank"></div>
                   ) : pageIndex < pages.length ? (
                     <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} />
                   ) : null}
@@ -109,6 +110,8 @@ function App() {
                   {/* Right slot */}
                   {pageIndex < pages.length ? (
                     <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} />
+                  ) : isLastPage ? (
+                    <div className="page-placeholder right-blank"></div>
                   ) : null}
                 </div>
               );

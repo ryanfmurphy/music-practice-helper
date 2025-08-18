@@ -75,8 +75,12 @@
   background-color: #fafafa;
 }
 
-.page-placeholder::after {
+.page-placeholder.left-blank::after {
   content: "Left page blank";
+}
+
+.page-placeholder.right-blank::after {
+  content: "Right page blank";
 }
 
 .song-selector {
