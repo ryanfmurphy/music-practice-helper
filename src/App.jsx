@@ -6,6 +6,7 @@ function App() {
   const [songs, setSongs] = useState([])
   const [selectedSong, setSelectedSong] = useState(null)
   const [pages, setPages] = useState([])
+  const [firstPagePosition, setFirstPagePosition] = useState('left')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -48,8 +49,9 @@ function App() {
     try {
       const response = await fetch(`${API_BASE}/songs/${songId}/pages`)
       if (!response.ok) throw new Error('Failed to fetch pages')
-      const pagesData = await response.json()
-      setPages(pagesData)
+      const data = await response.json()
+      setPages(data.pages)
+      setFirstPagePosition(data.firstPagePosition)
     } catch (err) {
       setError(err.message)
     }
@@ -87,19 +89,33 @@ function App() {
 
       {pages.length > 0 ? (
         <div className="pages-grid">
-          {pages.reduce((result, page, index) => {
-            if (index % 2 === 0) {
+          {(() => {
+            const result = [];
+            const startsOnRight = firstPagePosition === 'right';
+            let pageIndex = 0;
+            
+            while (pageIndex < pages.length) {
+              const isFirstRow = result.length === 0;
+              
               result.push(
-                <div key={`row-${index}`} className="pages-container">
-                  <PracticeTrackerPage {...page} songId={selectedSong?.song_id} />
-                  {pages[index + 1] && (
-                    <PracticeTrackerPage {...pages[index + 1]} songId={selectedSong?.song_id} />
-                  )}
+                <div key={`row-${result.length}`} className="pages-container">
+                  {/* Left slot */}
+                  {isFirstRow && startsOnRight ? (
+                    <div className="page-placeholder"></div>
+                  ) : pageIndex < pages.length ? (
+                    <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} />
+                  ) : null}
+                  
+                  {/* Right slot */}
+                  {pageIndex < pages.length ? (
+                    <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} />
+                  ) : null}
                 </div>
-              )
+              );
             }
-            return result
-          }, [])}
+            
+            return result;
+          })()}
         </div>
       ) : (
         <div>No pages found for this song</div>

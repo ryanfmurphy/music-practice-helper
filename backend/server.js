@@ -80,6 +80,7 @@ app.get('/api/songs/:id', async (req, res) => {
 // Get page lines for a song
 app.get('/api/songs/:id/pages', async (req, res) => {
   try {
+    const song = await dbGet('SELECT first_page_position FROM songs WHERE song_id = ?', [req.params.id]);
     const pageLines = await dbAll(
       `SELECT page_number, line_number_on_page, num_measures, last_measure_overflows, start_time_secs
        FROM song_page_lines 
@@ -104,7 +105,15 @@ app.get('/api/songs/:id/pages', async (req, res) => {
       currentMeasure += line.num_measures;
     });
     
-    res.json(Object.values(pages));
+    const pagesArray = Object.values(pages);
+    
+    // Add first page position info to the response
+    const response = {
+      pages: pagesArray,
+      firstPagePosition: song?.first_page_position || 'left'
+    };
+    
+    res.json(response);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

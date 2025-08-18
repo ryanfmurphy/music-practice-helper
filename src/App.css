@@ -60,3 +60,57 @@
 .page {
   flex: 1;
 }
+
+.page-placeholder {
+  flex: 1;
+  min-height: 400px;
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-style: italic;
+  font-size: 14px;
+  background-color: #fafafa;
+}
+
+.page-placeholder::after {
+  content: "Left page blank";
+}
+
+.song-selector {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.song-selector label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.song-selector select {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: white;
+}
+
+.song-info {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.song-info h2 {
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.song-info p {
+  margin: 0;
+  color: #666;
+  font-style: italic;
+}
