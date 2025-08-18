@@ -216,6 +216,82 @@ app.get('/api/songs/:id/measures', async (req, res) => {
   }
 });
 
+// Create or update a measure confidence record
+app.post('/api/songs/:id/measures', async (req, res) => {
+  try {
+    const songId = req.params.id;
+    const {
+      page_number,
+      line_number,
+      measure_number,
+      confidence,
+      notes = '',
+      practicer = 'User'
+    } = req.body;
+
+    // Validate required fields
+    if (!page_number || !line_number || !measure_number || confidence === undefined) {
+      return res.status(400).json({ 
+        error: 'Missing required fields: page_number, line_number, measure_number, confidence' 
+      });
+    }
+
+    // Validate confidence range
+    if (confidence < 0 || confidence > 10) {
+      return res.status(400).json({ 
+        error: 'Confidence must be between 0 and 10' 
+      });
+    }
+
+    // Get the book_id for this song
+    const song = await dbGet('SELECT book_id FROM songs WHERE song_id = ?', [songId]);
+    if (!song) {
+      return res.status(404).json({ error: 'Song not found' });
+    }
+
+    // Check if record already exists
+    const existing = await dbGet(
+      `SELECT song_measure_id FROM song_measure 
+       WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ?`,
+      [songId, page_number, line_number, measure_number]
+    );
+
+    let result;
+    if (existing) {
+      // Update existing record
+      result = await dbRun(
+        `UPDATE song_measure 
+         SET confidence = ?, notes = ?, practicer = ?, time = CURRENT_TIMESTAMP
+         WHERE song_measure_id = ?`,
+        [confidence, notes, practicer, existing.song_measure_id]
+      );
+      result.id = existing.song_measure_id;
+    } else {
+      // Create new record
+      result = await dbRun(
+        `INSERT INTO song_measure (
+          book_id, song_id, page_number, line_number, measure_number, 
+          confidence, notes, practicer, time
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+        [song.book_id, songId, page_number, line_number, measure_number, confidence, notes, practicer]
+      );
+    }
+
+    // Return the created/updated record
+    const newRecord = await dbGet(
+      `SELECT song_measure_id, page_number, line_number, measure_number, 
+              confidence, time, notes, practicer
+       FROM song_measure 
+       WHERE song_measure_id = ?`,
+      [result.id]
+    );
+
+    res.json(newRecord);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });

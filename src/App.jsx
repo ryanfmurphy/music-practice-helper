@@ -131,6 +131,24 @@ function App() {
     }
   }
 
+  const handleMeasureUpdate = (savedMeasure) => {
+    // Update the measureDetails state with the new/updated measure
+    const key = `${savedMeasure.page_number}-${savedMeasure.line_number}-${savedMeasure.measure_number}`
+    setMeasureDetails(prev => ({
+      ...prev,
+      [key]: {
+        id: savedMeasure.song_measure_id,
+        confidence: savedMeasure.confidence,
+        time: savedMeasure.time,
+        notes: savedMeasure.notes,
+        practicer: savedMeasure.practicer,
+        page: savedMeasure.page_number,
+        line: savedMeasure.line_number,
+        measure: savedMeasure.measure_number
+      }
+    }))
+  }
+
   if (loading) return <div className="container">Loading...</div>
   if (error) return <div className="container">Error: {error}</div>
 
@@ -195,12 +213,22 @@ function App() {
                   {isFirstRow && startsOnRight ? (
                     <div className="page-placeholder left-blank"></div>
                   ) : pageIndex < pages.length ? (
-                    <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} measureDetails={measureDetails} />
+                    <PracticeTrackerPage 
+                      {...pages[pageIndex++]} 
+                      songId={selectedSong?.song_id}
+                      measureDetails={measureDetails}
+                      onMeasureUpdate={handleMeasureUpdate}
+                    />
                   ) : null}
                   
                   {/* Right slot */}
                   {pageIndex < pages.length ? (
-                    <PracticeTrackerPage {...pages[pageIndex++]} songId={selectedSong?.song_id} measureDetails={measureDetails} />
+                    <PracticeTrackerPage 
+                      {...pages[pageIndex++]} 
+                      songId={selectedSong?.song_id}
+                      measureDetails={measureDetails}
+                      onMeasureUpdate={handleMeasureUpdate}
+                    />
                   ) : isLastPage ? (
                     <div className="page-placeholder right-blank"></div>
                   ) : null}
