@@ -11,10 +11,28 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
     
     if (!detailsArray || detailsArray.length === 0) return {}
     
-    // If multiple practitioners, use purple styling
+    // If multiple records, determine background color based on what varies
     if (detailsArray.length > 1) {
+      const uniquePracticers = new Set(detailsArray.map(d => d.practicer))
+      const uniqueHands = new Set(detailsArray.map(d => d.hands))
+      
+      const multiplePracticers = uniquePracticers.size > 1
+      const multipleHands = uniqueHands.size > 1
+      
+      let backgroundColor
+      if (multiplePracticers && multipleHands) {
+        // Both: average between purple and cornflower blue
+        backgroundColor = '#9FB0E6' // Average of #B19CD9 (purple) and #6495ED (cornflower blue)
+      } else if (multipleHands) {
+        // Only hands: cornflower blue
+        backgroundColor = '#6495ED'
+      } else {
+        // Only practicers: purple
+        backgroundColor = '#B19CD9'
+      }
+      
       return {
-        backgroundColor: '#B19CD9', // Light purple
+        backgroundColor,
         color: 'black',
         fontWeight: 'bold',
         cursor: 'pointer'
@@ -64,12 +82,24 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
     
     if (!detailsArray || detailsArray.length === 0) return null
     
-    // If multiple practitioners, show 👥 emoji
+    // If multiple records, analyze what varies
     if (detailsArray.length > 1) {
-      return '👥'
+      const uniquePracticers = new Set(detailsArray.map(d => d.practicer))
+      const uniqueHands = new Set(detailsArray.map(d => d.hands))
+      
+      const multiplePracticers = uniquePracticers.size > 1
+      const multipleHands = uniqueHands.size > 1
+      
+      if (multiplePracticers && multipleHands) {
+        return '👥🙌'
+      } else if (multipleHands) {
+        return '🙌'
+      } else {
+        return '👥'
+      }
     }
     
-    // Single practitioner - show confidence rating
+    // Single record - show confidence rating
     const details = detailsArray[0]
     if (details.confidence === 10) {
       return (
@@ -153,7 +183,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
                         right: '4px',
                         fontSize: '10px',
                         fontWeight: 'bold',
-                        opacity: (typeof confidenceRating === 'string' && confidenceRating !== '👥') ? 0.5 : 1
+                        opacity: (typeof confidenceRating === 'string' && !['👥', '🙌', '👥🙌'].includes(confidenceRating)) ? 0.5 : 1
                       }}>
                         {confidenceRating}
                       </span>

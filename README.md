@@ -5,6 +5,9 @@ A web application for tracking music practice sessions, built with React fronten
 ## Features
 
 - **Multi-User Support**: User dropdown to filter and track practice data independently for different practitioners (Ryan, Cliff)
+- **Hands Filtering**: Hands dropdown (Both/Right/Left) to filter practice data by hand positions with multi-hands support
+- **Smart Multi-Record Indicators**: Intelligent emoji system showing 👥 for multiple practitioners, 🙌 for multiple hands, 👥🙌 for both
+- **Color-Coded Multiple Records**: Purple for multiple practitioners, cornflower blue for multiple hands, blended color for both
 - **Song Selection**: Browse and select from songs in your practice database
 - **Dynamic Page Display**: View actual page/measure layouts from your sheet music database
 - **Real-time Data**: Connects to your existing music practice tracking system
@@ -12,10 +15,10 @@ A web application for tracking music practice sessions, built with React fronten
 - **Book Filtering**: Filter songs by music book for organized navigation
 - **Confidence Visualization**: See practice progress with color-coded measures and corner confidence display
 - **BPM Tracking**: Optional tempo tracking for each measure with historical preservation
-- **Interactive Practice Tracking**: Click any measure to open an editable form for confidence levels, notes, BPM, and practitioner info
-- **Expandable History**: View complete audit trail of confidence changes with timestamps
+- **Interactive Practice Tracking**: Click any measure to open an editable form for confidence levels, notes, BPM, practitioner, and hands info
+- **Expandable History**: View complete audit trail of confidence changes with timestamps and filtering
 - **Unified Editing Experience**: Same intuitive popup form for all measures - existing data is pre-populated for easy editing
-- **Smart Defaults**: New measures automatically default to selected user
+- **Smart Defaults**: New measures automatically default to selected user and hands
 
 ## Architecture
 
@@ -66,7 +69,7 @@ A web application for tracking music practice sessions, built with React fronten
 The app connects to `../../../sqlite_mcp_server.db` which contains:
 - **songs**: Song metadata (title, artist, year, URLs, book assignments)
 - **song_page_lines**: Page and measure layout data  
-- **song_measure**: Individual measure confidence levels, practice notes, BPM, and practicer tracking
+- **song_measure**: Individual measure confidence levels, practice notes, BPM, practicer, and hands tracking
 - **song_measure_history**: Historical versions of measure data with timestamps for complete audit trail
 - **practice_session**: Practice tracking history
 - **music_book**: Book metadata for organization
@@ -109,8 +112,8 @@ The app displays practice progress through an intuitive color-coding system:
 - `GET /api/songs` - List all songs
 - `GET /api/songs/:id` - Get song details
 - `GET /api/songs/:id/pages` - Get page/measure layout for a song
-- `GET /api/songs/:id/measures` - Get measure confidence data for a song (optional ?practicer= filter)
-- `GET /api/songs/:id/measures/:page/:line/:measure/history` - Get historical changes for a specific measure
-- `POST /api/songs/:id/measures` - Create or update measure confidence record (with BPM and history preservation)
+- `GET /api/songs/:id/measures` - Get measure confidence data for a song (optional ?practicer= and ?hands= filters)
+- `GET /api/songs/:id/measures/:page/:line/:measure/history` - Get historical changes for a specific measure (optional ?practicer= and ?hands= filters)
+- `POST /api/songs/:id/measures` - Create or update measure confidence record (with BPM, hands tracking, and history preservation)
 - `GET /api/songs/:id/practice-sessions` - Get practice sessions for a song
 - `POST /api/practice-sessions` - Create new practice session
