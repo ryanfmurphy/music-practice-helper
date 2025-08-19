@@ -202,14 +202,22 @@ app.get('/api/songs/:id/measures/:from/:to/sessions', async (req, res) => {
 // Get measure confidence data for a song
 app.get('/api/songs/:id/measures', async (req, res) => {
   try {
-    const measures = await dbAll(
-      `SELECT song_measure_id, page_number, line_number, measure_number, 
-              confidence, time, notes, practicer, bpm
-       FROM song_measure 
-       WHERE song_id = ?
-       ORDER BY page_number, line_number, measure_number`,
-      [req.params.id]
-    );
+    const { practicer } = req.query;
+    
+    let query = `SELECT song_measure_id, page_number, line_number, measure_number, 
+                        confidence, time, notes, practicer, bpm
+                 FROM song_measure 
+                 WHERE song_id = ?`;
+    let params = [req.params.id];
+    
+    if (practicer) {
+      query += ` AND practicer = ?`;
+      params.push(practicer);
+    }
+    
+    query += ` ORDER BY page_number, line_number, measure_number`;
+    
+    const measures = await dbAll(query, params);
     res.json(measures);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -270,11 +278,11 @@ app.post('/api/songs/:id/measures', async (req, res) => {
       return res.status(404).json({ error: 'Song not found' });
     }
 
-    // Check if record already exists
+    // Check if record already exists for this specific practicer and measure
     const existing = await dbGet(
       `SELECT * FROM song_measure 
-       WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ?`,
-      [songId, page_number, line_number, measure_number]
+       WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ? AND practicer = ?`,
+      [songId, page_number, line_number, measure_number, practicer]
     );
 
     let result;

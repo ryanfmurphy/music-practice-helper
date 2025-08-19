@@ -12,7 +12,6 @@ function App() {
   const [pages, setPages] = useState([])
   const [firstPagePosition, setFirstPagePosition] = useState('left')
   const [measureDetails, setMeasureDetails] = useState({})
-  const [filteredMeasureDetails, setFilteredMeasureDetails] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -28,15 +27,12 @@ function App() {
       fetchPages(selectedSong.song_id)
       fetchMeasureDetails(selectedSong.song_id)
     }
-  }, [selectedSong])
+  }, [selectedSong, selectedUser])
 
   useEffect(() => {
     filterSongs()
   }, [songs, selectedBook])
 
-  useEffect(() => {
-    filterMeasureDetails()
-  }, [measureDetails, selectedUser])
 
   const fetchBooks = async () => {
     try {
@@ -101,22 +97,6 @@ function App() {
     setSelectedUser(e.target.value)
   }
 
-  const filterMeasureDetails = () => {
-    if (!selectedUser) {
-      // Show all measure details when no user is selected
-      setFilteredMeasureDetails(measureDetails)
-    } else {
-      // Filter measure details to only show those from the selected user
-      const filtered = {}
-      Object.keys(measureDetails).forEach(key => {
-        const measure = measureDetails[key]
-        if (measure.practicer === selectedUser) {
-          filtered[key] = measure
-        }
-      })
-      setFilteredMeasureDetails(filtered)
-    }
-  }
 
   const fetchPages = async (songId) => {
     try {
@@ -132,7 +112,13 @@ function App() {
 
   const fetchMeasureDetails = async (songId) => {
     try {
-      const response = await fetch(`${API_BASE}/songs/${songId}/measures`)
+      // Build URL with optional practicer filter
+      let url = `${API_BASE}/songs/${songId}/measures`
+      if (selectedUser) {
+        url += `?practicer=${encodeURIComponent(selectedUser)}`
+      }
+      
+      const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to fetch measure details')
       const measures = await response.json()
       
@@ -258,7 +244,7 @@ function App() {
                     <PracticeTrackerPage 
                       {...pages[pageIndex++]} 
                       songId={selectedSong?.song_id}
-                      measureDetails={filteredMeasureDetails}
+                      measureDetails={measureDetails}
                       onMeasureUpdate={handleMeasureUpdate}
                     />
                   ) : null}
@@ -268,7 +254,7 @@ function App() {
                     <PracticeTrackerPage 
                       {...pages[pageIndex++]} 
                       songId={selectedSong?.song_id}
-                      measureDetails={filteredMeasureDetails}
+                      measureDetails={measureDetails}
                       onMeasureUpdate={handleMeasureUpdate}
                     />
                   ) : isLastPage ? (
