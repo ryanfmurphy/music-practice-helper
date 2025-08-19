@@ -205,7 +205,7 @@ app.get('/api/songs/:id/measures', async (req, res) => {
     const { practicer } = req.query;
     
     let query = `SELECT song_measure_id, page_number, line_number, measure_number, 
-                        confidence, time, notes, practicer, bpm
+                        confidence, time, notes, practicer, bpm, hands
                  FROM song_measure 
                  WHERE song_id = ?`;
     let params = [req.params.id];
@@ -231,7 +231,7 @@ app.get('/api/songs/:id/measures/:page/:line/:measure/history', async (req, res)
     const { practicer } = req.query;
     
     let query = `SELECT song_measure_id, page_number, line_number, measure_number,
-                        confidence, time, notes, practicer, archived_at, bpm
+                        confidence, time, notes, practicer, archived_at, bpm, hands
                  FROM song_measure_history 
                  WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ?`;
     let params = [songId, page, line, measure];
@@ -262,7 +262,8 @@ app.post('/api/songs/:id/measures', async (req, res) => {
       confidence,
       notes = '',
       practicer = 'User',
-      bpm = null
+      bpm = null,
+      hands = 'both'
     } = req.body;
 
     // Validate required fields
@@ -276,6 +277,13 @@ app.post('/api/songs/:id/measures', async (req, res) => {
     if (confidence < 0 || confidence > 10) {
       return res.status(400).json({ 
         error: 'Confidence must be between 0 and 10' 
+      });
+    }
+
+    // Validate hands field
+    if (!['left', 'right', 'both'].includes(hands)) {
+      return res.status(400).json({ 
+        error: 'Hands must be one of: left, right, both' 
       });
     }
 
@@ -298,21 +306,21 @@ app.post('/api/songs/:id/measures', async (req, res) => {
       await dbRun(
         `INSERT INTO song_measure_history (
           song_measure_id, book_id, song_id, page_number, line_number, measure_number,
-          confidence, time, notes, practicer, archived_at, bpm
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)`,
+          confidence, time, notes, practicer, archived_at, bpm, hands
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)`,
         [
           existing.song_measure_id, existing.book_id, existing.song_id, 
           existing.page_number, existing.line_number, existing.measure_number,
-          existing.confidence, existing.time, existing.notes, existing.practicer, existing.bpm
+          existing.confidence, existing.time, existing.notes, existing.practicer, existing.bpm, existing.hands
         ]
       );
 
       // Update existing record
       result = await dbRun(
         `UPDATE song_measure 
-         SET confidence = ?, notes = ?, practicer = ?, bpm = ?, time = CURRENT_TIMESTAMP
+         SET confidence = ?, notes = ?, practicer = ?, bpm = ?, hands = ?, time = CURRENT_TIMESTAMP
          WHERE song_measure_id = ?`,
-        [confidence, notes, practicer, bpm, existing.song_measure_id]
+        [confidence, notes, practicer, bpm, hands, existing.song_measure_id]
       );
       result.id = existing.song_measure_id;
     } else {
@@ -320,16 +328,16 @@ app.post('/api/songs/:id/measures', async (req, res) => {
       result = await dbRun(
         `INSERT INTO song_measure (
           book_id, song_id, page_number, line_number, measure_number, 
-          confidence, notes, practicer, bpm, time
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
-        [song.book_id, songId, page_number, line_number, measure_number, confidence, notes, practicer, bpm]
+          confidence, notes, practicer, bpm, hands, time
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+        [song.book_id, songId, page_number, line_number, measure_number, confidence, notes, practicer, bpm, hands]
       );
     }
 
     // Return the created/updated record
     const newRecord = await dbGet(
       `SELECT song_measure_id, page_number, line_number, measure_number, 
-              confidence, time, notes, practicer, bpm
+              confidence, time, notes, practicer, bpm, hands
        FROM song_measure 
        WHERE song_measure_id = ?`,
       [result.id]

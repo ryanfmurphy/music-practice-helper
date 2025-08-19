@@ -133,6 +133,7 @@ function App() {
           notes: measure.notes,
           practicer: measure.practicer,
           bpm: measure.bpm,
+          hands: measure.hands,
           page: measure.page_number,
           line: measure.line_number,
           measure: measure.measure_number
@@ -160,6 +161,7 @@ function App() {
       notes: savedMeasure.notes,
       practicer: savedMeasure.practicer,
       bpm: savedMeasure.bpm,
+      hands: savedMeasure.hands,
       page: savedMeasure.page_number,
       line: savedMeasure.line_number,
       measure: savedMeasure.measure_number

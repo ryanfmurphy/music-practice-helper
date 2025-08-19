@@ -92,7 +92,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
         page: pageNum,
         line: lineNum,
         measure: measureNum,
-        practitionerData: detailsArray
+        measureDetailsRecords: detailsArray
       })
     } else {
       // New measure without details
@@ -105,7 +105,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
         practicer: null,
         bpm: null,
         time: null,
-        practitionerData: null
+        measureDetailsRecords: null
       })
     }
   }

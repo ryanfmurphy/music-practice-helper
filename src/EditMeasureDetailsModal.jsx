@@ -12,6 +12,7 @@ function EditMeasureDetailsModal({
   const [notesInput, setNotesInput] = useState('')
   const [practicerInput, setPracticerInput] = useState('')
   const [bpmInput, setBpmInput] = useState('')
+  const [handsInput, setHandsInput] = useState('both')
   const [isSaving, setIsSaving] = useState(false)
   const [measureHistory, setMeasureHistory] = useState([])
   const [showHistory, setShowHistory] = useState(false)
@@ -39,18 +40,19 @@ function EditMeasureDetailsModal({
   useEffect(() => {
     if (selectedMeasure) {
       // Check if this is a multi-practitioner measure
-      if (selectedMeasure.practitionerData && selectedMeasure.practitionerData.length > 1) {
+      if (selectedMeasure.measureDetailsRecords && selectedMeasure.measureDetailsRecords.length > 1) {
         setShowPracticerSelection(true)
         setSelectedPracticerData(null)
-      } else if (selectedMeasure.practitionerData && selectedMeasure.practitionerData.length === 1) {
+      } else if (selectedMeasure.measureDetailsRecords && selectedMeasure.measureDetailsRecords.length === 1) {
         // Single practitioner - use their data
-        const practitionerData = selectedMeasure.practitionerData[0]
+        const practitionerData = selectedMeasure.measureDetailsRecords[0]
         setShowPracticerSelection(false)
         setSelectedPracticerData(practitionerData)
         setConfidenceInput(practitionerData.confidence.toString())
         setNotesInput(practitionerData.notes || '')
         setPracticerInput(practitionerData.practicer || 'User')
         setBpmInput(practitionerData.bpm ? practitionerData.bpm.toString() : '')
+        setHandsInput(practitionerData.hands || 'both')
       } else {
         // New measure without details - use defaults
         setShowPracticerSelection(false)
@@ -59,6 +61,7 @@ function EditMeasureDetailsModal({
         setNotesInput('')
         setPracticerInput(selectedUser || '')
         setBpmInput('')
+        setHandsInput('both')
       }
       
       // Fetch history for this measure
@@ -136,7 +139,8 @@ function EditMeasureDetailsModal({
           confidence: confidence,
           notes: notesInput.trim() || '',
           practicer: practicerInput.trim() || 'User',
-          bpm: bpmInput.trim() ? parseFloat(bpmInput.trim()) : null
+          bpm: bpmInput.trim() ? parseFloat(bpmInput.trim()) : null,
+          hands: handsInput
         })
       })
       
@@ -162,6 +166,7 @@ function EditMeasureDetailsModal({
     setNotesInput(practitionerData.notes || '')
     setPracticerInput(practitionerData.practicer || 'User')
     setBpmInput(practitionerData.bpm ? practitionerData.bpm.toString() : '')
+    setHandsInput(practitionerData.hands || 'both')
   }
 
   const handleAddNewPractitioner = () => {
@@ -171,6 +176,7 @@ function EditMeasureDetailsModal({
     setNotesInput('')
     setPracticerInput(selectedUser || '')
     setBpmInput('')
+    setHandsInput('both')
   }
 
   const handleClose = () => {
@@ -178,6 +184,7 @@ function EditMeasureDetailsModal({
     setNotesInput('')
     setPracticerInput('')
     setBpmInput('')
+    setHandsInput('both')
     setIsSaving(false)
     setMeasureHistory([])
     setShowHistory(false)
@@ -206,7 +213,7 @@ function EditMeasureDetailsModal({
             <div className="practitioner-selection">
               <h4>Multiple practitioners found. Choose one to view/edit:</h4>
               <div style={{ marginTop: '15px' }}>
-                {selectedMeasure.practitionerData.map((practitionerData, index) => (
+                {selectedMeasure.measureDetailsRecords.map((practitionerData, index) => (
                   <div 
                     key={index}
                     style={{
@@ -221,6 +228,7 @@ function EditMeasureDetailsModal({
                   >
                     <strong>{practitionerData.practicer}</strong> - Confidence: {practitionerData.confidence}
                     {practitionerData.bpm && <span> - BPM: {practitionerData.bpm}</span>}
+                    {practitionerData.hands && <span> - Hands: {practitionerData.hands}</span>}
                     <br />
                     <small style={{ color: '#666' }}>
                       Last updated: {new Date(practitionerData.time).toLocaleString()}
@@ -289,6 +297,19 @@ function EditMeasureDetailsModal({
               placeholder="e.g. 120"
               style={{ padding: '5px', marginLeft: '10px', width: '80px' }}
             />
+          </div>
+          <div className="detail-item">
+            <label>Hands:</label>
+            <select
+              value={handsInput}
+              onChange={(e) => setHandsInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              style={{ padding: '5px', marginLeft: '10px', width: '120px' }}
+            >
+              <option value="both">Both</option>
+              <option value="right">Right</option>
+              <option value="left">Left</option>
+            </select>
           </div>
           <div className="detail-item notes">
             <label>Notes (optional):</label>
@@ -390,9 +411,11 @@ function EditMeasureDetailsModal({
                         )}
                         <div style={{ fontSize: '12px', color: '#666', display: 'flex', justifyContent: 'space-between' }}>
                           <span>By: {historyItem.practicer || 'Unknown'}</span>
-                          {historyItem.bpm && (
-                            <span>BPM: {historyItem.bpm}</span>
-                          )}
+                          <div>
+                            {historyItem.bpm && <span>BPM: {historyItem.bpm}</span>}
+                            {historyItem.bpm && historyItem.hands && <span> • </span>}
+                            {historyItem.hands && <span>Hands: {historyItem.hands}</span>}
+                          </div>
                         </div>
                       </div>
                     ))
