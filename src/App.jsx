@@ -8,9 +8,11 @@ function App() {
   const [songs, setSongs] = useState([])
   const [filteredSongs, setFilteredSongs] = useState([])
   const [selectedSong, setSelectedSong] = useState(null)
+  const [selectedUser, setSelectedUser] = useState('')
   const [pages, setPages] = useState([])
   const [firstPagePosition, setFirstPagePosition] = useState('left')
   const [measureDetails, setMeasureDetails] = useState({})
+  const [filteredMeasureDetails, setFilteredMeasureDetails] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -31,6 +33,10 @@ function App() {
   useEffect(() => {
     filterSongs()
   }, [songs, selectedBook])
+
+  useEffect(() => {
+    filterMeasureDetails()
+  }, [measureDetails, selectedUser])
 
   const fetchBooks = async () => {
     try {
@@ -89,6 +95,27 @@ function App() {
   const handleSongChange = (e) => {
     const song = filteredSongs.find(s => s.song_id === parseInt(e.target.value))
     setSelectedSong(song)
+  }
+
+  const handleUserChange = (e) => {
+    setSelectedUser(e.target.value)
+  }
+
+  const filterMeasureDetails = () => {
+    if (!selectedUser) {
+      // Show all measure details when no user is selected
+      setFilteredMeasureDetails(measureDetails)
+    } else {
+      // Filter measure details to only show those from the selected user
+      const filtered = {}
+      Object.keys(measureDetails).forEach(key => {
+        const measure = measureDetails[key]
+        if (measure.practicer === selectedUser) {
+          filtered[key] = measure
+        }
+      })
+      setFilteredMeasureDetails(filtered)
+    }
   }
 
   const fetchPages = async (songId) => {
@@ -189,6 +216,19 @@ function App() {
             ))}
           </select>
         </div>
+
+        <div className="user-selector">
+          <label htmlFor="user-select">User: </label>
+          <select 
+            id="user-select"
+            value={selectedUser} 
+            onChange={handleUserChange}
+          >
+            <option value="">-- Select User --</option>
+            <option value="Ryan">Ryan</option>
+            <option value="Cliff">Cliff</option>
+          </select>
+        </div>
       </div>
 
       {selectedSong && (
@@ -218,7 +258,7 @@ function App() {
                     <PracticeTrackerPage 
                       {...pages[pageIndex++]} 
                       songId={selectedSong?.song_id}
-                      measureDetails={measureDetails}
+                      measureDetails={filteredMeasureDetails}
                       onMeasureUpdate={handleMeasureUpdate}
                     />
                   ) : null}
@@ -228,7 +268,7 @@ function App() {
                     <PracticeTrackerPage 
                       {...pages[pageIndex++]} 
                       songId={selectedSong?.song_id}
-                      measureDetails={measureDetails}
+                      measureDetails={filteredMeasureDetails}
                       onMeasureUpdate={handleMeasureUpdate}
                     />
                   ) : isLastPage ? (
