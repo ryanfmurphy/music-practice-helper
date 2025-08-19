@@ -60,16 +60,25 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
     }
   }
 
-  const getConfidenceContent = (pageNum, lineNum, measureNum) => {
+  const getMeasureContent = (pageNum, lineNum, measureNum) => {
+    return measureNum
+  }
+
+  const getConfidenceRating = (pageNum, lineNum, measureNum) => {
     const key = `${pageNum}-${lineNum}-${measureNum}`
     const details = measureDetails[key]
     
-    if (!details) return measureNum
+    if (!details) return null
     
     if (details.confidence === 10) {
-      return `${measureNum} ⭐`
+      return (
+        <>
+          <span style={{ opacity: 0.5 }}>{details.confidence}</span>
+          <span style={{ opacity: 1 }}> ⭐</span>
+        </>
+      )
     }
-    return measureNum
+    return details.confidence.toString()
   }
 
   const fetchMeasureHistory = async (pageNum, lineNum, measureNum) => {
@@ -208,16 +217,34 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
         return (
           <div key={lineIndex} className="line-container">
             <div className="measure-row">
-              {measuresForThisLine.map(measureNumber => (
-                <div 
-                  key={measureNumber} 
-                  className="measure"
-                  style={getConfidenceStyle(pageNumber, lineNumber, measureNumber)}
-                  onClick={() => handleMeasureClick(pageNumber, lineNumber, measureNumber)}
-                >
-                  {getConfidenceContent(pageNumber, lineNumber, measureNumber)}
-                </div>
-              ))}
+              {measuresForThisLine.map(measureNumber => {
+                const confidenceRating = getConfidenceRating(pageNumber, lineNumber, measureNumber)
+                return (
+                  <div 
+                    key={measureNumber} 
+                    className="measure"
+                    style={{
+                      ...getConfidenceStyle(pageNumber, lineNumber, measureNumber),
+                      position: 'relative'
+                    }}
+                    onClick={() => handleMeasureClick(pageNumber, lineNumber, measureNumber)}
+                  >
+                    <span>{getMeasureContent(pageNumber, lineNumber, measureNumber)}</span>
+                    {confidenceRating && (
+                      <span style={{
+                        position: 'absolute',
+                        top: '2px',
+                        right: '4px',
+                        fontSize: '10px',
+                        fontWeight: 'bold',
+                        opacity: typeof confidenceRating === 'string' ? 0.5 : 1
+                      }}>
+                        {confidenceRating}
+                      </span>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
         )
