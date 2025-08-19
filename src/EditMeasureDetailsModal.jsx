@@ -409,8 +409,6 @@ function EditMeasureDetailsModal({
               {showHistory && (
                 <div className="history-content" style={{ 
                   marginTop: '10px',
-                  maxHeight: '200px', 
-                  overflowY: 'auto',
                   width: '100%',
                   boxSizing: 'border-box'
                 }}>
