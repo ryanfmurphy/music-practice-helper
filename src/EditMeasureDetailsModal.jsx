@@ -16,6 +16,8 @@ function EditMeasureDetailsModal({
   const [measureHistory, setMeasureHistory] = useState([])
   const [showHistory, setShowHistory] = useState(false)
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
+  const [showPracticerSelection, setShowPracticerSelection] = useState(false)
+  const [selectedPracticerData, setSelectedPracticerData] = useState(null)
   const confidenceInputRef = useRef(null)
 
   // Focus confidence input when popup opens
@@ -36,14 +38,23 @@ function EditMeasureDetailsModal({
   // Initialize form data when selectedMeasure changes
   useEffect(() => {
     if (selectedMeasure) {
-      if (selectedMeasure.confidence !== null) {
-        // Existing measure with details - pre-populate form
-        setConfidenceInput(selectedMeasure.confidence.toString())
-        setNotesInput(selectedMeasure.notes || '')
-        setPracticerInput(selectedMeasure.practicer || 'User')
-        setBpmInput(selectedMeasure.bpm ? selectedMeasure.bpm.toString() : '')
+      // Check if this is a multi-practitioner measure
+      if (selectedMeasure.practitionerData && selectedMeasure.practitionerData.length > 1) {
+        setShowPracticerSelection(true)
+        setSelectedPracticerData(null)
+      } else if (selectedMeasure.practitionerData && selectedMeasure.practitionerData.length === 1) {
+        // Single practitioner - use their data
+        const practitionerData = selectedMeasure.practitionerData[0]
+        setShowPracticerSelection(false)
+        setSelectedPracticerData(practitionerData)
+        setConfidenceInput(practitionerData.confidence.toString())
+        setNotesInput(practitionerData.notes || '')
+        setPracticerInput(practitionerData.practicer || 'User')
+        setBpmInput(practitionerData.bpm ? practitionerData.bpm.toString() : '')
       } else {
         // New measure without details - use defaults
+        setShowPracticerSelection(false)
+        setSelectedPracticerData(null)
         setConfidenceInput('')
         setNotesInput('')
         setPracticerInput(selectedUser || '')
@@ -144,6 +155,24 @@ function EditMeasureDetailsModal({
     }
   }
   
+  const handlePracticerSelect = (practitionerData) => {
+    setSelectedPracticerData(practitionerData)
+    setShowPracticerSelection(false)
+    setConfidenceInput(practitionerData.confidence.toString())
+    setNotesInput(practitionerData.notes || '')
+    setPracticerInput(practitionerData.practicer || 'User')
+    setBpmInput(practitionerData.bpm ? practitionerData.bpm.toString() : '')
+  }
+
+  const handleAddNewPractitioner = () => {
+    setSelectedPracticerData(null)
+    setShowPracticerSelection(false)
+    setConfidenceInput('')
+    setNotesInput('')
+    setPracticerInput(selectedUser || '')
+    setBpmInput('')
+  }
+
   const handleClose = () => {
     setConfidenceInput('')
     setNotesInput('')
@@ -153,6 +182,8 @@ function EditMeasureDetailsModal({
     setMeasureHistory([])
     setShowHistory(false)
     setIsLoadingHistory(false)
+    setShowPracticerSelection(false)
+    setSelectedPracticerData(null)
     onClose()
   }
 
@@ -171,6 +202,54 @@ function EditMeasureDetailsModal({
         </div>
         
         <div className="popup-body">
+          {showPracticerSelection ? (
+            <div className="practitioner-selection">
+              <h4>Multiple practitioners found. Choose one to view/edit:</h4>
+              <div style={{ marginTop: '15px' }}>
+                {selectedMeasure.practitionerData.map((practitionerData, index) => (
+                  <div 
+                    key={index}
+                    style={{
+                      padding: '10px',
+                      margin: '5px 0',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      backgroundColor: '#f9f9f9'
+                    }}
+                    onClick={() => handlePracticerSelect(practitionerData)}
+                  >
+                    <strong>{practitionerData.practicer}</strong> - Confidence: {practitionerData.confidence}
+                    {practitionerData.bpm && <span> - BPM: {practitionerData.bpm}</span>}
+                    <br />
+                    <small style={{ color: '#666' }}>
+                      Last updated: {new Date(practitionerData.time).toLocaleString()}
+                    </small>
+                    {practitionerData.notes && (
+                      <div style={{ marginTop: '5px', fontSize: '13px', fontStyle: 'italic' }}>
+                        "{practitionerData.notes}"
+                      </div>
+                    )}
+                  </div>
+                ))}
+                <button 
+                  onClick={handleAddNewPractitioner}
+                  style={{
+                    marginTop: '10px',
+                    padding: '10px 15px',
+                    backgroundColor: '#28a745',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  + Add New Practitioner
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="measure-edit-form">
           <div className="detail-item">
             <label>Confidence (0-10):</label>
             <input
@@ -232,10 +311,10 @@ function EditMeasureDetailsModal({
           </div>
           
           {/* Show last updated info for existing measures */}
-          {selectedMeasure.time && (
+          {selectedPracticerData && selectedPracticerData.time && (
             <div className="detail-item">
               <label>Last Updated:</label>
-              <span>{new Date(selectedMeasure.time).toLocaleString()}</span>
+              <span>{new Date(selectedPracticerData.time).toLocaleString()}</span>
             </div>
           )}
 
@@ -320,6 +399,8 @@ function EditMeasureDetailsModal({
                   )}
                 </div>
               )}
+            </div>
+          )}
             </div>
           )}
           

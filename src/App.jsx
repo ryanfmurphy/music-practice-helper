@@ -122,11 +122,11 @@ function App() {
       if (!response.ok) throw new Error('Failed to fetch measure details')
       const measures = await response.json()
       
-      // Convert to lookup object: {page-line-measure: measureDetails}
+      // Convert to lookup object: {page-line-measure: [measureDetails]}
       const detailsMap = {}
       measures.forEach(measure => {
         const key = `${measure.page_number}-${measure.line_number}-${measure.measure_number}`
-        detailsMap[key] = {
+        const measureDetail = {
           id: measure.song_measure_id,
           confidence: measure.confidence,
           time: measure.time,
@@ -137,6 +137,11 @@ function App() {
           line: measure.line_number,
           measure: measure.measure_number
         }
+        
+        if (!detailsMap[key]) {
+          detailsMap[key] = []
+        }
+        detailsMap[key].push(measureDetail)
       })
       setMeasureDetails(detailsMap)
     } catch (err) {
@@ -148,20 +153,33 @@ function App() {
   const handleMeasureUpdate = (savedMeasure) => {
     // Update the measureDetails state with the new/updated measure
     const key = `${savedMeasure.page_number}-${savedMeasure.line_number}-${savedMeasure.measure_number}`
-    setMeasureDetails(prev => ({
-      ...prev,
-      [key]: {
-        id: savedMeasure.song_measure_id,
-        confidence: savedMeasure.confidence,
-        time: savedMeasure.time,
-        notes: savedMeasure.notes,
-        practicer: savedMeasure.practicer,
-        bpm: savedMeasure.bpm,
-        page: savedMeasure.page_number,
-        line: savedMeasure.line_number,
-        measure: savedMeasure.measure_number
+    const measureDetail = {
+      id: savedMeasure.song_measure_id,
+      confidence: savedMeasure.confidence,
+      time: savedMeasure.time,
+      notes: savedMeasure.notes,
+      practicer: savedMeasure.practicer,
+      bpm: savedMeasure.bpm,
+      page: savedMeasure.page_number,
+      line: savedMeasure.line_number,
+      measure: savedMeasure.measure_number
+    }
+    
+    setMeasureDetails(prev => {
+      const existing = prev[key] || []
+      // Find index of existing record with same practicer
+      const existingIndex = existing.findIndex(item => item.practicer === savedMeasure.practicer)
+      
+      if (existingIndex >= 0) {
+        // Update existing record
+        const updated = [...existing]
+        updated[existingIndex] = measureDetail
+        return { ...prev, [key]: updated }
+      } else {
+        // Add new record
+        return { ...prev, [key]: [...existing, measureDetail] }
       }
-    }))
+    })
   }
 
   if (loading) return <div className="container">Loading...</div>

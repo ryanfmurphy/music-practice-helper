@@ -7,10 +7,22 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
 
   const getConfidenceStyle = (pageNum, lineNum, measureNum) => {
     const key = `${pageNum}-${lineNum}-${measureNum}`
-    const details = measureDetails[key]
+    const detailsArray = measureDetails[key]
     
-    if (!details) return {}
+    if (!detailsArray || detailsArray.length === 0) return {}
     
+    // If multiple practitioners, use purple styling
+    if (detailsArray.length > 1) {
+      return {
+        backgroundColor: '#B19CD9', // Light purple
+        color: 'black',
+        fontWeight: 'bold',
+        cursor: 'pointer'
+      }
+    }
+    
+    // Single practitioner - use normal traffic light colors
+    const details = detailsArray[0]
     const confidence = details.confidence
     let red, green, blue
     
@@ -48,10 +60,17 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
 
   const getConfidenceRating = (pageNum, lineNum, measureNum) => {
     const key = `${pageNum}-${lineNum}-${measureNum}`
-    const details = measureDetails[key]
+    const detailsArray = measureDetails[key]
     
-    if (!details) return null
+    if (!detailsArray || detailsArray.length === 0) return null
     
+    // If multiple practitioners, show 👥 emoji
+    if (detailsArray.length > 1) {
+      return '👥'
+    }
+    
+    // Single practitioner - show confidence rating
+    const details = detailsArray[0]
     if (details.confidence === 10) {
       return (
         <>
@@ -65,11 +84,16 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
 
   const handleMeasureClick = (pageNum, lineNum, measureNum) => {
     const key = `${pageNum}-${lineNum}-${measureNum}`
-    const details = measureDetails[key]
+    const detailsArray = measureDetails[key]
     
-    if (details) {
-      // Existing measure with details
-      setSelectedMeasure(details)
+    if (detailsArray && detailsArray.length > 0) {
+      // Existing measure(s) with details - pass the array
+      setSelectedMeasure({
+        page: pageNum,
+        line: lineNum,
+        measure: measureNum,
+        practitionerData: detailsArray
+      })
     } else {
       // New measure without details
       setSelectedMeasure({
@@ -80,7 +104,8 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
         notes: null,
         practicer: null,
         bpm: null,
-        time: null
+        time: null,
+        practitionerData: null
       })
     }
   }
@@ -128,7 +153,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
                         right: '4px',
                         fontSize: '10px',
                         fontWeight: 'bold',
-                        opacity: typeof confidenceRating === 'string' ? 0.5 : 1
+                        opacity: (typeof confidenceRating === 'string' && confidenceRating !== '👥') ? 0.5 : 1
                       }}>
                         {confidenceRating}
                       </span>
