@@ -216,6 +216,26 @@ app.get('/api/songs/:id/measures', async (req, res) => {
   }
 });
 
+// Get history for a specific measure
+app.get('/api/songs/:id/measures/:page/:line/:measure/history', async (req, res) => {
+  try {
+    const { id: songId, page, line, measure } = req.params;
+    
+    const history = await dbAll(
+      `SELECT song_measure_id, page_number, line_number, measure_number,
+              confidence, time, notes, practicer, archived_at
+       FROM song_measure_history 
+       WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ?
+       ORDER BY archived_at DESC`,
+      [songId, page, line, measure]
+    );
+    
+    res.json(history);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Create or update a measure confidence record
 app.post('/api/songs/:id/measures', async (req, res) => {
   try {

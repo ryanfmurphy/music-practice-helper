@@ -6,6 +6,9 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
   const [notesInput, setNotesInput] = useState('')
   const [practicerInput, setPracticerInput] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+  const [measureHistory, setMeasureHistory] = useState([])
+  const [showHistory, setShowHistory] = useState(false)
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false)
   const confidenceInputRef = useRef(null)
   let currentMeasure = startingMeasure
 
@@ -69,6 +72,21 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
     return measureNum
   }
 
+  const fetchMeasureHistory = async (pageNum, lineNum, measureNum) => {
+    setIsLoadingHistory(true)
+    try {
+      const response = await fetch(`http://localhost:3001/api/songs/${songId}/measures/${pageNum}/${lineNum}/${measureNum}/history`)
+      if (!response.ok) throw new Error('Failed to fetch measure history')
+      const history = await response.json()
+      setMeasureHistory(history)
+    } catch (err) {
+      console.warn('Failed to fetch measure history:', err.message)
+      setMeasureHistory([])
+    } finally {
+      setIsLoadingHistory(false)
+    }
+  }
+
   const handleMeasureClick = (pageNum, lineNum, measureNum) => {
     const key = `${pageNum}-${lineNum}-${measureNum}`
     const details = measureDetails[key]
@@ -94,6 +112,10 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
       setNotesInput('')
       setPracticerInput('User')
     }
+
+    // Fetch history for this measure
+    fetchMeasureHistory(pageNum, lineNum, measureNum)
+    setShowHistory(false) // Reset history expansion state
   }
 
   const handleKeyDown = (e) => {
@@ -166,6 +188,9 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
     setNotesInput('')
     setPracticerInput('')
     setIsSaving(false)
+    setMeasureHistory([])
+    setShowHistory(false)
+    setIsLoadingHistory(false)
   }
 
   return (
@@ -266,6 +291,72 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
                 <div className="detail-item">
                   <label>Last Updated:</label>
                   <span>{new Date(selectedMeasure.time).toLocaleString()}</span>
+                </div>
+              )}
+
+              {/* History section */}
+              {measureHistory.length > 0 && (
+                <div className="detail-item history-section">
+                  <div 
+                    className="history-header"
+                    onClick={() => setShowHistory(!showHistory)}
+                    style={{
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '5px 0',
+                      borderTop: '1px solid #eee',
+                      marginTop: '10px',
+                      paddingTop: '10px'
+                    }}
+                  >
+                    <label style={{ margin: 0, cursor: 'pointer' }}>History ({measureHistory.length} changes)</label>
+                    <span style={{ 
+                      transform: showHistory ? 'rotate(90deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.2s ease',
+                      fontSize: '12px'
+                    }}>
+                      ▶
+                    </span>
+                  </div>
+                  
+                  {showHistory && (
+                    <div className="history-content" style={{ marginTop: '10px', maxHeight: '200px', overflowY: 'auto' }}>
+                      {isLoadingHistory ? (
+                        <div style={{ padding: '10px', fontStyle: 'italic', color: '#666' }}>Loading history...</div>
+                      ) : (
+                        measureHistory.map((historyItem, index) => (
+                          <div 
+                            key={`${historyItem.song_measure_id}-${historyItem.archived_at}`}
+                            style={{
+                              padding: '8px',
+                              marginBottom: '8px',
+                              backgroundColor: '#f9f9f9',
+                              borderRadius: '4px',
+                              fontSize: '14px',
+                              border: '1px solid #e0e0e0'
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                              <strong>Confidence: {historyItem.confidence}</strong>
+                              <span style={{ fontSize: '12px', color: '#666' }}>
+                                {new Date(historyItem.archived_at).toLocaleString()}
+                              </span>
+                            </div>
+                            {historyItem.notes && (
+                              <div style={{ marginBottom: '4px', fontSize: '13px' }}>
+                                <strong>Notes:</strong> {historyItem.notes}
+                              </div>
+                            )}
+                            <div style={{ fontSize: '12px', color: '#666' }}>
+                              By: {historyItem.practicer || 'Unknown'}
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
               
