@@ -375,39 +375,44 @@ function EditMeasureDetailsModal({
 
           {/* History section */}
           {measureHistory.length > 0 && (
-            <div className="detail-item history-section">
+            <div className="detail-item history-section" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
               <div 
                 className="history-header"
                 onClick={() => setShowHistory(!showHistory)}
                 style={{
                   cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
                   padding: '5px 0',
                   borderTop: '1px solid #eee',
                   marginTop: '10px',
                   paddingTop: '10px'
                 }}
               >
-                <label style={{ margin: 0, cursor: 'pointer' }}>History ({measureHistory.length} changes)</label>
-                <span style={{ 
-                  transform: showHistory ? 'rotate(90deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.2s ease',
-                  fontSize: '12px'
-                }}>
-                  ▶
-                </span>
+                <label style={{ margin: 0, cursor: 'pointer' }}>
+                  History ({measureHistory.length} changes)
+                  <span style={{ 
+                    transform: showHistory ? 'rotate(90deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.2s ease',
+                    transformOrigin: '50% 50%',
+                    fontSize: '12px',
+                    display: 'inline-block',
+                    width: '12px',
+                    height: '12px',
+                    textAlign: 'center',
+                    lineHeight: '12px',
+                    marginLeft: '8px'
+                  }}>
+                    ▶
+                  </span>
+                </label>
               </div>
               
               {showHistory && (
                 <div className="history-content" style={{ 
-                  marginTop: '10px', 
-                  marginLeft: '15px',
-                  marginRight: '15px',
+                  marginTop: '10px',
                   maxHeight: '200px', 
                   overflowY: 'auto',
-                  width: 'calc(100% - 30px)'
+                  width: '100%',
+                  boxSizing: 'border-box'
                 }}>
                   {isLoadingHistory ? (
                     <div style={{ padding: '10px', fontStyle: 'italic', color: '#666' }}>Loading history...</div>
@@ -423,7 +428,8 @@ function EditMeasureDetailsModal({
                           fontSize: '14px',
                           border: '1px solid #e0e0e0',
                           width: '100%',
-                          boxSizing: 'border-box'
+                          boxSizing: 'border-box',
+                          margin: '0 0 8px 0'
                         }}
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
