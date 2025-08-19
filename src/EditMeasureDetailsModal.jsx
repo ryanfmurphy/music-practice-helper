@@ -6,6 +6,7 @@ function EditMeasureDetailsModal({
   selectedMeasure, 
   songId, 
   selectedUser, 
+  selectedHands,
   onSave 
 }) {
   const [confidenceInput, setConfidenceInput] = useState('')
@@ -17,13 +18,13 @@ function EditMeasureDetailsModal({
   const [measureHistory, setMeasureHistory] = useState([])
   const [showHistory, setShowHistory] = useState(false)
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
-  const [showPracticerSelection, setShowPracticerSelection] = useState(false)
-  const [selectedPracticerData, setSelectedPracticerData] = useState(null)
+  const [showRecordSelection, setShowRecordSelection] = useState(false)
+  const [selectedRecordData, setSelectedRecordData] = useState(null)
   const confidenceInputRef = useRef(null)
 
   // Focus confidence input when popup opens and form is ready
   useEffect(() => {
-    if (!showPracticerSelection && selectedMeasure && confidenceInputRef.current) {
+    if (!showRecordSelection && selectedMeasure && confidenceInputRef.current) {
       // Small delay to ensure the popup is fully rendered
       const timer = setTimeout(() => {
         confidenceInputRef.current.focus()
@@ -34,49 +35,60 @@ function EditMeasureDetailsModal({
       }, 100)
       return () => clearTimeout(timer)
     }
-  }, [showPracticerSelection, selectedMeasure])
+  }, [showRecordSelection, selectedMeasure])
 
   // Initialize form data when selectedMeasure changes
   useEffect(() => {
     if (selectedMeasure) {
-      // Check if this is a multi-practitioner measure
+      // Check if this is a multi-record measure
       if (selectedMeasure.measureDetailsRecords && selectedMeasure.measureDetailsRecords.length > 1) {
-        setShowPracticerSelection(true)
-        setSelectedPracticerData(null)
+        setShowRecordSelection(true)
+        setSelectedRecordData(null)
       } else if (selectedMeasure.measureDetailsRecords && selectedMeasure.measureDetailsRecords.length === 1) {
-        // Single practitioner - use their data
-        const practitionerData = selectedMeasure.measureDetailsRecords[0]
-        setShowPracticerSelection(false)
-        setSelectedPracticerData(practitionerData)
-        setConfidenceInput(practitionerData.confidence.toString())
-        setNotesInput(practitionerData.notes || '')
-        setPracticerInput(practitionerData.practicer || 'User')
-        setBpmInput(practitionerData.bpm ? practitionerData.bpm.toString() : '')
-        setHandsInput(practitionerData.hands || 'both')
+        // Single record - use its data
+        const recordData = selectedMeasure.measureDetailsRecords[0]
+        setShowRecordSelection(false)
+        setSelectedRecordData(recordData)
+        setConfidenceInput(recordData.confidence.toString())
+        setNotesInput(recordData.notes || '')
+        setPracticerInput(recordData.practicer || 'User')
+        setBpmInput(recordData.bpm ? recordData.bpm.toString() : '')
+        setHandsInput(recordData.hands || 'both')
+        // Fetch history for this specific record
+        fetchMeasureHistory(selectedMeasure.page, selectedMeasure.line, selectedMeasure.measure, recordData.practicer, recordData.hands)
       } else {
         // New measure without details - use defaults
-        setShowPracticerSelection(false)
-        setSelectedPracticerData(null)
+        setShowRecordSelection(false)
+        setSelectedRecordData(null)
         setConfidenceInput('')
         setNotesInput('')
         setPracticerInput(selectedUser || '')
         setBpmInput('')
-        setHandsInput('both')
+        setHandsInput(selectedHands || 'both')
       }
       
-      // Fetch history for this measure
-      fetchMeasureHistory(selectedMeasure.page, selectedMeasure.line, selectedMeasure.measure)
-      setShowHistory(false) // Reset history expansion state
+      // Reset history state - don't fetch until record is selected
+      setMeasureHistory([])
+      setShowHistory(false)
     }
-  }, [selectedMeasure, selectedUser])
+  }, [selectedMeasure, selectedUser, selectedHands])
 
-  const fetchMeasureHistory = async (pageNum, lineNum, measureNum) => {
+  const fetchMeasureHistory = async (pageNum, lineNum, measureNum, practicer = null, hands = null) => {
     setIsLoadingHistory(true)
     try {
-      // Build URL with optional practicer filter
+      // Build URL with specific practicer and hands filters
       let url = `http://localhost:3001/api/songs/${songId}/measures/${pageNum}/${lineNum}/${measureNum}/history`
-      if (selectedUser) {
-        url += `?practicer=${encodeURIComponent(selectedUser)}`
+      const params = new URLSearchParams()
+      
+      if (practicer) {
+        params.append('practicer', practicer)
+      }
+      if (hands) {
+        params.append('hands', hands)
+      }
+      
+      if (params.toString()) {
+        url += `?${params.toString()}`
       }
       
       const response = await fetch(url)
@@ -159,24 +171,26 @@ function EditMeasureDetailsModal({
     }
   }
   
-  const handlePracticerSelect = (practitionerData) => {
-    setSelectedPracticerData(practitionerData)
-    setShowPracticerSelection(false)
-    setConfidenceInput(practitionerData.confidence.toString())
-    setNotesInput(practitionerData.notes || '')
-    setPracticerInput(practitionerData.practicer || 'User')
-    setBpmInput(practitionerData.bpm ? practitionerData.bpm.toString() : '')
-    setHandsInput(practitionerData.hands || 'both')
+  const handleRecordSelect = (recordData) => {
+    setSelectedRecordData(recordData)
+    setShowRecordSelection(false)
+    setConfidenceInput(recordData.confidence.toString())
+    setNotesInput(recordData.notes || '')
+    setPracticerInput(recordData.practicer || 'User')
+    setBpmInput(recordData.bpm ? recordData.bpm.toString() : '')
+    setHandsInput(recordData.hands || 'both')
+    // Fetch history for this specific record
+    fetchMeasureHistory(selectedMeasure.page, selectedMeasure.line, selectedMeasure.measure, recordData.practicer, recordData.hands)
   }
 
-  const handleAddNewPractitioner = () => {
-    setSelectedPracticerData(null)
-    setShowPracticerSelection(false)
+  const handleAddNewRecord = () => {
+    setSelectedRecordData(null)
+    setShowRecordSelection(false)
     setConfidenceInput('')
     setNotesInput('')
     setPracticerInput(selectedUser || '')
     setBpmInput('')
-    setHandsInput('both')
+    setHandsInput(selectedHands || 'both')
   }
 
   const handleClose = () => {
@@ -184,13 +198,13 @@ function EditMeasureDetailsModal({
     setNotesInput('')
     setPracticerInput('')
     setBpmInput('')
-    setHandsInput('both')
+    setHandsInput(selectedHands || 'both')
     setIsSaving(false)
     setMeasureHistory([])
     setShowHistory(false)
     setIsLoadingHistory(false)
-    setShowPracticerSelection(false)
-    setSelectedPracticerData(null)
+    setShowRecordSelection(false)
+    setSelectedRecordData(null)
     onClose()
   }
 
@@ -209,11 +223,11 @@ function EditMeasureDetailsModal({
         </div>
         
         <div className="popup-body">
-          {showPracticerSelection ? (
-            <div className="practitioner-selection">
-              <h4>Multiple practitioners found. Choose one to view/edit:</h4>
+          {showRecordSelection ? (
+            <div className="record-selection">
+              <h4>Multiple records found. Choose one to view/edit:</h4>
               <div style={{ marginTop: '15px' }}>
-                {selectedMeasure.measureDetailsRecords.map((practitionerData, index) => (
+                {selectedMeasure.measureDetailsRecords.map((recordData, index) => (
                   <div 
                     key={index}
                     style={{
@@ -224,24 +238,24 @@ function EditMeasureDetailsModal({
                       cursor: 'pointer',
                       backgroundColor: '#f9f9f9'
                     }}
-                    onClick={() => handlePracticerSelect(practitionerData)}
+                    onClick={() => handleRecordSelect(recordData)}
                   >
-                    <strong>{practitionerData.practicer}</strong> - Confidence: {practitionerData.confidence}
-                    {practitionerData.bpm && <span> - BPM: {practitionerData.bpm}</span>}
-                    {practitionerData.hands && <span> - Hands: {practitionerData.hands}</span>}
+                    <strong>{recordData.practicer}</strong> - Confidence: {recordData.confidence}
+                    {recordData.bpm && <span> - BPM: {recordData.bpm}</span>}
+                    {recordData.hands && <span> - Hands: {recordData.hands}</span>}
                     <br />
                     <small style={{ color: '#666' }}>
-                      Last updated: {new Date(practitionerData.time).toLocaleString()}
+                      Last updated: {new Date(recordData.time).toLocaleString()}
                     </small>
-                    {practitionerData.notes && (
+                    {recordData.notes && (
                       <div style={{ marginTop: '5px', fontSize: '13px', fontStyle: 'italic' }}>
-                        "{practitionerData.notes}"
+                        "{recordData.notes}"
                       </div>
                     )}
                   </div>
                 ))}
                 <button 
-                  onClick={handleAddNewPractitioner}
+                  onClick={handleAddNewRecord}
                   style={{
                     marginTop: '10px',
                     padding: '10px 15px',
@@ -252,7 +266,7 @@ function EditMeasureDetailsModal({
                     cursor: 'pointer'
                   }}
                 >
-                  + Add New Practitioner
+                  + Add New Record
                 </button>
               </div>
             </div>
@@ -332,10 +346,10 @@ function EditMeasureDetailsModal({
           </div>
           
           {/* Show last updated info for existing measures */}
-          {selectedPracticerData && selectedPracticerData.time && (
+          {selectedRecordData && selectedRecordData.time && (
             <div className="detail-item">
               <label>Last Updated:</label>
-              <span>{new Date(selectedPracticerData.time).toLocaleString()}</span>
+              <span>{new Date(selectedRecordData.time).toLocaleString()}</span>
             </div>
           )}
 

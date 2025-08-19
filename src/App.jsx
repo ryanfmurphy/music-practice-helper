@@ -9,6 +9,7 @@ function App() {
   const [filteredSongs, setFilteredSongs] = useState([])
   const [selectedSong, setSelectedSong] = useState(null)
   const [selectedUser, setSelectedUser] = useState('')
+  const [selectedHands, setSelectedHands] = useState('')
   const [pages, setPages] = useState([])
   const [firstPagePosition, setFirstPagePosition] = useState('left')
   const [measureDetails, setMeasureDetails] = useState({})
@@ -27,7 +28,7 @@ function App() {
       fetchPages(selectedSong.song_id)
       fetchMeasureDetails(selectedSong.song_id)
     }
-  }, [selectedSong, selectedUser])
+  }, [selectedSong, selectedUser, selectedHands])
 
   useEffect(() => {
     filterSongs()
@@ -97,6 +98,10 @@ function App() {
     setSelectedUser(e.target.value)
   }
 
+  const handleHandsChange = (e) => {
+    setSelectedHands(e.target.value)
+  }
+
 
   const fetchPages = async (songId) => {
     try {
@@ -112,10 +117,19 @@ function App() {
 
   const fetchMeasureDetails = async (songId) => {
     try {
-      // Build URL with optional practicer filter
+      // Build URL with optional practicer and hands filters
       let url = `${API_BASE}/songs/${songId}/measures`
+      const params = new URLSearchParams()
+      
       if (selectedUser) {
-        url += `?practicer=${encodeURIComponent(selectedUser)}`
+        params.append('practicer', selectedUser)
+      }
+      if (selectedHands) {
+        params.append('hands', selectedHands)
+      }
+      
+      if (params.toString()) {
+        url += `?${params.toString()}`
       }
       
       const response = await fetch(url)
@@ -235,6 +249,20 @@ function App() {
             <option value="Cliff">Cliff</option>
           </select>
         </div>
+
+        <div className="hands-selector">
+          <label htmlFor="hands-select">Hands: </label>
+          <select 
+            id="hands-select"
+            value={selectedHands} 
+            onChange={handleHandsChange}
+          >
+            <option value="">-- Select Hands --</option>
+            <option value="both">Both</option>
+            <option value="right">Right</option>
+            <option value="left">Left</option>
+          </select>
+        </div>
       </div>
 
       {selectedSong && (
@@ -265,6 +293,7 @@ function App() {
                       {...pages[pageIndex++]} 
                       songId={selectedSong?.song_id}
                       selectedUser={selectedUser}
+                      selectedHands={selectedHands}
                       measureDetails={measureDetails}
                       onMeasureUpdate={handleMeasureUpdate}
                     />
@@ -276,6 +305,7 @@ function App() {
                       {...pages[pageIndex++]} 
                       songId={selectedSong?.song_id}
                       selectedUser={selectedUser}
+                      selectedHands={selectedHands}
                       measureDetails={measureDetails}
                       onMeasureUpdate={handleMeasureUpdate}
                     />

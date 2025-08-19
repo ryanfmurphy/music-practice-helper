@@ -10,7 +10,8 @@
 ## Bugs
 
 - [x] Stop autoselecting in the middle of typing confidence level
-- [ ] In the popup/modal, filter the history to the currently chosen practitioner
+- [x] In the popup/modal, filter the history to the currently chosen practitioner
+- [ ] Fix time zone issue with song_measure timestamps
 
 ## Planned Features
 

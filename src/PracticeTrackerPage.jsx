@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import EditMeasureDetailsModal from './EditMeasureDetailsModal'
 
-function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetails = {}, songId, selectedUser, onMeasureUpdate }) {
+function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetails = {}, songId, selectedUser, selectedHands, onMeasureUpdate }) {
   const [selectedMeasure, setSelectedMeasure] = useState(null)
   let currentMeasure = startingMeasure
 
@@ -172,6 +172,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
         selectedMeasure={selectedMeasure}
         songId={songId}
         selectedUser={selectedUser}
+        selectedHands={selectedHands}
         onSave={handleModalSave}
       />
     </div>

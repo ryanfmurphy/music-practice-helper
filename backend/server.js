@@ -202,7 +202,7 @@ app.get('/api/songs/:id/measures/:from/:to/sessions', async (req, res) => {
 // Get measure confidence data for a song
 app.get('/api/songs/:id/measures', async (req, res) => {
   try {
-    const { practicer } = req.query;
+    const { practicer, hands } = req.query;
     
     let query = `SELECT song_measure_id, page_number, line_number, measure_number, 
                         confidence, time, notes, practicer, bpm, hands
@@ -213,6 +213,11 @@ app.get('/api/songs/:id/measures', async (req, res) => {
     if (practicer) {
       query += ` AND practicer = ?`;
       params.push(practicer);
+    }
+    
+    if (hands) {
+      query += ` AND hands = ?`;
+      params.push(hands);
     }
     
     query += ` ORDER BY page_number, line_number, measure_number`;
@@ -228,7 +233,7 @@ app.get('/api/songs/:id/measures', async (req, res) => {
 app.get('/api/songs/:id/measures/:page/:line/:measure/history', async (req, res) => {
   try {
     const { id: songId, page, line, measure } = req.params;
-    const { practicer } = req.query;
+    const { practicer, hands } = req.query;
     
     let query = `SELECT song_measure_id, page_number, line_number, measure_number,
                         confidence, time, notes, practicer, archived_at, bpm, hands
@@ -239,6 +244,11 @@ app.get('/api/songs/:id/measures/:page/:line/:measure/history', async (req, res)
     if (practicer) {
       query += ` AND practicer = ?`;
       params.push(practicer);
+    }
+    
+    if (hands) {
+      query += ` AND hands = ?`;
+      params.push(hands);
     }
     
     query += ` ORDER BY archived_at DESC`;
@@ -293,11 +303,11 @@ app.post('/api/songs/:id/measures', async (req, res) => {
       return res.status(404).json({ error: 'Song not found' });
     }
 
-    // Check if record already exists for this specific practicer and measure
+    // Check if record already exists for this specific practicer, hands, and measure
     const existing = await dbGet(
       `SELECT * FROM song_measure 
-       WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ? AND practicer = ?`,
-      [songId, page_number, line_number, measure_number, practicer]
+       WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ? AND practicer = ? AND hands = ?`,
+      [songId, page_number, line_number, measure_number, practicer, hands]
     );
 
     let result;
