@@ -12,9 +12,12 @@
 - [x] Stop autoselecting in the middle of typing confidence level
 - [x] In the popup/modal, filter the history to the currently chosen practitioner
 - [ ] Fix time zone issue with song_measure timestamps
+- [ ] Did the traffic light colors get nerfed to have fewer gradient shades?
+- [ ] Issue has returned: No longer auto-selecting the Confidence level text in the input
 
 ## Planned Features
 
+- [ ] Add bpm_denominator to song_measure. ENUM values = whole,half,quarter,dotted-quarter,8th,16th
 - [ ] Allow deleting a measure's details
 - [ ] Keep history of past measure details (in separate table?)
 

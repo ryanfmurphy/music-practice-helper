@@ -44,28 +44,22 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
     const confidence = details.confidence
     let red, green, blue
     
-    if (confidence < 5) {
-      // Red zone (0-4.9): interpolate from dark red to yellow
-      const ratio = confidence / 5
-      red = 220 - (ratio * 50)  // 220 to 170
-      green = ratio * 100       // 0 to 100
-      blue = 50
-    } else if (confidence < 6) {
-      // Yellow zone (5.0-5.9): interpolate from yellow to light green
-      const ratio = (confidence - 5) / 1
-      red = 200 - (ratio * 100)  // 200 to 100
-      green = 200 + (ratio * 55)  // 200 to 255
-      blue = 50
+    if (confidence <= 5) {
+      // Red to yellow (0-5): keep red=255, increase green, blue=0
+      const yellowRatio = confidence / 5
+      red = 255
+      green = Math.round(255 * yellowRatio)
+      blue = 0
     } else {
-      // Green zone (6.0-10.0): interpolate to brighter green
-      const ratio = Math.min((confidence - 6) / 4, 1)
-      red = 100 - (ratio * 50)   // 100 to 50
-      green = 255
-      blue = 50 + (ratio * 50)   // 50 to 100
+      // Yellow to green #00bb00 (5-10): decrease red, adjust green to target, blue=0
+      const greenRatio = (confidence - 5) / 5
+      red = Math.round(255 * (1 - greenRatio))
+      green = Math.round(255 - (255 - 187) * greenRatio) // 187 = 0xbb
+      blue = 0
     }
 
     return {
-      backgroundColor: `rgb(${red}, ${green}, ${blue})`,
+      backgroundColor: `rgb(${Math.round(red)}, ${Math.round(green)}, ${Math.round(blue)})`,
       color: 'black',
       fontWeight: 'bold',
       cursor: 'pointer'
