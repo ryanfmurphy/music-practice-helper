@@ -322,7 +322,14 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
                   </div>
                   
                   {showHistory && (
-                    <div className="history-content" style={{ marginTop: '10px', maxHeight: '200px', overflowY: 'auto' }}>
+                    <div className="history-content" style={{ 
+                      marginTop: '10px', 
+                      marginLeft: '15px',
+                      marginRight: '15px',
+                      maxHeight: '200px', 
+                      overflowY: 'auto',
+                      width: 'calc(100% - 30px)'
+                    }}>
                       {isLoadingHistory ? (
                         <div style={{ padding: '10px', fontStyle: 'italic', color: '#666' }}>Loading history...</div>
                       ) : (
@@ -335,12 +342,20 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
                               backgroundColor: '#f9f9f9',
                               borderRadius: '4px',
                               fontSize: '14px',
-                              border: '1px solid #e0e0e0'
+                              border: '1px solid #e0e0e0',
+                              width: '100%',
+                              boxSizing: 'border-box'
                             }}
                           >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
                               <strong>Confidence: {historyItem.confidence}</strong>
-                              <span style={{ fontSize: '12px', color: '#666' }}>
+                              <span style={{ 
+                                fontSize: '12px', 
+                                color: '#666',
+                                whiteSpace: 'nowrap',
+                                marginLeft: '10px',
+                                textAlign: 'right'
+                              }}>
                                 {new Date(historyItem.archived_at).toLocaleString()}
                               </span>
                             </div>
