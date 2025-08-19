@@ -16,6 +16,7 @@ A fully functional React-based web application for interactive music practice tr
 - **Smart Form Pre-population**: Existing measures automatically fill form fields, new measures start with empty fields
 - **Real-time Updates**: All changes immediately appear with correct color coding without page refresh
 - **Real-time Database Integration**: Connects directly to existing practice tracking system with automatic book_id resolution
+- **Automatic History Tracking**: All measure updates preserve previous data in `song_measure_history` table for complete audit trail
 
 ## Quick Start
 ```bash
@@ -30,6 +31,7 @@ npm install && npm run dev
 - `songs` - Song metadata and book assignments
 - `song_page_lines` - Page/line layout with measure counts
 - `song_measure` - Individual measure confidence levels and practice notes
+- `song_measure_history` - Historical versions of measure data with timestamps for audit trail
 - `music_book` - Book organization
 - `practice_session` - Practice history (future integration)
 
@@ -40,7 +42,11 @@ npm install && npm run dev
 - **Page Positioning**: Supports songs starting on left or right pages for realistic book layout
 
 ## Development Status
-Production-ready with complete confidence visualization, unified measure editing interface, and full database integration. Features a consistent editable form experience where all measures (existing and new) use the same intuitive popup interface with smart pre-population. Ready for use with existing Köln Concert and Goldberg Variations data.
+Production-ready with complete confidence visualization, unified measure editing interface, full database integration, and automatic history tracking. Features a consistent editable form experience where all measures (existing and new) use the same intuitive popup interface with smart pre-population. All measure updates are automatically preserved in history for complete audit trail. Ready for use with existing Köln Concert and Goldberg Variations data.
+
+## Recent Updates
+- **Confidence Input Bug Fix**: Resolved autoselection issue that interrupted typing in confidence input field
+- **Historical Data Preservation**: Implemented automatic backup of measure data to `song_measure_history` table before updates
 
 ## Component Structure
 - `App.jsx` - Main application with book/song selection and data fetching
@@ -53,6 +59,6 @@ Production-ready with complete confidence visualization, unified measure editing
 - `GET /api/songs` - List all songs
 - `GET /api/songs/:id/pages` - Get page/measure layout for a song
 - `GET /api/songs/:id/measures` - Get measure confidence data for a song
-- `POST /api/songs/:id/measures` - Create or update measure confidence record (with automatic book_id lookup)
+- `POST /api/songs/:id/measures` - Create or update measure confidence record (with automatic book_id lookup and history preservation)
 - `GET /api/songs/:id/practice-sessions` - Get practice sessions for a song
 - `POST /api/practice-sessions` - Create new practice session

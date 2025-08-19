@@ -251,13 +251,26 @@ app.post('/api/songs/:id/measures', async (req, res) => {
 
     // Check if record already exists
     const existing = await dbGet(
-      `SELECT song_measure_id FROM song_measure 
+      `SELECT * FROM song_measure 
        WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ?`,
       [songId, page_number, line_number, measure_number]
     );
 
     let result;
     if (existing) {
+      // Save existing data to history table before updating
+      await dbRun(
+        `INSERT INTO song_measure_history (
+          song_measure_id, book_id, song_id, page_number, line_number, measure_number,
+          confidence, time, notes, practicer, archived_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+        [
+          existing.song_measure_id, existing.book_id, existing.song_id, 
+          existing.page_number, existing.line_number, existing.measure_number,
+          existing.confidence, existing.time, existing.notes, existing.practicer
+        ]
+      );
+
       // Update existing record
       result = await dbRun(
         `UPDATE song_measure 
