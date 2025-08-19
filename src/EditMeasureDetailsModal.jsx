@@ -215,6 +215,26 @@ function EditMeasureDetailsModal({
       <div className="popup-content">
         <div className="popup-header">
           <h3>
+            {!showRecordSelection && selectedMeasure.measureDetailsRecords && selectedMeasure.measureDetailsRecords.length > 1 && (
+              <span 
+                onClick={() => {
+                  setShowRecordSelection(true)
+                  setSelectedRecordData(null)
+                  setMeasureHistory([])
+                  setShowHistory(false)
+                }}
+                style={{
+                  cursor: 'pointer',
+                  fontSize: '24px',
+                  marginRight: '10px',
+                  color: '#007bff',
+                  fontWeight: 'bold'
+                }}
+                title="Back to record selection"
+              >
+                ← 
+              </span>
+            )}
             Page {selectedMeasure.page}, Line {selectedMeasure.line}, Measure {selectedMeasure.measure}
           </h3>
           <button className="popup-close" onClick={handleClose}>
