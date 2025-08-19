@@ -5,8 +5,16 @@
 - ✅ Dynamic page/measure display from database
 - ✅ Express.js backend with SQLite integration
 - ✅ Auto-selection of Köln Concert Part I
+- ✅ Measure-level practice session logging
+
+## Bugs
+
+- [x] Stop autoselecting in the middle of typing confidence level
 
 ## Planned Features
+
+- [ ] Allow deleting a measure's details
+- [ ] Keep history of past measure details (in separate table?)
 
 ### Layout & Display
 - [ ] Add support for a song's 1st page to be the right page instead of left page
@@ -26,7 +34,6 @@
   - Click measures to log new practice sessions
 
 ### Future Enhancements
-- [ ] Measure-level practice session logging
 - [ ] Practice session filtering and search
 - [ ] Progress charts and analytics
 - [ ] Integration with YouTube timestamps

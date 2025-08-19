@@ -22,7 +22,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
       }, 100)
       return () => clearTimeout(timer)
     }
-  }, [selectedMeasure, confidenceInput])
+  }, [selectedMeasure])
 
   const getConfidenceStyle = (pageNum, lineNum, measureNum) => {
     const key = `${pageNum}-${lineNum}-${measureNum}`
