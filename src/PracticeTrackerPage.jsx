@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 
-function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetails = {}, songId, onMeasureUpdate }) {
+function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetails = {}, songId, selectedUser, onMeasureUpdate }) {
   const [selectedMeasure, setSelectedMeasure] = useState(null)
   const [confidenceInput, setConfidenceInput] = useState('')
   const [notesInput, setNotesInput] = useState('')
@@ -85,7 +85,13 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
   const fetchMeasureHistory = async (pageNum, lineNum, measureNum) => {
     setIsLoadingHistory(true)
     try {
-      const response = await fetch(`http://localhost:3001/api/songs/${songId}/measures/${pageNum}/${lineNum}/${measureNum}/history`)
+      // Build URL with optional practicer filter
+      let url = `http://localhost:3001/api/songs/${songId}/measures/${pageNum}/${lineNum}/${measureNum}/history`
+      if (selectedUser) {
+        url += `?practicer=${encodeURIComponent(selectedUser)}`
+      }
+      
+      const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to fetch measure history')
       const history = await response.json()
       setMeasureHistory(history)
@@ -122,7 +128,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
       })
       setConfidenceInput('')
       setNotesInput('')
-      setPracticerInput('User')
+      setPracticerInput(selectedUser || '')
       setBpmInput('')
     }
 
@@ -154,6 +160,11 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
     const confidence = parseFloat(confidenceInput)
     if (isNaN(confidence) || confidence < 0 || confidence > 10) {
       alert('Please enter a confidence level between 0 and 10')
+      return
+    }
+    
+    if (!practicerInput.trim()) {
+      alert('Please enter a practicer name')
       return
     }
     

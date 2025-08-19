@@ -244,6 +244,7 @@ function App() {
                     <PracticeTrackerPage 
                       {...pages[pageIndex++]} 
                       songId={selectedSong?.song_id}
+                      selectedUser={selectedUser}
                       measureDetails={measureDetails}
                       onMeasureUpdate={handleMeasureUpdate}
                     />
@@ -254,6 +255,7 @@ function App() {
                     <PracticeTrackerPage 
                       {...pages[pageIndex++]} 
                       songId={selectedSong?.song_id}
+                      selectedUser={selectedUser}
                       measureDetails={measureDetails}
                       onMeasureUpdate={handleMeasureUpdate}
                     />

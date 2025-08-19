@@ -228,15 +228,22 @@ app.get('/api/songs/:id/measures', async (req, res) => {
 app.get('/api/songs/:id/measures/:page/:line/:measure/history', async (req, res) => {
   try {
     const { id: songId, page, line, measure } = req.params;
+    const { practicer } = req.query;
     
-    const history = await dbAll(
-      `SELECT song_measure_id, page_number, line_number, measure_number,
-              confidence, time, notes, practicer, archived_at, bpm
-       FROM song_measure_history 
-       WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ?
-       ORDER BY archived_at DESC`,
-      [songId, page, line, measure]
-    );
+    let query = `SELECT song_measure_id, page_number, line_number, measure_number,
+                        confidence, time, notes, practicer, archived_at, bpm
+                 FROM song_measure_history 
+                 WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ?`;
+    let params = [songId, page, line, measure];
+    
+    if (practicer) {
+      query += ` AND practicer = ?`;
+      params.push(practicer);
+    }
+    
+    query += ` ORDER BY archived_at DESC`;
+    
+    const history = await dbAll(query, params);
     
     res.json(history);
   } catch (err) {
