@@ -20,9 +20,9 @@ function EditMeasureDetailsModal({
   const [selectedPracticerData, setSelectedPracticerData] = useState(null)
   const confidenceInputRef = useRef(null)
 
-  // Focus confidence input when popup opens
+  // Focus confidence input when popup opens and form is ready
   useEffect(() => {
-    if (selectedMeasure && confidenceInputRef.current) {
+    if (!showPracticerSelection && confidenceInputRef.current) {
       // Small delay to ensure the popup is fully rendered
       const timer = setTimeout(() => {
         confidenceInputRef.current.focus()
@@ -33,7 +33,7 @@ function EditMeasureDetailsModal({
       }, 100)
       return () => clearTimeout(timer)
     }
-  }, [selectedMeasure])
+  }, [showPracticerSelection, confidenceInput])
 
   // Initialize form data when selectedMeasure changes
   useEffect(() => {
