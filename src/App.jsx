@@ -119,6 +119,7 @@ function App() {
           time: measure.time,
           notes: measure.notes,
           practicer: measure.practicer,
+          bpm: measure.bpm,
           page: measure.page_number,
           line: measure.line_number,
           measure: measure.measure_number
@@ -142,6 +143,7 @@ function App() {
         time: savedMeasure.time,
         notes: savedMeasure.notes,
         practicer: savedMeasure.practicer,
+        bpm: savedMeasure.bpm,
         page: savedMeasure.page_number,
         line: savedMeasure.line_number,
         measure: savedMeasure.measure_number

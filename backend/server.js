@@ -204,7 +204,7 @@ app.get('/api/songs/:id/measures', async (req, res) => {
   try {
     const measures = await dbAll(
       `SELECT song_measure_id, page_number, line_number, measure_number, 
-              confidence, time, notes, practicer
+              confidence, time, notes, practicer, bpm
        FROM song_measure 
        WHERE song_id = ?
        ORDER BY page_number, line_number, measure_number`,
@@ -223,7 +223,7 @@ app.get('/api/songs/:id/measures/:page/:line/:measure/history', async (req, res)
     
     const history = await dbAll(
       `SELECT song_measure_id, page_number, line_number, measure_number,
-              confidence, time, notes, practicer, archived_at
+              confidence, time, notes, practicer, archived_at, bpm
        FROM song_measure_history 
        WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ?
        ORDER BY archived_at DESC`,
@@ -246,7 +246,8 @@ app.post('/api/songs/:id/measures', async (req, res) => {
       measure_number,
       confidence,
       notes = '',
-      practicer = 'User'
+      practicer = 'User',
+      bpm = null
     } = req.body;
 
     // Validate required fields
@@ -282,21 +283,21 @@ app.post('/api/songs/:id/measures', async (req, res) => {
       await dbRun(
         `INSERT INTO song_measure_history (
           song_measure_id, book_id, song_id, page_number, line_number, measure_number,
-          confidence, time, notes, practicer, archived_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+          confidence, time, notes, practicer, archived_at, bpm
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)`,
         [
           existing.song_measure_id, existing.book_id, existing.song_id, 
           existing.page_number, existing.line_number, existing.measure_number,
-          existing.confidence, existing.time, existing.notes, existing.practicer
+          existing.confidence, existing.time, existing.notes, existing.practicer, existing.bpm
         ]
       );
 
       // Update existing record
       result = await dbRun(
         `UPDATE song_measure 
-         SET confidence = ?, notes = ?, practicer = ?, time = CURRENT_TIMESTAMP
+         SET confidence = ?, notes = ?, practicer = ?, bpm = ?, time = CURRENT_TIMESTAMP
          WHERE song_measure_id = ?`,
-        [confidence, notes, practicer, existing.song_measure_id]
+        [confidence, notes, practicer, bpm, existing.song_measure_id]
       );
       result.id = existing.song_measure_id;
     } else {
@@ -304,16 +305,16 @@ app.post('/api/songs/:id/measures', async (req, res) => {
       result = await dbRun(
         `INSERT INTO song_measure (
           book_id, song_id, page_number, line_number, measure_number, 
-          confidence, notes, practicer, time
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
-        [song.book_id, songId, page_number, line_number, measure_number, confidence, notes, practicer]
+          confidence, notes, practicer, bpm, time
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+        [song.book_id, songId, page_number, line_number, measure_number, confidence, notes, practicer, bpm]
       );
     }
 
     // Return the created/updated record
     const newRecord = await dbGet(
       `SELECT song_measure_id, page_number, line_number, measure_number, 
-              confidence, time, notes, practicer
+              confidence, time, notes, practicer, bpm
        FROM song_measure 
        WHERE song_measure_id = ?`,
       [result.id]

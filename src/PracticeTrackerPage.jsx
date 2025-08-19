@@ -5,6 +5,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
   const [confidenceInput, setConfidenceInput] = useState('')
   const [notesInput, setNotesInput] = useState('')
   const [practicerInput, setPracticerInput] = useState('')
+  const [bpmInput, setBpmInput] = useState('')
   const [isSaving, setIsSaving] = useState(false)
   const [measureHistory, setMeasureHistory] = useState([])
   const [showHistory, setShowHistory] = useState(false)
@@ -106,6 +107,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
       setConfidenceInput(details.confidence.toString())
       setNotesInput(details.notes || '')
       setPracticerInput(details.practicer || 'User')
+      setBpmInput(details.bpm ? details.bpm.toString() : '')
     } else {
       // New measure without details - empty form
       setSelectedMeasure({
@@ -115,11 +117,13 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
         confidence: null,
         notes: null,
         practicer: null,
+        bpm: null,
         time: null
       })
       setConfidenceInput('')
       setNotesInput('')
       setPracticerInput('User')
+      setBpmInput('')
     }
 
     // Fetch history for this measure
@@ -166,7 +170,8 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
           measure_number: selectedMeasure.measure,
           confidence: confidence,
           notes: notesInput.trim() || '',
-          practicer: practicerInput.trim() || 'User'
+          practicer: practicerInput.trim() || 'User',
+          bpm: bpmInput.trim() ? parseFloat(bpmInput.trim()) : null
         })
       })
       
@@ -196,6 +201,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
     setConfidenceInput('')
     setNotesInput('')
     setPracticerInput('')
+    setBpmInput('')
     setIsSaving(false)
     setMeasureHistory([])
     setShowHistory(false)
@@ -295,6 +301,20 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
                   style={{ padding: '5px', marginLeft: '10px', width: '150px' }}
                 />
               </div>
+              <div className="detail-item">
+                <label>BPM (optional):</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="300"
+                  step="1"
+                  value={bpmInput}
+                  onChange={(e) => setBpmInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="e.g. 120"
+                  style={{ padding: '5px', marginLeft: '10px', width: '80px' }}
+                />
+              </div>
               <div className="detail-item notes">
                 <label>Notes (optional):</label>
                 <textarea
@@ -391,8 +411,11 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
                                 <strong>Notes:</strong> {historyItem.notes}
                               </div>
                             )}
-                            <div style={{ fontSize: '12px', color: '#666' }}>
-                              By: {historyItem.practicer || 'Unknown'}
+                            <div style={{ fontSize: '12px', color: '#666', display: 'flex', justifyContent: 'space-between' }}>
+                              <span>By: {historyItem.practicer || 'Unknown'}</span>
+                              {historyItem.bpm && (
+                                <span>BPM: {historyItem.bpm}</span>
+                              )}
                             </div>
                           </div>
                         ))
