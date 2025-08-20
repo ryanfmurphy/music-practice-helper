@@ -25,6 +25,7 @@ function App() {
   const [lastSelectedMeasure, setLastSelectedMeasure] = useState(null)
   const [absoluteMeasureNoToKeyMap, setAbsoluteMeasureNoToKeyMap] = useState({}) // {23: "5-2-15", 24: "5-2-16", ...}
   const [keyToAbsoluteMeasureNoMap, setKeyToAbsoluteMeasureNoMap] = useState({}) // {"5-2-15": 23, "5-2-16": 24, ...}
+  const [showSheetMusic, setShowSheetMusic] = useState(true)
 
   const API_BASE = 'http://localhost:3001/api'
 
@@ -369,6 +370,14 @@ function App() {
           <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px' }}>
             <input
               type="checkbox"
+              checked={showSheetMusic}
+              onChange={(e) => setShowSheetMusic(e.target.checked)}
+            />
+            Show Sheet Music
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px' }}>
+            <input
+              type="checkbox"
               checked={isSelectionMode}
               onChange={(e) => {
                 setIsSelectionMode(e.target.checked)
@@ -459,6 +468,7 @@ function App() {
                       setLastSelectedMeasure={setLastSelectedMeasure}
                       absoluteMeasureNoToKeyMap={absoluteMeasureNoToKeyMap}
                       keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
+                      showSheetMusic={showSheetMusic}
                     />
                   ) : null}
                   
@@ -478,6 +488,7 @@ function App() {
                       setLastSelectedMeasure={setLastSelectedMeasure}
                       absoluteMeasureNoToKeyMap={absoluteMeasureNoToKeyMap}
                       keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
+                      showSheetMusic={showSheetMusic}
                     />
                   ) : isLastPage ? (
                     <div className="page-placeholder right-blank"></div>

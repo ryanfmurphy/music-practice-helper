@@ -17,7 +17,8 @@ function PracticeTrackerPage({
   lastSelectedMeasure,
   setLastSelectedMeasure,
   absoluteMeasureNoToKeyMap,
-  keyToAbsoluteMeasureNoMap
+  keyToAbsoluteMeasureNoMap,
+  showSheetMusic = true
 }) {
   const [selectedMeasure, setSelectedMeasure] = useState(null)
   let currentMeasure = startingMeasure
@@ -269,7 +270,7 @@ function PracticeTrackerPage({
                     style={{
                       ...getConfidenceStyle(pageNumber, lineNumber, measureNumber),
                       position: 'relative',
-                      height: lineData?.sheetMusicImgPath ? '20px' : '40px'
+                      height: (lineData?.sheetMusicImgPath && showSheetMusic) ? '20px' : '40px'
                     }}
                     onClick={(event) => handleMeasureClick(pageNumber, lineNumber, measureNumber, event)}
                   >
@@ -290,7 +291,7 @@ function PracticeTrackerPage({
                 )
               })}
             </div>
-            {lineData?.sheetMusicImgPath && (
+            {lineData?.sheetMusicImgPath && showSheetMusic && (
               <div 
                 style={{
                   height: '150px',
