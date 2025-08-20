@@ -35,7 +35,7 @@ function EditMeasureDetailsModal({
       }, 100)
       return () => clearTimeout(timer)
     }
-  }, [showRecordSelection, selectedMeasure])
+  }, [showRecordSelection, selectedMeasure, confidenceInput])
 
   // Initialize form data when selectedMeasure changes
   useEffect(() => {
