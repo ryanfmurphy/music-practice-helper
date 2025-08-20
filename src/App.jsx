@@ -203,6 +203,11 @@ function App() {
 
   return (
     <div className="container">
+      <header className="app-header">
+        <h1>Music Practice Helper</h1>
+        <p className="subtitle">Helping you grow your music practice</p>
+      </header>
+      
       <div className="selectors">
         <div className="book-selector">
           <label htmlFor="book-select">Book: </label>
