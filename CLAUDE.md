@@ -24,6 +24,10 @@ A fully functional React-based web application for interactive music practice tr
 - **Real-time Updates**: All changes immediately appear with correct color coding without page refresh
 - **Real-time Database Integration**: Connects directly to existing practice tracking system with automatic book_id resolution
 - **Automatic History Tracking**: All measure updates preserve previous data in `song_measure_history` table for complete audit trail
+- **Global Measure Selection**: "Select Measures" mode in sticky header enables multi-measure selection across all pages
+- **Bulk Editing**: Edit multiple selected measures simultaneously with shared confidence levels, notes, and BPM
+- **Smart Selection Styling**: White borders for colored measures, blue borders for empty measures, with dark outlines for visibility
+- **Sticky Header Controls**: Selection controls stay visible in fixed header during scroll for easy access
 
 ## Quick Start
 ```bash
@@ -51,9 +55,13 @@ npm install && npm run dev
 - **Page Positioning**: Supports songs starting on left or right pages for realistic book layout
 
 ## Development Status
-Production-ready with complete multi-user confidence visualization, unified measure editing interface, full database integration, and automatic history tracking. Features a consistent editable form experience with BPM tracking, expandable history display, and independent user data isolation. All measure updates are automatically preserved in history for complete audit trail. Ready for use with existing Köln Concert and Goldberg Variations data.
+Production-ready with complete multi-user confidence visualization, unified measure editing interface, full database integration, and automatic history tracking. Features a consistent editable form experience with BPM tracking, expandable history display, and independent user data isolation. All measure updates are automatically preserved in history for complete audit trail. Includes global measure selection with bulk editing capabilities and intelligent sticky header controls. Ready for use with existing Köln Concert and Goldberg Variations data.
 
 ## Recent Updates
+- **Global Measure Selection**: Moved "Select Measures" checkbox to sticky header for global multi-page selection
+- **Bulk Edit Integration**: Edit/Clear buttons now in sticky header with proper BulkEditModal integration
+- **Smart Selection Borders**: White borders for colored measures, blue for empty measures, dark outlines for visibility
+- **Sticky Header Improvements**: Fixed timing issues, selection controls positioned on right side of header
 - **Hands Filtering**: Added hands dropdown with Both/Right/Left options and multi-hands support per measure
 - **Smart Multi-Record Indicators**: Intelligent emoji system (👥 for multiple practitioners, 🙌 for multiple hands, 👥🙌 for both)
 - **Color-Coded Backgrounds**: Purple for multiple practitioners, cornflower blue for multiple hands, blended for both

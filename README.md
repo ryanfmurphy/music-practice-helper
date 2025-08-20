@@ -19,6 +19,10 @@ A web application for tracking music practice sessions, built with React fronten
 - **Expandable History**: View complete audit trail of confidence changes with timestamps and filtering
 - **Unified Editing Experience**: Same intuitive popup form for all measures - existing data is pre-populated for easy editing
 - **Smart Defaults**: New measures automatically default to selected user and hands
+- **Global Measure Selection**: "Select Measures" checkbox in sticky header enables multi-measure selection across all pages
+- **Bulk Editing**: Edit multiple selected measures simultaneously with shared confidence levels, notes, and BPM
+- **Smart Selection Styling**: White borders for colored measures, blue borders for empty measures, with dark outlines for visibility
+- **Sticky Header Controls**: Selection controls stay accessible in fixed header during scroll
 
 ## Architecture
 
@@ -105,6 +109,13 @@ The app displays practice progress through an intuitive color-coding system:
 - **Expandable history**: Click to view complete audit trail of changes with timestamps and BPM data
 - **Real-time updates**: Changes immediately appear with correct traffic light colors after saving
 - **Visual feedback**: Pointer cursor indicates all measures are clickable and editable
+
+### **Multi-Measure Selection & Bulk Editing**
+- **Enable Selection Mode**: Check "Select Measures" in the sticky header to activate selection mode
+- **Global Selection**: Selection works across all pages - scroll between pages while maintaining selections
+- **Visual Selection**: Selected measures show white borders (colored measures) or blue borders (empty measures) with dark outlines
+- **Bulk Operations**: Use "Edit Selected" to apply changes to multiple measures at once, or "Clear" to deselect all
+- **Sticky Controls**: Selection controls remain accessible in the fixed header during scroll for easy access
 
 ## API Endpoints
 
