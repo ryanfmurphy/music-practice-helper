@@ -12,10 +12,40 @@ function PracticeTrackerPage({
   onMeasureUpdate,
   isSelectionMode,
   selectedMeasures,
-  setSelectedMeasures
+  setSelectedMeasures,
+  lastSelectedMeasure,
+  setLastSelectedMeasure,
+  absoluteMeasureNoToKeyMap,
+  keyToAbsoluteMeasureNoMap
 }) {
   const [selectedMeasure, setSelectedMeasure] = useState(null)
   let currentMeasure = startingMeasure
+
+  // Helper function to select range of measures
+  const selectMeasureRange = (startMeasure, endMeasure) => {
+    const startKey = `${startMeasure.page}-${startMeasure.line}-${startMeasure.measure}`
+    const endKey = `${endMeasure.page}-${endMeasure.line}-${endMeasure.measure}`
+    
+    const startAbsolute = keyToAbsoluteMeasureNoMap[startKey]
+    const endAbsolute = keyToAbsoluteMeasureNoMap[endKey]
+    
+    if (!startAbsolute || !endAbsolute) return
+    
+    const minAbsolute = Math.min(startAbsolute, endAbsolute)
+    const maxAbsolute = Math.max(startAbsolute, endAbsolute)
+    
+    const newSelected = new Set(selectedMeasures)
+    
+    // Add all measures in the range
+    for (let absNo = minAbsolute; absNo <= maxAbsolute; absNo++) {
+      const key = absoluteMeasureNoToKeyMap[absNo]
+      if (key) {
+        newSelected.add(key)
+      }
+    }
+    
+    setSelectedMeasures(newSelected)
+  }
 
   const getConfidenceStyle = (pageNum, lineNum, measureNum) => {
     const key = `${pageNum}-${lineNum}-${measureNum}`
@@ -149,19 +179,29 @@ function PracticeTrackerPage({
     return details.confidence.toString()
   }
 
-  const handleMeasureClick = (pageNum, lineNum, measureNum) => {
+  const handleMeasureClick = (pageNum, lineNum, measureNum, event) => {
     if (isSelectionMode) {
-      // In selection mode - toggle measure selection
       const measureKey = `${pageNum}-${lineNum}-${measureNum}`
-      const newSelected = new Set(selectedMeasures)
       
-      if (newSelected.has(measureKey)) {
-        newSelected.delete(measureKey)
+      if (event && event.shiftKey && lastSelectedMeasure) {
+        // Shift-click: select range from last selected to current
+        const currentMeasure = { page: pageNum, line: lineNum, measure: measureNum }
+        selectMeasureRange(lastSelectedMeasure, currentMeasure)
       } else {
-        newSelected.add(measureKey)
+        // Regular click: toggle measure selection
+        const newSelected = new Set(selectedMeasures)
+        
+        if (newSelected.has(measureKey)) {
+          newSelected.delete(measureKey)
+        } else {
+          newSelected.add(measureKey)
+        }
+        
+        setSelectedMeasures(newSelected)
+        
+        // Update last selected measure for future range selections
+        setLastSelectedMeasure({ page: pageNum, line: lineNum, measure: measureNum })
       }
-      
-      setSelectedMeasures(newSelected)
     } else {
       // Normal mode - open edit modal
       const key = `${pageNum}-${lineNum}-${measureNum}`
@@ -228,7 +268,7 @@ function PracticeTrackerPage({
                       ...getConfidenceStyle(pageNumber, lineNumber, measureNumber),
                       position: 'relative'
                     }}
-                    onClick={() => handleMeasureClick(pageNumber, lineNumber, measureNumber)}
+                    onClick={(event) => handleMeasureClick(pageNumber, lineNumber, measureNumber, event)}
                   >
                     <span>{getMeasureContent(pageNumber, lineNumber, measureNumber)}</span>
                     {confidenceRating && (

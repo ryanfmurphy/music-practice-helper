@@ -22,6 +22,9 @@ function App() {
   const [isSelectionMode, setIsSelectionMode] = useState(false)
   const [selectedMeasures, setSelectedMeasures] = useState(new Set())
   const [showBulkEdit, setShowBulkEdit] = useState(false)
+  const [lastSelectedMeasure, setLastSelectedMeasure] = useState(null)
+  const [absoluteMeasureNoToKeyMap, setAbsoluteMeasureNoToKeyMap] = useState({}) // {23: "5-2-15", 24: "5-2-16", ...}
+  const [keyToAbsoluteMeasureNoMap, setKeyToAbsoluteMeasureNoMap] = useState({}) // {"5-2-15": 23, "5-2-16": 24, ...}
 
   const API_BASE = 'http://localhost:3001/api'
 
@@ -34,6 +37,9 @@ function App() {
     if (selectedSong) {
       fetchPages(selectedSong.song_id)
       fetchMeasureDetails(selectedSong.song_id)
+      // Reset selection state when song changes
+      setSelectedMeasures(new Set())
+      setLastSelectedMeasure(null)
     }
   }, [selectedSong, selectedUser, selectedHands])
 
@@ -159,6 +165,29 @@ function App() {
       const data = await response.json()
       setPages(data.pages)
       setFirstPagePosition(data.firstPagePosition)
+      
+      // Create absolute measure number mappings
+      const absoluteMeasureNoToKey = {}
+      const keyToAbsoluteMeasureNo = {}
+      let absoluteMeasureNumber = 1 // Start from measure 1
+      
+      data.pages.forEach(page => {
+        page.lines.forEach((numMeasures, lineIndex) => {
+          const lineNumber = lineIndex + 1
+          let measureNumber = page.startingMeasure + (lineIndex === 0 ? 0 : page.lines.slice(0, lineIndex).reduce((sum, m) => sum + m, 0))
+          
+          for (let i = 0; i < numMeasures; i++) {
+            const key = `${page.pageNumber}-${lineNumber}-${measureNumber}`
+            absoluteMeasureNoToKey[absoluteMeasureNumber] = key
+            keyToAbsoluteMeasureNo[key] = absoluteMeasureNumber
+            absoluteMeasureNumber++
+            measureNumber++
+          }
+        })
+      })
+      
+      setAbsoluteMeasureNoToKeyMap(absoluteMeasureNoToKey)
+      setKeyToAbsoluteMeasureNoMap(keyToAbsoluteMeasureNo)
     } catch (err) {
       setError(err.message)
     }
@@ -256,6 +285,7 @@ function App() {
     // Exit selection mode and clear selections after bulk edit
     setIsSelectionMode(false)
     setSelectedMeasures(new Set())
+    setLastSelectedMeasure(null)
   }
 
   if (loading) return <div className="container">Loading...</div>
@@ -344,6 +374,7 @@ function App() {
                 setIsSelectionMode(e.target.checked)
                 if (!e.target.checked) {
                   setSelectedMeasures(new Set())
+                  setLastSelectedMeasure(null)
                 }
               }}
             />
@@ -378,9 +409,12 @@ function App() {
                   cursor: 'pointer',
                   fontSize: '12px'
                 }}
-                onClick={() => setSelectedMeasures(new Set())}
+                onClick={() => {
+                  setSelectedMeasures(new Set())
+                  setLastSelectedMeasure(null)
+                }}
               >
-                Clear
+                Clear Selection
               </button>
             </div>
           )}
@@ -421,6 +455,10 @@ function App() {
                       isSelectionMode={isSelectionMode}
                       selectedMeasures={selectedMeasures}
                       setSelectedMeasures={setSelectedMeasures}
+                      lastSelectedMeasure={lastSelectedMeasure}
+                      setLastSelectedMeasure={setLastSelectedMeasure}
+                      absoluteMeasureNoToKeyMap={absoluteMeasureNoToKeyMap}
+                      keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
                     />
                   ) : null}
                   
@@ -436,6 +474,10 @@ function App() {
                       isSelectionMode={isSelectionMode}
                       selectedMeasures={selectedMeasures}
                       setSelectedMeasures={setSelectedMeasures}
+                      lastSelectedMeasure={lastSelectedMeasure}
+                      setLastSelectedMeasure={setLastSelectedMeasure}
+                      absoluteMeasureNoToKeyMap={absoluteMeasureNoToKeyMap}
+                      keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
                     />
                   ) : isLastPage ? (
                     <div className="page-placeholder right-blank"></div>
