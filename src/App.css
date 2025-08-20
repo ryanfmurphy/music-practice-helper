@@ -113,6 +113,25 @@
   gap: 30px;
   align-items: center;
   flex-wrap: wrap;
+  transition: all 0.3s ease;
+}
+
+.selectors-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-bottom: 2px solid #007bff;
+  max-width: none;
+}
+
+.selectors-spacer {
+  height: 76px; /* Match the height of the selectors element */
+  margin-bottom: 20px;
 }
 
 .book-selector, .song-selector, .user-selector {

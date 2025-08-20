@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './App.css'
 import PracticeTrackerPage from './PracticeTrackerPage'
 
@@ -15,6 +15,9 @@ function App() {
   const [measureDetails, setMeasureDetails] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [isSelectorsFixed, setIsSelectorsFixed] = useState(false)
+  const selectorsRef = useRef(null)
+  const selectorsStickyOffsetRef = useRef(0)
 
   const API_BASE = 'http://localhost:3001/api'
 
@@ -33,6 +36,47 @@ function App() {
   useEffect(() => {
     filterSongs()
   }, [songs, selectedBook])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!selectorsRef.current) return
+
+      // Calculate the offset where selectors should become fixed
+      const selectorsTop = selectorsRef.current.getBoundingClientRect().top + window.scrollY
+      const headerHeight = document.querySelector('.app-header')?.offsetHeight || 0
+      const stickyOffset = selectorsTop - headerHeight
+
+      // Store the offset for reference
+      if (selectorsStickyOffsetRef.current === 0) {
+        selectorsStickyOffsetRef.current = stickyOffset
+      }
+
+      const currentScrollY = window.scrollY
+      const shouldBeFixed = currentScrollY >= selectorsStickyOffsetRef.current
+
+      setIsSelectorsFixed(shouldBeFixed)
+    }
+
+    // Set initial offset
+    const setInitialOffset = () => {
+      if (selectorsRef.current) {
+        const selectorsTop = selectorsRef.current.getBoundingClientRect().top + window.scrollY
+        const headerHeight = document.querySelector('.app-header')?.offsetHeight || 0
+        selectorsStickyOffsetRef.current = selectorsTop - headerHeight
+      }
+    }
+
+    // Set initial offset after component mounts
+    setTimeout(setInitialOffset, 100)
+
+    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('resize', setInitialOffset)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', setInitialOffset)
+    }
+  }, [pages]) // Re-run when pages change to recalculate offset
 
 
   const fetchBooks = async () => {
@@ -208,7 +252,13 @@ function App() {
         <p className="subtitle">Helping you grow your music practice</p>
       </header>
       
-      <div className="selectors">
+      {/* Spacer to prevent content jump when selectors become fixed */}
+      {isSelectorsFixed && <div className="selectors-spacer"></div>}
+      
+      <div 
+        ref={selectorsRef}
+        className={`selectors ${isSelectorsFixed ? 'selectors-fixed' : ''}`}
+      >
         <div className="book-selector">
           <label htmlFor="book-select">Book: </label>
           <select 
