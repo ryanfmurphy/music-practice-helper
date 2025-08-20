@@ -38,15 +38,17 @@ function App() {
   }, [songs, selectedBook])
 
   useEffect(() => {
+    // Reset the sticky offset when pages change
+    selectorsStickyOffsetRef.current = 0
+    
     const handleScroll = () => {
       if (!selectorsRef.current) return
 
       // Calculate the offset where selectors should become fixed
       const selectorsTop = selectorsRef.current.getBoundingClientRect().top + window.scrollY
-      const headerHeight = document.querySelector('.app-header')?.offsetHeight || 0
-      const stickyOffset = selectorsTop - headerHeight
+      const stickyOffset = selectorsTop
 
-      // Store the offset for reference
+      // Store the offset for reference - but only once
       if (selectorsStickyOffsetRef.current === 0) {
         selectorsStickyOffsetRef.current = stickyOffset
       }
@@ -61,8 +63,7 @@ function App() {
     const setInitialOffset = () => {
       if (selectorsRef.current) {
         const selectorsTop = selectorsRef.current.getBoundingClientRect().top + window.scrollY
-        const headerHeight = document.querySelector('.app-header')?.offsetHeight || 0
-        selectorsStickyOffsetRef.current = selectorsTop - headerHeight
+        selectorsStickyOffsetRef.current = selectorsTop
       }
     }
 
