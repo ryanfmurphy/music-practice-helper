@@ -4,6 +4,7 @@ import EditMeasureDetailsModal from './EditMeasureDetailsModal'
 function PracticeTrackerPage({ 
   pageNumber, 
   lines, 
+  linesData,
   startingMeasure, 
   measureDetails = {}, 
   songId, 
@@ -249,6 +250,7 @@ function PracticeTrackerPage({
       
       {lines.map((numMeasures, lineIndex) => {
         const lineNumber = lineIndex + 1
+        const lineData = linesData?.[lineIndex]
         const measuresForThisLine = []
         for (let i = 0; i < numMeasures; i++) {
           measuresForThisLine.push(currentMeasure + i)
@@ -257,6 +259,19 @@ function PracticeTrackerPage({
 
         return (
           <div key={lineIndex} className="line-container">
+            {lineData?.sheetMusicImgPath && (
+              <img 
+                src={`/sheet-music/${lineData.sheetMusicImgPath}`}
+                alt={`Sheet music for page ${pageNumber}, line ${lineNumber}`}
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  marginBottom: '-10px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px'
+                }}
+              />
+            )}
             <div className="measure-row">
               {measuresForThisLine.map(measureNumber => {
                 const confidenceRating = getConfidenceRating(pageNumber, lineNumber, measureNumber)

@@ -92,7 +92,7 @@ app.get('/api/songs/:id/pages', async (req, res) => {
   try {
     const song = await dbGet('SELECT first_page_position FROM songs WHERE song_id = ?', [req.params.id]);
     const pageLines = await dbAll(
-      `SELECT page_number, line_number_on_page, num_measures, last_measure_overflows, start_time_secs
+      `SELECT page_number, line_number_on_page, num_measures, last_measure_overflows, start_time_secs, sheet_music_img_path
        FROM song_page_lines 
        WHERE song_id = ? 
        ORDER BY page_number, line_number_on_page`,
@@ -108,10 +108,18 @@ app.get('/api/songs/:id/pages', async (req, res) => {
         pages[line.page_number] = {
           pageNumber: line.page_number,
           lines: [],
+          linesData: [],
           startingMeasure: currentMeasure
         };
       }
       pages[line.page_number].lines.push(line.num_measures);
+      pages[line.page_number].linesData.push({
+        lineNumber: line.line_number_on_page,
+        numMeasures: line.num_measures,
+        sheetMusicImgPath: line.sheet_music_img_path,
+        startTimeSecs: line.start_time_secs,
+        lastMeasureOverflows: line.last_measure_overflows
+      });
       currentMeasure += line.num_measures;
     });
     
