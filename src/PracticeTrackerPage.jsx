@@ -259,19 +259,6 @@ function PracticeTrackerPage({
 
         return (
           <div key={lineIndex} className="line-container">
-            {lineData?.sheetMusicImgPath && (
-              <img 
-                src={`/sheet-music/${lineData.sheetMusicImgPath}`}
-                alt={`Sheet music for page ${pageNumber}, line ${lineNumber}`}
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  marginBottom: '-10px',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px'
-                }}
-              />
-            )}
             <div className="measure-row">
               {measuresForThisLine.map(measureNumber => {
                 const confidenceRating = getConfidenceRating(pageNumber, lineNumber, measureNumber)
@@ -281,7 +268,8 @@ function PracticeTrackerPage({
                     className="measure"
                     style={{
                       ...getConfidenceStyle(pageNumber, lineNumber, measureNumber),
-                      position: 'relative'
+                      position: 'relative',
+                      height: lineData?.sheetMusicImgPath ? '20px' : '40px'
                     }}
                     onClick={(event) => handleMeasureClick(pageNumber, lineNumber, measureNumber, event)}
                   >
@@ -302,6 +290,32 @@ function PracticeTrackerPage({
                 )
               })}
             </div>
+            {lineData?.sheetMusicImgPath && (
+              <div 
+                style={{
+                  height: '150px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: '10px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  overflow: 'hidden'
+                }}
+              >
+                <img 
+                  src={`/sheet-music/${lineData.sheetMusicImgPath}`}
+                  alt={`Sheet music for page ${pageNumber}, line ${lineNumber}`}
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    maxHeight: '100%',
+                    objectFit: 'contain',
+                    objectPosition: 'center'
+                  }}
+                />
+              </div>
+            )}
           </div>
         )
       })}

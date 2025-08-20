@@ -1,0 +1,2 @@
+# This file ensures the sheet-music directory is preserved in git
+# PNG files in subdirectories are excluded from version control

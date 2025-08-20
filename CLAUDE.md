@@ -55,9 +55,16 @@ npm install && npm run dev
 - **Page Positioning**: Supports songs starting on left or right pages for realistic book layout
 
 ## Development Status
-Production-ready with complete multi-user confidence visualization, unified measure editing interface, full database integration, and automatic history tracking. Features a consistent editable form experience with BPM tracking, expandable history display, and independent user data isolation. All measure updates are automatically preserved in history for complete audit trail. Includes global measure selection with bulk editing capabilities and intelligent sticky header controls. Ready for use with existing Köln Concert and Goldberg Variations data.
+Production-ready with complete multi-user confidence visualization, unified measure editing interface, full database integration, and automatic history tracking. Features a consistent editable form experience with BPM tracking, expandable history display, and independent user data isolation. All measure updates are automatically preserved in history for complete audit trail. Includes global measure selection with bulk editing capabilities and intelligent sticky header controls. **NEW: Sheet music image display feature** - shows actual notation images below measure boxes for enhanced practice experience. Ready for use with existing Köln Concert and Goldberg Variations data.
 
 ## Recent Updates
+- **Sheet Music Image Display**: NEW feature - displays actual notation images below measure boxes for enhanced practice experience
+  - Images stored in `public/sheet-music/` with paths like `Koln-Concert/p8/line1.png`
+  - Database column `sheet_music_img_path` references relative paths from `public/sheet-music/`
+  - Images display in 150px containers with centered positioning below measures
+  - Lines with images get reduced 20px measure boxes (half normal height) for better visual hierarchy
+  - Backend API includes `linesData` array with complete line information including image paths
+  - Currently implemented for Köln Concert pages 8, 18-21 with database paths configured
 - **Global Measure Selection**: Moved "Select Measures" checkbox to sticky header for global multi-page selection
 - **Bulk Edit Integration**: Edit/Clear buttons now in sticky header with proper BulkEditModal integration
 - **Smart Selection Borders**: White borders for colored measures, blue for empty measures, dark outlines for visibility

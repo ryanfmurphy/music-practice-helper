@@ -23,6 +23,7 @@ A web application for tracking music practice sessions, built with React fronten
 - **Bulk Editing**: Edit multiple selected measures simultaneously with shared confidence levels, notes, and BPM
 - **Smart Selection Styling**: White borders for colored measures, blue borders for empty measures, with dark outlines for visibility
 - **Sticky Header Controls**: Selection controls stay accessible in fixed header during scroll
+- **Sheet Music Image Display**: Visual sheet music images display below measure boxes for enhanced practice experience
 
 ## Architecture
 
@@ -72,11 +73,17 @@ A web application for tracking music practice sessions, built with React fronten
 
 The app connects to `../../../sqlite_mcp_server.db` which contains:
 - **songs**: Song metadata (title, artist, year, URLs, book assignments)
-- **song_page_lines**: Page and measure layout data  
+- **song_page_lines**: Page and measure layout data with optional sheet music image paths
 - **song_measure**: Individual measure confidence levels, practice notes, BPM, practicer, and hands tracking
 - **song_measure_history**: Historical versions of measure data with timestamps for complete audit trail
 - **practice_session**: Practice tracking history
 - **music_book**: Book metadata for organization
+
+### Sheet Music Images
+- Images stored in `public/sheet-music/` directory with paths like `Koln-Concert/p8/line1.png`
+- Database `sheet_music_img_path` column references relative paths from `public/sheet-music/`
+- Images display below measure boxes in 150px containers with centered positioning
+- Lines with images get reduced 20px measure boxes (half normal height) for better visual hierarchy
 
 ## Development
 
