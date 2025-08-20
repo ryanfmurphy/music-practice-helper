@@ -134,11 +134,17 @@
   margin-bottom: 20px;
 }
 
-.book-selector, .song-selector, .user-selector {
+.book-selector, .song-selector, .user-selector, .selection-controls {
   display: flex;
   align-items: center;
   gap: 10px;
 }
+
+.selection-controls {
+  margin-left: auto; /* Push to the right side */
+  flex-shrink: 0;
+}
+
 
 .book-selector label, .song-selector label, .user-selector label {
   font-weight: bold;

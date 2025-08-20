@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './App.css'
 import PracticeTrackerPage from './PracticeTrackerPage'
+import BulkEditModal from './BulkEditModal'
 
 function App() {
   const [books, setBooks] = useState([])
@@ -18,6 +19,9 @@ function App() {
   const [isSelectorsFixed, setIsSelectorsFixed] = useState(false)
   const selectorsRef = useRef(null)
   const selectorsStickyOffsetRef = useRef(0)
+  const [isSelectionMode, setIsSelectionMode] = useState(false)
+  const [selectedMeasures, setSelectedMeasures] = useState(new Set())
+  const [showBulkEdit, setShowBulkEdit] = useState(false)
 
   const API_BASE = 'http://localhost:3001/api'
 
@@ -243,6 +247,17 @@ function App() {
     })
   }
 
+  const handleBulkSave = (savedMeasure) => {
+    handleMeasureUpdate(savedMeasure)
+  }
+
+  const handleBulkClose = () => {
+    setShowBulkEdit(false)
+    // Exit selection mode and clear selections after bulk edit
+    setIsSelectionMode(false)
+    setSelectedMeasures(new Set())
+  }
+
   if (loading) return <div className="container">Loading...</div>
   if (error) return <div className="container">Error: {error}</div>
 
@@ -319,6 +334,57 @@ function App() {
             <option value="left">Left</option>
           </select>
         </div>
+        
+        <div className="selection-controls">
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px' }}>
+            <input
+              type="checkbox"
+              checked={isSelectionMode}
+              onChange={(e) => {
+                setIsSelectionMode(e.target.checked)
+                if (!e.target.checked) {
+                  setSelectedMeasures(new Set())
+                }
+              }}
+            />
+            Select Measures
+          </label>
+          {selectedMeasures.size > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '14px', color: '#666' }}>
+                {selectedMeasures.size} selected
+              </span>
+              <button
+                style={{
+                  padding: '4px 8px',
+                  backgroundColor: '#007bff',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '12px'
+                }}
+                onClick={() => setShowBulkEdit(true)}
+              >
+                Edit Selected
+              </button>
+              <button
+                style={{
+                  padding: '4px 8px',
+                  backgroundColor: '#6c757d',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '12px'
+                }}
+                onClick={() => setSelectedMeasures(new Set())}
+              >
+                Clear
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {selectedSong && (
@@ -352,6 +418,9 @@ function App() {
                       selectedHands={selectedHands}
                       measureDetails={measureDetails}
                       onMeasureUpdate={handleMeasureUpdate}
+                      isSelectionMode={isSelectionMode}
+                      selectedMeasures={selectedMeasures}
+                      setSelectedMeasures={setSelectedMeasures}
                     />
                   ) : null}
                   
@@ -364,6 +433,9 @@ function App() {
                       selectedHands={selectedHands}
                       measureDetails={measureDetails}
                       onMeasureUpdate={handleMeasureUpdate}
+                      isSelectionMode={isSelectionMode}
+                      selectedMeasures={selectedMeasures}
+                      setSelectedMeasures={setSelectedMeasures}
                     />
                   ) : isLastPage ? (
                     <div className="page-placeholder right-blank"></div>
@@ -378,6 +450,17 @@ function App() {
       ) : (
         <div>No pages found for this song</div>
       )}
+
+      {/* Bulk Edit Modal */}
+      <BulkEditModal
+        isOpen={showBulkEdit}
+        selectedMeasures={selectedMeasures}
+        songId={selectedSong?.song_id}
+        selectedUser={selectedUser}
+        selectedHands={selectedHands}
+        onSave={handleBulkSave}
+        onClose={handleBulkClose}
+      />
     </div>
   )
 }

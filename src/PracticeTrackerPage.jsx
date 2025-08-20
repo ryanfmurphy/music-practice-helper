@@ -1,12 +1,20 @@
 import React, { useState } from 'react'
 import EditMeasureDetailsModal from './EditMeasureDetailsModal'
-import BulkEditModal from './BulkEditModal'
 
-function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetails = {}, songId, selectedUser, selectedHands, onMeasureUpdate }) {
+function PracticeTrackerPage({ 
+  pageNumber, 
+  lines, 
+  startingMeasure, 
+  measureDetails = {}, 
+  songId, 
+  selectedUser, 
+  selectedHands, 
+  onMeasureUpdate,
+  isSelectionMode,
+  selectedMeasures,
+  setSelectedMeasures
+}) {
   const [selectedMeasure, setSelectedMeasure] = useState(null)
-  const [isSelectionMode, setIsSelectionMode] = useState(false)
-  const [selectedMeasures, setSelectedMeasures] = useState(new Set())
-  const [showBulkEdit, setShowBulkEdit] = useState(false)
   let currentMeasure = startingMeasure
 
   const getConfidenceStyle = (pageNum, lineNum, measureNum) => {
@@ -74,16 +82,19 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
     // Add selection styling if in selection mode
     if (isSelectionMode) {
       if (isSelected) {
+        // Use white border for colored measures, blue for white/empty measures
+        const hasDetails = detailsArray && detailsArray.length > 0
+        const borderColor = hasDetails ? 'white' : '#007bff'
         return {
           ...baseStyle,
-          border: '3px solid #007bff',
-          boxShadow: '0 0 0 1px #007bff',
+          border: `2px solid ${borderColor}`,
+          boxShadow: '0 0 0 1px #333',
           cursor: 'pointer'
         }
       } else {
         return {
           ...baseStyle,
-          border: '2px solid transparent',
+          border: '2px solid #ccc',
           cursor: 'pointer'
         }
       }
@@ -94,6 +105,7 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
       cursor: 'pointer'
     }
   }
+
 
   const getMeasureContent = (pageNum, lineNum, measureNum) => {
     return measureNum
@@ -186,71 +198,11 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
     setSelectedMeasure(null)
   }
 
-  const handleBulkSave = (savedMeasure) => {
-    onMeasureUpdate(savedMeasure)
-  }
-
-  const handleBulkClose = () => {
-    setShowBulkEdit(false)
-    // Exit selection mode and clear selections after bulk edit
-    setIsSelectionMode(false)
-    setSelectedMeasures(new Set())
-  }
 
   return (
     <div className="page">
       <div className="page-header">
         <span>p{pageNumber}</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginLeft: '20px' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px' }}>
-            <input
-              type="checkbox"
-              checked={isSelectionMode}
-              onChange={(e) => {
-                setIsSelectionMode(e.target.checked)
-                if (!e.target.checked) {
-                  setSelectedMeasures(new Set())
-                }
-              }}
-            />
-            Select Multiple
-          </label>
-          {selectedMeasures.size > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '14px', color: '#666' }}>
-                {selectedMeasures.size} selected
-              </span>
-              <button
-                style={{
-                  padding: '4px 8px',
-                  backgroundColor: '#007bff',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '12px'
-                }}
-                onClick={() => setShowBulkEdit(true)}
-              >
-                Edit Selected
-              </button>
-              <button
-                style={{
-                  padding: '4px 8px',
-                  backgroundColor: '#6c757d',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '12px'
-                }}
-                onClick={() => setSelectedMeasures(new Set())}
-              >
-                Clear
-              </button>
-            </div>
-          )}
-        </div>
       </div>
       
       {lines.map((numMeasures, lineIndex) => {
@@ -305,16 +257,6 @@ function PracticeTrackerPage({ pageNumber, lines, startingMeasure, measureDetail
         selectedUser={selectedUser}
         selectedHands={selectedHands}
         onSave={handleModalSave}
-      />
-      
-      <BulkEditModal
-        isOpen={showBulkEdit}
-        onClose={handleBulkClose}
-        selectedMeasures={selectedMeasures}
-        songId={songId}
-        selectedUser={selectedUser}
-        selectedHands={selectedHands}
-        onSave={handleBulkSave}
       />
     </div>
   )
