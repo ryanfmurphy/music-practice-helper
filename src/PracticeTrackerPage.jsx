@@ -89,12 +89,14 @@ function PracticeTrackerPage({
           ...baseStyle,
           border: `2px solid ${borderColor}`,
           boxShadow: '0 0 0 1px #333',
+          margin: '-1px', // Compensate for thicker border to prevent layout shift
           cursor: 'pointer'
         }
       } else {
         return {
           ...baseStyle,
           border: '2px solid #ccc',
+          margin: '-1px', // Compensate for thicker border to prevent layout shift
           cursor: 'pointer'
         }
       }
