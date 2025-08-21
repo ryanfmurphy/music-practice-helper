@@ -29,13 +29,13 @@ function EditMeasureDetailsModal({
       const timer = setTimeout(() => {
         confidenceInputRef.current.focus()
         // Select all text if there's existing data for easy replacement
-        if (confidenceInput) {
-          confidenceInputRef.current.select()
-        }
+        confidenceInputRef.current.select()
       }, 100)
-      return () => clearTimeout(timer)
+      return () => {
+        clearTimeout(timer)
+      }
     }
-  }, [showRecordSelection, selectedMeasure, confidenceInput])
+  }, [showRecordSelection, selectedMeasure, isOpen])
 
   // Initialize form data when selectedMeasure changes
   useEffect(() => {
