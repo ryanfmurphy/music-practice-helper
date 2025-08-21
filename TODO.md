@@ -8,10 +8,13 @@
 - ✅ Measure-level practice session logging
 
 ## Bugs
-- [x?] Fix bug with sticky header - after switching hands and trying to scroll up, sticky header disappears
+- [x] Fix bug with sticky header - after switching hands and trying to scroll up, sticky header disappears
 - [ ] Fix time zone issue with song_measure timestamps
-- [ ] Fix occasional bug when updating a measure detail
-  - Steps to reproduce?
+- [ ] (Fixed?) Fix occasional bug when updating a measure detail with multiple records
+  - The wrong color/emojis show up, but then when you refresh they're fixed
+  - Steps to reproduce? Fixed?
+- [ ] Fix shrunken music line when image is too big vertically
+  - Allow overflow down but not up?
 
 - [x] Issue has returned: Re-selecting Confidence level input text with every keystroke
 - [x] Stop autoselecting in the middle of typing confidence level
@@ -30,7 +33,7 @@
 
 ## Style tweaks
 
-- [ ] Lighten the border of un-detailed measures
+- [x] Lighten the border and number color of un-detailed measures (gray)
 
 ### Layout & Display
 - [ ] Add support for a song's 1st page to be the right page instead of left page
