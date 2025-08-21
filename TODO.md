@@ -8,9 +8,12 @@
 - ✅ Measure-level practice session logging
 
 ## Bugs
-- [ ] Issue has returned: Re-selecting Confidence level input text with every keystroke
+- [x?] Fix bug with sticky header - after switching hands and trying to scroll up, sticky header disappears
 - [ ] Fix time zone issue with song_measure timestamps
+- [ ] Fix occasional bug when updating a measure detail
+  - Steps to reproduce?
 
+- [x] Issue has returned: Re-selecting Confidence level input text with every keystroke
 - [x] Stop autoselecting in the middle of typing confidence level
 - [x] In the popup/modal, filter the history to the currently chosen practitioner
 - [x] Did the traffic light colors get nerfed to have fewer gradient shades?
@@ -19,10 +22,15 @@
 ## Planned Features
 
 - [ ] Add "facing_pages" toggle (allow larger 1-page mode)
+- [ ] Add "show_progress" toggle (when unchecked remove the measure boxes)
+- [ ] Dark mode
 - [ ] Add bpm_denominator to song_measure. ENUM values = whole,half,quarter,dotted-quarter,8th,16th
 - [ ] Allow deleting a measure's details
-
 - [x] Keep history of past measure details (in separate table)
+
+## Style tweaks
+
+- [ ] Lighten the border of un-detailed measures
 
 ### Layout & Display
 - [ ] Add support for a song's 1st page to be the right page instead of left page

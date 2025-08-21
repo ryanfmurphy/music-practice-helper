@@ -42,7 +42,17 @@ function App() {
       setSelectedMeasures(new Set())
       setLastSelectedMeasure(null)
     }
-  }, [selectedSong, selectedUser, selectedHands])
+  }, [selectedSong,
+    // selectedUser, selectedHands
+  ])
+
+  useEffect(() => {
+    if (selectedSong) {
+      fetchMeasureDetails(selectedSong.song_id)
+    }
+  }, [selectedSong,
+    selectedUser, selectedHands
+  ])
 
   useEffect(() => {
     filterSongs()
@@ -88,7 +98,9 @@ function App() {
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('resize', setInitialOffset)
     }
-  }, [pages]) // Re-run when pages change to recalculate offset
+  }, [
+      pages
+  ]) // Re-run when pages change to recalculate offset
 
 
   const fetchBooks = async () => {
