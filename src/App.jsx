@@ -26,6 +26,7 @@ function App() {
   const [absoluteMeasureNoToKeyMap, setAbsoluteMeasureNoToKeyMap] = useState({}) // {23: "5-2-15", 24: "5-2-16", ...}
   const [keyToAbsoluteMeasureNoMap, setKeyToAbsoluteMeasureNoMap] = useState({}) // {"5-2-15": 23, "5-2-16": 24, ...}
   const [showSheetMusic, setShowSheetMusic] = useState(true)
+  const [facingPages, setFacingPages] = useState(false)
 
   const API_BASE = 'http://localhost:3001/api'
 
@@ -390,6 +391,14 @@ function App() {
           <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px' }}>
             <input
               type="checkbox"
+              checked={facingPages}
+              onChange={(e) => setFacingPages(e.target.checked)}
+            />
+            Facing Pages
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px' }}>
+            <input
+              type="checkbox"
               checked={isSelectionMode}
               onChange={(e) => {
                 setIsSelectionMode(e.target.checked)
@@ -455,58 +464,82 @@ function App() {
             const result = [];
             const startsOnRight = firstPagePosition === 'right';
             let pageIndex = 0;
-            
+
             while (pageIndex < pages.length) {
               const isFirstRow = result.length === 0;
               const isLastPage = pageIndex === pages.length - 1;
-              
-              result.push(
-                <div key={`row-${result.length}`} className="pages-container">
-                  {/* Left slot */}
-                  {isFirstRow && startsOnRight ? (
-                    <div className="page-placeholder left-blank"></div>
-                  ) : pageIndex < pages.length ? (
-                    <PracticeTrackerPage 
-                      {...pages[pageIndex++]} 
-                      songId={selectedSong?.song_id}
-                      selectedUser={selectedUser}
-                      selectedHands={selectedHands}
-                      measureDetails={measureDetails}
-                      onMeasureUpdate={handleMeasureUpdate}
-                      isSelectionMode={isSelectionMode}
-                      selectedMeasures={selectedMeasures}
-                      setSelectedMeasures={setSelectedMeasures}
-                      lastSelectedMeasure={lastSelectedMeasure}
-                      setLastSelectedMeasure={setLastSelectedMeasure}
-                      absoluteMeasureNoToKeyMap={absoluteMeasureNoToKeyMap}
-                      keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
-                      showSheetMusic={showSheetMusic}
-                    />
-                  ) : null}
-                  
-                  {/* Right slot */}
-                  {pageIndex < pages.length ? (
-                    <PracticeTrackerPage 
-                      {...pages[pageIndex++]} 
-                      songId={selectedSong?.song_id}
-                      selectedUser={selectedUser}
-                      selectedHands={selectedHands}
-                      measureDetails={measureDetails}
-                      onMeasureUpdate={handleMeasureUpdate}
-                      isSelectionMode={isSelectionMode}
-                      selectedMeasures={selectedMeasures}
-                      setSelectedMeasures={setSelectedMeasures}
-                      lastSelectedMeasure={lastSelectedMeasure}
-                      setLastSelectedMeasure={setLastSelectedMeasure}
-                      absoluteMeasureNoToKeyMap={absoluteMeasureNoToKeyMap}
-                      keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
-                      showSheetMusic={showSheetMusic}
-                    />
-                  ) : isLastPage ? (
-                    <div className="page-placeholder right-blank"></div>
-                  ) : null}
-                </div>
-              );
+
+              if (facingPages) {
+                result.push(
+                  <div key={`row-${result.length}`} className="facing-pages-container">
+                    {/* Left slot */}
+                    {isFirstRow && startsOnRight ? (
+                      <div className="page-placeholder left-blank"></div>
+                    ) : pageIndex < pages.length ? (
+                      <PracticeTrackerPage
+                        {...pages[pageIndex++]}
+                        songId={selectedSong?.song_id}
+                        selectedUser={selectedUser}
+                        selectedHands={selectedHands}
+                        measureDetails={measureDetails}
+                        onMeasureUpdate={handleMeasureUpdate}
+                        isSelectionMode={isSelectionMode}
+                        selectedMeasures={selectedMeasures}
+                        setSelectedMeasures={setSelectedMeasures}
+                        lastSelectedMeasure={lastSelectedMeasure}
+                        setLastSelectedMeasure={setLastSelectedMeasure}
+                        absoluteMeasureNoToKeyMap={absoluteMeasureNoToKeyMap}
+                        keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
+                        showSheetMusic={showSheetMusic}
+                        facingPages={facingPages}
+                      />
+                    ) : null}
+
+                    {/* Right slot */}
+                    {pageIndex < pages.length ? (
+                      <PracticeTrackerPage
+                        {...pages[pageIndex++]}
+                        songId={selectedSong?.song_id}
+                        selectedUser={selectedUser}
+                        selectedHands={selectedHands}
+                        measureDetails={measureDetails}
+                        onMeasureUpdate={handleMeasureUpdate}
+                        isSelectionMode={isSelectionMode}
+                        selectedMeasures={selectedMeasures}
+                        setSelectedMeasures={setSelectedMeasures}
+                        lastSelectedMeasure={lastSelectedMeasure}
+                        setLastSelectedMeasure={setLastSelectedMeasure}
+                        absoluteMeasureNoToKeyMap={absoluteMeasureNoToKeyMap}
+                        keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
+                        showSheetMusic={showSheetMusic}
+                        facingPages={facingPages}
+                      />
+                    ) : isLastPage ? (
+                      <div className="page-placeholder right-blank"></div>
+                    ) : null}
+                  </div>
+                )
+              }
+              else {
+                result.push(<div key={`row-${result.length}`} className="single-page-container">
+                  <PracticeTrackerPage
+                    {...pages[pageIndex++]}
+                    songId={selectedSong?.song_id}
+                    selectedUser={selectedUser}
+                    selectedHands={selectedHands}
+                    measureDetails={measureDetails}
+                    onMeasureUpdate={handleMeasureUpdate}
+                    isSelectionMode={isSelectionMode}
+                    selectedMeasures={selectedMeasures}
+                    setSelectedMeasures={setSelectedMeasures}
+                    lastSelectedMeasure={lastSelectedMeasure}
+                    setLastSelectedMeasure={setLastSelectedMeasure}
+                    absoluteMeasureNoToKeyMap={absoluteMeasureNoToKeyMap}
+                    keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
+                    showSheetMusic={showSheetMusic}
+                  />
+                </div>)
+              }
             }
             
             return result;

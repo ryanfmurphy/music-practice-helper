@@ -60,13 +60,41 @@
   flex: 1;
 }
 
+.single-page-container .measure {
+  height: 60px
+}
+
 .measure.with-details {
   border: 1px solid black;
   color: black;
 }
 
+.facing-pages-container .measure.with-sheet-music {
+  height: 20px;
+}
+
+.single-page-container .measure.with-sheet-music {
+  height: 30px;
+  font-size: 18px;
+}
+
 .measure:hover {
   background-color: #e0e0e0;
+}
+
+.corner-confidence {
+  position: absolute;
+  top: 1px;
+  right: 4px;
+  font-weight: bold;
+}
+
+.facing-pages-container .corner-confidence {
+  font-size: 10px;
+}
+
+.single-page-container .corner-confidence {
+  font-size: 14px;
 }
 
 .container {
@@ -78,7 +106,12 @@
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-.pages-container {
+.single-page-container {
+  width: 800px;
+  margin: 0 auto;
+}
+
+.facing-pages-container {
   display: flex;
   gap: 30px;
   margin-bottom: 30px;

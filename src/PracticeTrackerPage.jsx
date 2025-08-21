@@ -7,7 +7,7 @@ function PracticeTrackerPage({
   linesData,
   startingMeasure, 
   measureDetails = {}, 
-  songId, 
+  songId,
   selectedUser, 
   selectedHands, 
   onMeasureUpdate,
@@ -18,7 +18,8 @@ function PracticeTrackerPage({
   setLastSelectedMeasure,
   absoluteMeasureNoToKeyMap,
   keyToAbsoluteMeasureNoMap,
-  showSheetMusic = true
+  showSheetMusic,
+  facingPages
 }) {
   const [selectedMeasure, setSelectedMeasure] = useState(null)
   let currentMeasure = startingMeasure
@@ -275,27 +276,28 @@ function PracticeTrackerPage({
                     + (measureHasDetails(pageNumber, lineNumber, measureNumber)
                       ? " with-details"
                       : "")
+                    + (lineData?.sheetMusicImgPath && showSheetMusic
+                      ? " with-sheet-music"
+                      : "")
                 return (
                   <div 
                     key={measureNumber} 
                     className={measureClassNames}
                     style={{
                       ...getConfidenceStyle(pageNumber, lineNumber, measureNumber),
-                      position: 'relative',
-                      height: (lineData?.sheetMusicImgPath && showSheetMusic) ? '20px' : '40px'
+                      position: 'relative'
                     }}
                     onClick={(event) => handleMeasureClick(pageNumber, lineNumber, measureNumber, event)}
                   >
                     <span>{getMeasureContent(pageNumber, lineNumber, measureNumber)}</span>
                     {confidenceRating && (
-                      <span style={{
-                        position: 'absolute',
-                        top: '2px',
-                        right: '4px',
-                        fontSize: '10px',
-                        fontWeight: 'bold',
-                        opacity: (typeof confidenceRating === 'string' && !['👥', '🙌', '👥🙌'].includes(confidenceRating)) ? 0.5 : 1
-                      }}>
+                      <span
+                        className='corner-confidence'
+                        style={{
+                          opacity: (typeof confidenceRating === 'string' && !['👥', '🙌', '👥🙌'].includes(confidenceRating))
+                            ? 0.5 : 1
+                        }}
+                      >
                         {confidenceRating}
                       </span>
                     )}
@@ -306,7 +308,7 @@ function PracticeTrackerPage({
             {lineData?.sheetMusicImgPath && showSheetMusic && (
               <div 
                 style={{
-                  height: '150px',
+                  height: facingPages ? '150px' : '225px' ,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
