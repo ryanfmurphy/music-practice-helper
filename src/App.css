@@ -24,6 +24,14 @@
   font-style: italic;
 }
 
+.dark-mode .app-header h1 {
+  color: goldenrod;
+}
+
+.dark-mode .app-header .subtitle {
+  color: darkgoldenrod;
+}
+
 .page-header {
   font-size: 24px;
   font-weight: bold;
@@ -33,6 +41,11 @@
   padding: 10px;
   margin-bottom: 20px;
   border-radius: 5px;
+}
+
+.dark-mode .page-header {
+  background-color: #777;
+  color: white;
 }
 
 .line-container {
@@ -106,9 +119,13 @@
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
+.container.dark-mode {
+  background-color: black;
+}
+
 .single-page-container {
   width: 800px;
-  margin: 0 auto;
+  margin: 15px auto;
 }
 
 .facing-pages-container {
@@ -119,6 +136,13 @@
 
 .page {
   flex: 1;
+  background-color: white;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.dark-mode .page {
+  background-color: #555;
 }
 
 .page-placeholder {
@@ -153,6 +177,11 @@
   align-items: center;
   flex-wrap: wrap;
   transition: all 0.3s ease;
+}
+
+.dark-mode .selectors {
+  color: #ddd;
+  background-color: #444;
 }
 
 .selectors-fixed {
@@ -215,10 +244,18 @@
   color: #333;
 }
 
+.dark-mode .song-info h2 {
+  color: #ccc;
+}
+
 .song-info p {
   margin: 0;
   color: #666;
   font-style: italic;
+}
+
+.dark-mode .song-info p {
+  color: #aaa;
 }
 
 /* Popup Styles */
@@ -282,6 +319,7 @@
   color: #333;
 }
 
+
 .popup-body {
   padding: 20px;
 }
@@ -344,4 +382,19 @@
 
 .popup-buttons button:disabled {
   cursor: not-allowed !important;
+}
+
+.sheet-music-line-container {
+  border: none;
+}
+
+.dark-mode img.sheet-music-line-img {
+  /* filter: invert(1) */
+  opacity: .75;
+}
+
+.dark-mode select, .dark-mode input {
+  background: black;
+  color: white;
+  border-color: #999;
 }

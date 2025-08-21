@@ -306,19 +306,20 @@ function PracticeTrackerPage({
               })}
             </div>
             {lineData?.sheetMusicImgPath && showSheetMusic && (
-              <div 
-                style={{
-                  height: facingPages ? '150px' : '225px' ,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginTop: '10px',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  overflow: 'hidden'
-                }}
+              <div className="sheet-music-line-container"
+                   style={{
+                     height: facingPages ? '150px' : '225px' ,
+                     display: 'flex',
+                     alignItems: 'center',
+                     justifyContent: 'center',
+                     marginTop: '10px',
+                     // border: '1px solid #ddd',
+                     borderRadius: '4px',
+                     overflow: 'hidden'
+                   }}
               >
-                <img 
+                <img
+                  className="sheet-music-line-img"
                   src={`/sheet-music/${lineData.sheetMusicImgPath}`}
                   alt={`Sheet music for page ${pageNumber}, line ${lineNumber}`}
                   style={{

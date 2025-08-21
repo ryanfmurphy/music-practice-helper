@@ -27,6 +27,7 @@ function App() {
   const [keyToAbsoluteMeasureNoMap, setKeyToAbsoluteMeasureNoMap] = useState({}) // {"5-2-15": 23, "5-2-16": 24, ...}
   const [showSheetMusic, setShowSheetMusic] = useState(true)
   const [facingPages, setFacingPages] = useState(false)
+  const [darkMode, setDarkMode] = useState(false)
 
   const API_BASE = 'http://localhost:3001/api'
 
@@ -302,11 +303,13 @@ function App() {
     setLastSelectedMeasure(null)
   }
 
+  const containerClasses = "container" + (darkMode ? " dark-mode" : "")
+
   if (loading) return <div className="container">Loading...</div>
   if (error) return <div className="container">Error: {error}</div>
 
   return (
-    <div className="container">
+    <div className={containerClasses}>
       <header className="app-header">
         <h1>Music Practice Helper</h1>
         <p className="subtitle">Helping you grow your music practice</p>
@@ -395,6 +398,14 @@ function App() {
               onChange={(e) => setFacingPages(e.target.checked)}
             />
             Facing Pages
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px' }}>
+            <input
+              type="checkbox"
+              checked={darkMode}
+              onChange={(e) => setDarkMode(e.target.checked)}
+            />
+            Dark Mode
           </label>
           <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px' }}>
             <input
