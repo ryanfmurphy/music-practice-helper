@@ -40,24 +40,32 @@ function PracticeTrackerPage({
     
     // Add all measures in the range
     for (let absNo = minAbsolute; absNo <= maxAbsolute; absNo++) {
-      const key = absoluteMeasureNoToKeyMap[absNo]
-      if (key) {
-        newSelected.add(key)
+      const measureKey = absoluteMeasureNoToKeyMap[absNo]
+      if (measureKey) {
+        newSelected.add(measureKey)
       }
     }
     
     setSelectedMeasures(newSelected)
   }
 
+  const getMeasureLookupKey = (pageNum, lineNum, measureNum) => {
+    return `${pageNum}-${lineNum}-${measureNum}`
+  }
+
+  const measureHasDetails = (pageNum, lineNum, measureNum) => {
+    const measureKey = getMeasureLookupKey(pageNum, lineNum, measureNum)
+    const detailsArray = measureDetails[measureKey]
+    return detailsArray && detailsArray.length > 0
+  }
+
   const getConfidenceStyle = (pageNum, lineNum, measureNum) => {
-    const key = `${pageNum}-${lineNum}-${measureNum}`
-    const detailsArray = measureDetails[key]
-    const measureKey = `${pageNum}-${lineNum}-${measureNum}`
+    const measureKey = getMeasureLookupKey(pageNum, lineNum, measureNum)
+    const detailsArray = measureDetails[measureKey]
     const isSelected = selectedMeasures.has(measureKey)
-    
     let baseStyle = {}
     
-    if (!detailsArray || detailsArray.length === 0) {
+    if (!measureHasDetails(pageNum, lineNum, measureNum)) {
       baseStyle = {}
     } else if (detailsArray.length > 1) {
       // If multiple records, determine background color based on what varies
@@ -146,8 +154,8 @@ function PracticeTrackerPage({
   }
 
   const getConfidenceRating = (pageNum, lineNum, measureNum) => {
-    const key = `${pageNum}-${lineNum}-${measureNum}`
-    const detailsArray = measureDetails[key]
+    const measureKey = `${pageNum}-${lineNum}-${measureNum}`
+    const detailsArray = measureDetails[measureKey]
     
     if (!detailsArray || detailsArray.length === 0) return null
     
@@ -183,7 +191,7 @@ function PracticeTrackerPage({
 
   const handleMeasureClick = (pageNum, lineNum, measureNum, event) => {
     if (isSelectionMode) {
-      const measureKey = `${pageNum}-${lineNum}-${measureNum}`
+      const measureKey = getMeasureLookupKey(pageNum, lineNum, measureNum)
       
       if (event && event.shiftKey && lastSelectedMeasure) {
         // Shift-click: select range from last selected to current
@@ -206,8 +214,8 @@ function PracticeTrackerPage({
       }
     } else {
       // Normal mode - open edit modal
-      const key = `${pageNum}-${lineNum}-${measureNum}`
-      const detailsArray = measureDetails[key]
+      const measureKey = getMeasureLookupKey(pageNum, lineNum, measureNum)
+      const detailsArray = measureDetails[measureKey]
       
       if (detailsArray && detailsArray.length > 0) {
         // Existing measure(s) with details - pass the array
@@ -263,10 +271,14 @@ function PracticeTrackerPage({
             <div className="measure-row">
               {measuresForThisLine.map(measureNumber => {
                 const confidenceRating = getConfidenceRating(pageNumber, lineNumber, measureNumber)
+                const measureClassNames = "measure"
+                    + (measureHasDetails(pageNumber, lineNumber, measureNumber)
+                      ? " with-details"
+                      : "")
                 return (
                   <div 
                     key={measureNumber} 
-                    className="measure"
+                    className={measureClassNames}
                     style={{
                       ...getConfidenceStyle(pageNumber, lineNumber, measureNumber),
                       position: 'relative',
