@@ -24,15 +24,19 @@
 
 ## Planned Features
 
-- [ ] Add "facing_pages" toggle (allow larger 1-page mode)
 - [ ] Add "show_progress" toggle (when unchecked remove the measure boxes)
-- [ ] Dark mode
+- [ ] Store % widths for measure boxes on song_page_line, and display measure boxes with min-width: X%
+  - Allows lining up with sheet music better
 - [ ] Add bpm_denominator to song_measure. ENUM values = whole,half,quarter,dotted-quarter,8th,16th
 - [ ] Allow deleting a measure's details
+
+- [x] Add "facing_pages" toggle (allow larger 1-page mode)
+- [x] Dark mode
 - [x] Keep history of past measure details (in separate table)
 
 ## Style tweaks
 
+- [ ] Make Dark Mode look nicer
 - [x] Lighten the border and number color of un-detailed measures (gray)
 
 ### Layout & Display

@@ -312,8 +312,6 @@ function PracticeTrackerPage({
                      display: 'flex',
                      alignItems: 'center',
                      justifyContent: 'center',
-                     marginTop: '10px',
-                     // border: '1px solid #ddd',
                      borderRadius: '4px',
                      overflow: 'hidden'
                    }}
