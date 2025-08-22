@@ -28,6 +28,7 @@ function App() {
   const [showSheetMusic, setShowSheetMusic] = useState(true)
   const [facingPages, setFacingPages] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
+  const [showPracticeProgress, setShowPracticeProgress] = useState(true)
 
   const API_BASE = 'http://localhost:3001/api'
 
@@ -404,6 +405,14 @@ function App() {
           <label className="checkbox-label">
             <input
               type="checkbox"
+              checked={showPracticeProgress}
+              onChange={(e) => setShowPracticeProgress(e.target.checked)}
+            />
+            Practice Progress
+          </label>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
               checked={isSelectionMode}
               onChange={(e) => {
                 setIsSelectionMode(e.target.checked)
@@ -481,6 +490,7 @@ function App() {
                         keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
                         showSheetMusic={showSheetMusic}
                         facingPages={facingPages}
+                        showPracticeProgress={showPracticeProgress}
                       />
                     ) : null}
 
@@ -502,6 +512,7 @@ function App() {
                         keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
                         showSheetMusic={showSheetMusic}
                         facingPages={facingPages}
+                        showPracticeProgress={showPracticeProgress}
                       />
                     ) : isLastPage ? (
                       <div className="page-placeholder right-blank"></div>
@@ -526,6 +537,7 @@ function App() {
                     absoluteMeasureNoToKeyMap={absoluteMeasureNoToKeyMap}
                     keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
                     showSheetMusic={showSheetMusic}
+                    showPracticeProgress={showPracticeProgress}
                   />
                 </div>)
               }

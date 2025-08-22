@@ -19,7 +19,8 @@ function PracticeTrackerPage({
   absoluteMeasureNoToKeyMap,
   keyToAbsoluteMeasureNoMap,
   showSheetMusic,
-  facingPages
+  facingPages,
+  showPracticeProgress
 }) {
   // single meassure select - opens a popup
   const [selectedMeasure, setSelectedMeasure] = useState(null)
@@ -58,6 +59,15 @@ function PracticeTrackerPage({
   const measureHasDetails = (pageNum, lineNum, measureNum) => {
     const measureKey = getMeasureLookupKey(pageNum, lineNum, measureNum)
     const detailsArray = measureDetails[measureKey]
+    const lineData = linesData?.[lineNum - 1]
+    
+    // If showPracticeProgress is false:
+    // - For lines with sheet music: show as no details (faint)
+    // - For lines without sheet music: show as no details (faint)
+    if (!showPracticeProgress) {
+      return false
+    }
+    
     return detailsArray && detailsArray.length > 0
   }
 
@@ -156,6 +166,9 @@ function PracticeTrackerPage({
   }
 
   const getConfidenceRating = (pageNum, lineNum, measureNum) => {
+    // Don't show confidence ratings when practice progress is disabled
+    if (!showPracticeProgress) return null
+    
     const measureKey = `${pageNum}-${lineNum}-${measureNum}`
     const detailsArray = measureDetails[measureKey]
     
@@ -215,7 +228,11 @@ function PracticeTrackerPage({
         setLastSelectedMeasure({ page: pageNum, line: lineNum, measure: measureNum })
       }
     } else {
-      // Normal mode - open edit modal
+      // Normal mode - only open edit modal if practice progress is enabled
+      if (!showPracticeProgress) {
+        return
+      }
+      
       const measureKey = getMeasureLookupKey(pageNum, lineNum, measureNum)
       const detailsArray = measureDetails[measureKey]
       
@@ -268,10 +285,14 @@ function PracticeTrackerPage({
         }
         currentMeasure += numMeasures
 
+        // Don't render measure boxes for lines with sheet music when practice progress is disabled
+        const shouldShowMeasureRow = showPracticeProgress || !lineData?.sheetMusicImgPath
+
         return (
           <div key={lineIndex} className="line-container">
-            <div className="measure-row">
-              {measuresForThisLine.map(measureNumber => {
+            {shouldShowMeasureRow && (
+              <div className="measure-row">
+                {measuresForThisLine.map(measureNumber => {
                 const confidenceRating = getConfidenceRating(pageNumber, lineNumber, measureNumber)
                 const measureClassNames = "measure"
                     + (measureHasDetails(pageNumber, lineNumber, measureNumber)
@@ -305,7 +326,8 @@ function PracticeTrackerPage({
                   </div>
                 )
               })}
-            </div>
+              </div>
+            )}
             {lineData?.sheetMusicImgPath && showSheetMusic && (
               <div className={`sheet-music-line-container ${
                 facingPages ? 'facing-pages' : 'single-page'
