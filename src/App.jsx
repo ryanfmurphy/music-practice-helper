@@ -377,7 +377,7 @@ function App() {
         </div>
         
         <div className="selection-controls">
-          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px' }}>
+          <label className="checkbox-label">
             <input
               type="checkbox"
               checked={showSheetMusic}
@@ -385,7 +385,7 @@ function App() {
             />
             Show Sheet Music
           </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px' }}>
+          <label className="checkbox-label">
             <input
               type="checkbox"
               checked={facingPages}
@@ -393,7 +393,7 @@ function App() {
             />
             Facing Pages
           </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px' }}>
+          <label className="checkbox-label">
             <input
               type="checkbox"
               checked={darkMode}
@@ -401,7 +401,7 @@ function App() {
             />
             Dark Mode
           </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '14px' }}>
+          <label className="checkbox-label">
             <input
               type="checkbox"
               checked={isSelectionMode}
@@ -417,33 +417,17 @@ function App() {
           </label>
           {selectedMeasures.size > 0 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '14px', color: '#666' }}>
+              <span className="selected-measures-counter">
                 {selectedMeasures.size} selected
               </span>
               <button
-                style={{
-                  padding: '4px 8px',
-                  backgroundColor: '#007bff',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '12px'
-                }}
+                className="control-button primary"
                 onClick={() => setShowBulkEdit(true)}
               >
                 Edit Selected
               </button>
               <button
-                style={{
-                  padding: '4px 8px',
-                  backgroundColor: '#6c757d',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '12px'
-                }}
+                className="control-button secondary"
                 onClick={() => {
                   setSelectedMeasures(new Set())
                   setLastSelectedMeasure(null)

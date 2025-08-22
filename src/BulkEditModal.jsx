@@ -149,9 +149,9 @@ function BulkEditModal({
         
         <div className="popup-body">
           {/* Selected measures summary */}
-          <div style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-            <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#666' }}>Selected Measures:</h4>
-            <div style={{ fontSize: '12px', color: '#666', maxHeight: '80px', overflowY: 'auto' }}>
+          <div className="measures-summary">
+            <h4 className="measures-summary-header">Selected Measures:</h4>
+            <div className="measures-summary-content">
               {measureList.map((m, index) => (
                 <span key={m.key}>
                   {index > 0 && ', '}
@@ -174,7 +174,7 @@ function BulkEditModal({
                 onChange={(e) => setConfidenceInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="e.g. 7.5"
-                style={{ padding: '5px', marginLeft: '10px', width: '80px' }}
+                className="form-input small"
               />
             </div>
             <div className="detail-item">
@@ -185,7 +185,7 @@ function BulkEditModal({
                 onChange={(e) => setPracticerInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Your name"
-                style={{ padding: '5px', marginLeft: '10px', width: '150px' }}
+                className="form-input large"
               />
             </div>
             <div className="detail-item">
@@ -199,7 +199,7 @@ function BulkEditModal({
                 onChange={(e) => setBpmInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="e.g. 120"
-                style={{ padding: '5px', marginLeft: '10px', width: '80px' }}
+                className="form-input small"
               />
             </div>
             <div className="detail-item">
@@ -208,7 +208,7 @@ function BulkEditModal({
                 value={handsInput}
                 onChange={(e) => setHandsInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                style={{ padding: '5px', marginLeft: '10px', width: '120px' }}
+                className="form-input medium"
               >
                 <option value="both">Both</option>
                 <option value="right">Right</option>
@@ -222,16 +222,7 @@ function BulkEditModal({
                 onChange={(e) => setNotesInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Practice notes, observations, etc."
-                style={{
-                  padding: '8px',
-                  marginTop: '5px',
-                  width: '100%',
-                  minHeight: '80px',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  resize: 'vertical',
-                  fontFamily: 'inherit'
-                }}
+                className="notes-textarea"
               />
             </div>
           </div>
@@ -240,29 +231,13 @@ function BulkEditModal({
             <button 
               onClick={handleSave} 
               disabled={isSaving || !confidenceInput.trim()}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#007bff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: isSaving || !confidenceInput.trim() ? 'not-allowed' : 'pointer',
-                opacity: isSaving || !confidenceInput.trim() ? 0.6 : 1
-              }}
+              className="modal-button primary"
             >
               {isSaving ? 'Saving...' : `Save to ${selectedMeasures.size} Measures`}
             </button>
             <button 
               onClick={handleClose}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                marginLeft: '8px'
-              }}
+              className="modal-button secondary"
             >
               Cancel
             </button>

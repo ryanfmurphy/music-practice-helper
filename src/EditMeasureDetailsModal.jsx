@@ -223,13 +223,7 @@ function EditMeasureDetailsModal({
                   setMeasureHistory([])
                   setShowHistory(false)
                 }}
-                style={{
-                  cursor: 'pointer',
-                  fontSize: '24px',
-                  marginRight: '10px',
-                  color: '#007bff',
-                  fontWeight: 'bold'
-                }}
+                className="back-arrow"
                 title="Back to record selection"
               >
                 ← 
@@ -250,25 +244,18 @@ function EditMeasureDetailsModal({
                 {selectedMeasure.measureDetailsRecords.map((recordData, index) => (
                   <div 
                     key={index}
-                    style={{
-                      padding: '10px',
-                      margin: '5px 0',
-                      border: '1px solid #ddd',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      backgroundColor: '#f9f9f9'
-                    }}
+                    className="record-item"
                     onClick={() => handleRecordSelect(recordData)}
                   >
                     <strong>{recordData.practicer}</strong> - Confidence: {recordData.confidence}
                     {recordData.bpm && <span> - BPM: {recordData.bpm}</span>}
                     {recordData.hands && <span> - Hands: {recordData.hands}</span>}
                     <br />
-                    <small style={{ color: '#666' }}>
+                    <small className="record-item-timestamp">
                       Last updated: {new Date(recordData.time).toLocaleString()}
                     </small>
                     {recordData.notes && (
-                      <div style={{ marginTop: '5px', fontSize: '13px', fontStyle: 'italic' }}>
+                      <div className="record-item-notes">
                         "{recordData.notes}"
                       </div>
                     )}
@@ -276,15 +263,7 @@ function EditMeasureDetailsModal({
                 ))}
                 <button 
                   onClick={handleAddNewRecord}
-                  style={{
-                    marginTop: '10px',
-                    padding: '10px 15px',
-                    backgroundColor: '#28a745',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
+                  className="modal-button success"
                 >
                   + Add New Record
                 </button>
@@ -304,7 +283,7 @@ function EditMeasureDetailsModal({
               onChange={(e) => setConfidenceInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="e.g. 7.5"
-              style={{ padding: '5px', marginLeft: '10px', width: '80px' }}
+              className="form-input small"
             />
           </div>
           <div className="detail-item">
@@ -315,7 +294,7 @@ function EditMeasureDetailsModal({
               onChange={(e) => setPracticerInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Your name"
-              style={{ padding: '5px', marginLeft: '10px', width: '150px' }}
+              className="form-input large"
             />
           </div>
           <div className="detail-item">
@@ -329,7 +308,7 @@ function EditMeasureDetailsModal({
               onChange={(e) => setBpmInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="e.g. 120"
-              style={{ padding: '5px', marginLeft: '10px', width: '80px' }}
+              className="form-input small"
             />
           </div>
           <div className="detail-item">
@@ -338,7 +317,7 @@ function EditMeasureDetailsModal({
               value={handsInput}
               onChange={(e) => setHandsInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              style={{ padding: '5px', marginLeft: '10px', width: '120px' }}
+              className="form-input medium"
             >
               <option value="both">Both</option>
               <option value="right">Right</option>
@@ -352,16 +331,7 @@ function EditMeasureDetailsModal({
               onChange={(e) => setNotesInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Practice notes, observations, etc."
-              style={{
-                padding: '8px',
-                marginTop: '5px',
-                width: '100%',
-                minHeight: '80px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                resize: 'vertical',
-                fontFamily: 'inherit'
-              }}
+              className="notes-textarea"
             />
           </div>
           
@@ -375,79 +345,42 @@ function EditMeasureDetailsModal({
 
           {/* History section */}
           {measureHistory.length > 0 && (
-            <div className="detail-item history-section" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+            <div className="detail-item history-section">
               <div 
                 className="history-header"
                 onClick={() => setShowHistory(!showHistory)}
-                style={{
-                  cursor: 'pointer',
-                  padding: '5px 0',
-                  borderTop: '1px solid #eee',
-                  marginTop: '10px',
-                  paddingTop: '10px'
-                }}
+                className="history-header"
               >
                 <label style={{ margin: 0, cursor: 'pointer' }}>
                   History ({measureHistory.length} changes)
-                  <span style={{ 
-                    transform: showHistory ? 'rotate(90deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s ease',
-                    transformOrigin: '50% 50%',
-                    fontSize: '12px',
-                    display: 'inline-block',
-                    width: '12px',
-                    height: '12px',
-                    textAlign: 'center',
-                    lineHeight: '12px',
-                    marginLeft: '8px'
-                  }}>
+                  <span className={`history-arrow ${showHistory ? 'expanded' : ''}`}>
                     ▶
                   </span>
                 </label>
               </div>
               
               {showHistory && (
-                <div className="history-content" style={{ 
-                  marginTop: '10px',
-                  width: '100%',
-                  boxSizing: 'border-box'
-                }}>
+                <div className="history-content">
                   {isLoadingHistory ? (
                     <div style={{ padding: '10px', fontStyle: 'italic', color: '#666' }}>Loading history...</div>
                   ) : (
                     measureHistory.map((historyItem, index) => (
                       <div 
                         key={`${historyItem.song_measure_id}-${historyItem.archived_at}`}
-                        style={{
-                          padding: '8px',
-                          marginBottom: '8px',
-                          backgroundColor: '#f9f9f9',
-                          borderRadius: '4px',
-                          fontSize: '14px',
-                          border: '1px solid #e0e0e0',
-                          width: '100%',
-                          boxSizing: 'border-box',
-                          margin: '0 0 8px 0'
-                        }}
+                        className="history-item"
                       >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+                        <div className="history-item-header">
                           <strong>Confidence: {historyItem.confidence}</strong>
-                          <span style={{ 
-                            fontSize: '12px', 
-                            color: '#666',
-                            whiteSpace: 'nowrap',
-                            marginLeft: '10px',
-                            textAlign: 'right'
-                          }}>
+                          <span className="history-item-timestamp">
                             {new Date(historyItem.archived_at).toLocaleString()}
                           </span>
                         </div>
                         {historyItem.notes && (
-                          <div style={{ marginBottom: '4px', fontSize: '13px' }}>
+                          <div className="history-item-notes">
                             <strong>Notes:</strong> {historyItem.notes}
                           </div>
                         )}
-                        <div style={{ fontSize: '12px', color: '#666', display: 'flex', justifyContent: 'space-between' }}>
+                        <div className="history-item-footer">
                           <span>By: {historyItem.practicer || 'Unknown'}</span>
                           <div>
                             {historyItem.bpm && <span>BPM: {historyItem.bpm}</span>}
@@ -469,29 +402,13 @@ function EditMeasureDetailsModal({
             <button 
               onClick={handleSave} 
               disabled={isSaving || !confidenceInput.trim()}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#007bff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: isSaving || !confidenceInput.trim() ? 'not-allowed' : 'pointer',
-                opacity: isSaving || !confidenceInput.trim() ? 0.6 : 1
-              }}
+              className="modal-button primary"
             >
               {isSaving ? 'Saving...' : 'Save'}
             </button>
             <button 
               onClick={handleClose}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                marginLeft: '8px'
-              }}
+              className="modal-button secondary"
             >
               Cancel
             </button>

@@ -294,10 +294,10 @@ function PracticeTrackerPage({
                     {confidenceRating && (
                       <span
                         className='corner-confidence'
-                        style={{
-                          opacity: (typeof confidenceRating === 'string' && !['👥', '🙌', '👥🙌'].includes(confidenceRating))
-                            ? 0.5 : 1
-                        }}
+                        className={`corner-confidence ${
+                          (typeof confidenceRating === 'string' && !['👥', '🙌', '👥🙌'].includes(confidenceRating))
+                            ? 'low-opacity' : ''
+                        }`}
                       >
                         {confidenceRating}
                       </span>
@@ -307,27 +307,14 @@ function PracticeTrackerPage({
               })}
             </div>
             {lineData?.sheetMusicImgPath && showSheetMusic && (
-              <div className="sheet-music-line-container"
-                   style={{
-                     height: facingPages ? '150px' : '225px' ,
-                     display: 'flex',
-                     alignItems: 'center',
-                     justifyContent: 'center',
-                     borderRadius: '4px',
-                     overflow: 'hidden'
-                   }}
-              >
+              <div className={`sheet-music-line-container ${
+                facingPages ? 'facing-pages' : 'single-page'
+              }`}>
                 <img
                   className="sheet-music-line-img"
                   src={`/sheet-music/${lineData.sheetMusicImgPath}`}
                   alt={`Sheet music for page ${pageNumber}, line ${lineNumber}`}
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    maxHeight: '100%',
-                    objectFit: 'contain',
-                    objectPosition: 'center'
-                  }}
+                  className="sheet-music-line-img"
                 />
               </div>
             )}
