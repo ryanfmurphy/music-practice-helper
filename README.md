@@ -8,6 +8,9 @@ A web application for tracking music practice sessions, built with React fronten
 - **Hands Filtering**: Hands dropdown (Both/Right/Left) to filter practice data by hand positions with multi-hands support
 - **Smart Multi-Record Indicators**: Intelligent emoji system showing 👥 for multiple practitioners, 🙌 for multiple hands, 👥🙌 for both
 - **Color-Coded Multiple Records**: Purple for multiple practitioners, cornflower blue for multiple hands, blended color for both
+- **Dark Mode**: Complete dark theme with toggle switch for reduced eye strain during practice sessions
+- **Facing Pages Toggle**: Switch between traditional book layout (2 pages side-by-side) and single page full-width view
+- **Show Sheet Music Toggle**: Control visibility of actual notation images below measure boxes for cleaner practice view
 - **Song Selection**: Browse and select from songs in your practice database
 - **Dynamic Page Display**: View actual page/measure layouts from your sheet music database
 - **Real-time Data**: Connects to your existing music practice tracking system

@@ -13,6 +13,9 @@ A fully functional React-based web application for interactive music practice tr
 - **Multi-User Support**: User dropdown to filter and track practice data independently for different practitioners
 - **Hands Filtering**: Hands dropdown (Both/Right/Left) to filter practice data by hand positions with multi-hands support
 - **Dynamic Page Layout**: Displays actual sheet music pages with proper left/right book positioning
+- **Facing Pages Toggle**: Switch between traditional book layout (2 pages side-by-side) and single page full-width view
+- **Dark Mode**: Complete dark theme implementation with toggle switch for reduced eye strain during practice
+- **Show Sheet Music Toggle**: Control visibility of actual notation images below measure boxes
 - **Confidence Visualization**: Traffic light color system (red → yellow → green) showing practice progress on individual measures
 - **Smart Multi-Record Indicators**: Intelligent emoji system showing 👥 for multiple practitioners, 🙌 for multiple hands, 👥🙌 for both
 - **Color-Coded Multiple Records**: Purple for multiple practitioners, cornflower blue for multiple hands, blended color for both
@@ -55,10 +58,18 @@ npm install && npm run dev
 - **Page Positioning**: Supports songs starting on left or right pages for realistic book layout
 
 ## Development Status
-Production-ready with complete multi-user confidence visualization, unified measure editing interface, full database integration, and automatic history tracking. Features a consistent editable form experience with BPM tracking, expandable history display, and independent user data isolation. All measure updates are automatically preserved in history for complete audit trail. Includes global measure selection with bulk editing capabilities and intelligent sticky header controls. **NEW: Sheet music image display feature** - shows actual notation images below measure boxes for enhanced practice experience. Ready for use with existing Köln Concert and Goldberg Variations data.
+Production-ready with complete multi-user confidence visualization, unified measure editing interface, full database integration, and automatic history tracking. Features a consistent editable form experience with BPM tracking, expandable history display, and independent user data isolation. All measure updates are automatically preserved in history for complete audit trail. Includes global measure selection with bulk editing capabilities and intelligent sticky header controls. **Enhanced UI Features**: Dark mode, facing pages toggle, show/hide sheet music, visual styling improvements, and optimized UX performance. Ready for use with existing Köln Concert and Goldberg Variations data.
 
 ## Recent Updates
-- **Sheet Music Image Display**: NEW feature - displays actual notation images below measure boxes for enhanced practice experience
+- **Dark Mode Implementation**: Complete dark theme with toggle switch, including proper styling for all components and modals
+- **Facing Pages Toggle**: Switch between traditional book layout (2 pages side-by-side) and single page full-width view for better flexibility
+- **Show Sheet Music Toggle**: Control visibility of actual notation images below measure boxes for cleaner practice view
+- **UX Performance Improvements**: 
+  - Optimized useEffect dependencies to prevent unnecessary page refreshes when changing user/hands
+  - Fixed sticky header disappearing issues
+  - Improved bulk edit workflow (selection mode persists after edits)
+  - Fixed confidence input selection issues in measure detail popup
+- **Sheet Music Image Display**: Displays actual notation images below measure boxes for enhanced practice experience
   - Images stored in `public/sheet-music/` with paths like `Koln-Concert/p8/line1.png`
   - Database column `sheet_music_img_path` references relative paths from `public/sheet-music/`
   - Images display in 150px containers with centered positioning below measures
