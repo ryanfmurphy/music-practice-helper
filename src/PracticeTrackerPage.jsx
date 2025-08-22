@@ -10,6 +10,7 @@ function PracticeTrackerPage({
   songId,
   selectedUser, 
   selectedHands, 
+  selectedBpm,
   onMeasureUpdate,
   isSelectionMode,
   selectedMeasures,
@@ -351,6 +352,7 @@ function PracticeTrackerPage({
         songId={songId}
         selectedUser={selectedUser}
         selectedHands={selectedHands}
+        selectedBpm={selectedBpm}
         onSave={handleModalSave}
       />
     </div>

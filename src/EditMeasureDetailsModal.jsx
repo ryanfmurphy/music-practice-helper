@@ -7,6 +7,7 @@ function EditMeasureDetailsModal({
   songId, 
   selectedUser, 
   selectedHands,
+  selectedBpm,
   onSave 
 }) {
   const [confidenceInput, setConfidenceInput] = useState('')
@@ -63,7 +64,7 @@ function EditMeasureDetailsModal({
         setConfidenceInput('')
         setNotesInput('')
         setPracticerInput(selectedUser || '')
-        setBpmInput('')
+        setBpmInput(selectedBpm || '')
         setHandsInput(selectedHands || 'both')
       }
       
@@ -189,7 +190,7 @@ function EditMeasureDetailsModal({
     setConfidenceInput('')
     setNotesInput('')
     setPracticerInput(selectedUser || '')
-    setBpmInput('')
+    setBpmInput(selectedBpm || '')
     setHandsInput(selectedHands || 'both')
   }
 

@@ -11,6 +11,7 @@ function App() {
   const [selectedSong, setSelectedSong] = useState(null)
   const [selectedUser, setSelectedUser] = useState('')
   const [selectedHands, setSelectedHands] = useState('')
+  const [selectedBpm, setSelectedBpm] = useState('')
   const [pages, setPages] = useState([])
   const [firstPagePosition, setFirstPagePosition] = useState('left')
   const [measureDetails, setMeasureDetails] = useState({})
@@ -169,6 +170,10 @@ function App() {
 
   const handleHandsChange = (e) => {
     setSelectedHands(e.target.value)
+  }
+
+  const handleBpmChange = (e) => {
+    setSelectedBpm(e.target.value)
   }
 
 
@@ -380,6 +385,19 @@ function App() {
             <option value="left">Left</option>
           </select>
         </div>
+
+        <div className="bpm-selector">
+          <label htmlFor="bpm-select">BPM: </label>
+          <input
+            type="number"
+            id="bpm-select"
+            value={selectedBpm}
+            onChange={handleBpmChange}
+            placeholder="e.g. 120"
+            min="1"
+            max="300"
+          />
+        </div>
         
         <div className="selection-controls">
           <label className="checkbox-label">
@@ -483,6 +501,7 @@ function App() {
                         songId={selectedSong?.song_id}
                         selectedUser={selectedUser}
                         selectedHands={selectedHands}
+                        selectedBpm={selectedBpm}
                         measureDetails={measureDetails}
                         onMeasureUpdate={handleMeasureUpdate}
                         isSelectionMode={isSelectionMode}
@@ -505,6 +524,7 @@ function App() {
                         songId={selectedSong?.song_id}
                         selectedUser={selectedUser}
                         selectedHands={selectedHands}
+                        selectedBpm={selectedBpm}
                         measureDetails={measureDetails}
                         onMeasureUpdate={handleMeasureUpdate}
                         isSelectionMode={isSelectionMode}
@@ -531,6 +551,7 @@ function App() {
                     songId={selectedSong?.song_id}
                     selectedUser={selectedUser}
                     selectedHands={selectedHands}
+                    selectedBpm={selectedBpm}
                     measureDetails={measureDetails}
                     onMeasureUpdate={handleMeasureUpdate}
                     isSelectionMode={isSelectionMode}
@@ -561,6 +582,7 @@ function App() {
         songId={selectedSong?.song_id}
         selectedUser={selectedUser}
         selectedHands={selectedHands}
+        selectedBpm={selectedBpm}
         onSave={handleBulkSave}
         onClose={handleBulkClose}
       />

@@ -230,7 +230,7 @@
   margin-bottom: 20px;
 }
 
-.book-selector, .song-selector, .user-selector, .hands-selector, .selection-controls {
+.book-selector, .song-selector, .user-selector, .hands-selector, .bpm-selector, .selection-controls {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -242,12 +242,13 @@
 }
 
 
-.book-selector label, .song-selector label, .user-selector label, .hands-selector label {
+.book-selector label, .song-selector label, .user-selector label, .hands-selector label, .bpm-selector label {
   font-weight: bold;
   white-space: nowrap;
 }
 
-.book-selector select, .song-selector select, .user-selector select, .hands-selector select {
+.book-selector select, .song-selector select, .user-selector select, .hands-selector select,
+.bpm-selector input {
   padding: 5px 10px;
   font-size: 14px;
   border: 1px solid #ccc;
@@ -256,7 +257,12 @@
   min-width: 200px;
 }
 
-.book-selector select:disabled, .song-selector select:disabled, .user-selector select:disabled, .hands-selector select:disabled {
+.bpm-selector input {
+  min-width: 100px;
+}
+
+.book-selector select:disabled, .song-selector select:disabled, .user-selector select:disabled, .hands-selector select:disabled,
+.bpm-selector input:disabled {
   background-color: #f0f0f0;
   color: #888;
   cursor: not-allowed;

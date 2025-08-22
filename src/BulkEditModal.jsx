@@ -7,6 +7,7 @@ function BulkEditModal({
   songId, 
   selectedUser, 
   selectedHands,
+  selectedBpm,
   onSave 
 }) {
   const [confidenceInput, setConfidenceInput] = useState('')
@@ -33,10 +34,10 @@ function BulkEditModal({
       setConfidenceInput('')
       setNotesInput('')
       setPracticerInput(selectedUser || '')
-      setBpmInput('')
+      setBpmInput(selectedBpm || '')
       setHandsInput(selectedHands || 'both')
     }
-  }, [isOpen, selectedUser, selectedHands])
+  }, [isOpen, selectedUser, selectedHands, selectedBpm])
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
