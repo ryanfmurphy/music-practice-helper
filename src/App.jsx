@@ -400,52 +400,56 @@ function App() {
         </div>
         
         <div className="selection-controls">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={showSheetMusic}
-              onChange={(e) => setShowSheetMusic(e.target.checked)}
-            />
-            Show Sheet Music
-          </label>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={facingPages}
-              onChange={(e) => setFacingPages(e.target.checked)}
-            />
-            Facing Pages
-          </label>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={darkMode}
-              onChange={(e) => setDarkMode(e.target.checked)}
-            />
-            Dark Mode
-          </label>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={showPracticeProgress}
-              onChange={(e) => setShowPracticeProgress(e.target.checked)}
-            />
-            Practice Progress
-          </label>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={isSelectionMode}
-              onChange={(e) => {
-                setIsSelectionMode(e.target.checked)
-                if (!e.target.checked) {
-                  setSelectedMeasures(new Set())
-                  setLastSelectedMeasure(null)
-                }
-              }}
-            />
-            Select Measures
-          </label>
+          <div className="checkbox-row checkbox-row-top">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={showSheetMusic}
+                onChange={(e) => setShowSheetMusic(e.target.checked)}
+              />
+              Show Sheet Music
+            </label>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={facingPages}
+                onChange={(e) => setFacingPages(e.target.checked)}
+              />
+              Facing Pages
+            </label>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={darkMode}
+                onChange={(e) => setDarkMode(e.target.checked)}
+              />
+              Dark Mode
+            </label>
+          </div>
+          <div className="checkbox-row checkbox-row-bottom">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={showPracticeProgress}
+                onChange={(e) => setShowPracticeProgress(e.target.checked)}
+              />
+              Show Practice Progress
+            </label>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={isSelectionMode}
+                onChange={(e) => {
+                  setIsSelectionMode(e.target.checked)
+                  if (!e.target.checked) {
+                    setSelectedMeasures(new Set())
+                    setLastSelectedMeasure(null)
+                  }
+                }}
+              />
+              Select Measures
+            </label>
+          </div>
           {selectedMeasures.size > 0 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <span className="selected-measures-counter">
