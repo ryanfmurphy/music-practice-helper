@@ -275,8 +275,10 @@ function App() {
     
     setMeasureDetails(prev => {
       const existing = prev[key] || []
-      // Find index of existing record with same practicer
-      const existingIndex = existing.findIndex(item => item.practicer === savedMeasure.practicer)
+      // Find index of existing record with same practicer and hands
+      const existingIndex = existing.findIndex(item => 
+        item.practicer === savedMeasure.practicer && item.hands === savedMeasure.hands
+      )
       
       if (existingIndex >= 0) {
         // Update existing record
@@ -296,6 +298,8 @@ function App() {
 
   const handleBulkClose = () => {
     setShowBulkEdit(false)
+    setSelectedMeasures(new Set())
+    setLastSelectedMeasure(null)
   }
 
   const containerClasses = "container" + (darkMode ? " dark-mode" : "")
