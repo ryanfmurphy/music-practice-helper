@@ -15,7 +15,7 @@ import sqlite3 from 'sqlite3';
 
 // Default values for Köln Concert
 const DEFAULT_BOOK_ID = 1;
-const DEFAULT_SONG_ID = 2;
+const DEFAULT_SONG_ID = 4;
 
 // Check arguments
 if (process.argv.length < 3 || process.argv.length > 6) {
@@ -24,7 +24,7 @@ if (process.argv.length < 3 || process.argv.length > 6) {
     console.log('Arguments:');
     console.log('  page_number  - The page number to update (required)');
     console.log('  book_id      - Book ID (default: 1 for Köln Concert)');
-    console.log('  song_id      - Song ID (default: 2 for Köln Concert Part I)');
+    console.log('  song_id      - Song ID (default:', DEFAULT_SONG_ID);
     console.log('');
     console.log('Examples:');
     console.log('  node update-page-image-paths.js 10');

@@ -52,9 +52,7 @@ function App() {
     if (selectedSong) {
       fetchMeasureDetails(selectedSong.song_id)
     }
-  }, [selectedSong,
-    selectedUser, selectedHands
-  ])
+  }, [selectedSong, selectedUser, selectedHands])
 
   useEffect(() => {
     filterSongs()
@@ -297,10 +295,6 @@ function App() {
 
   const handleBulkClose = () => {
     setShowBulkEdit(false)
-    // Exit selection mode and clear selections after bulk edit
-    setIsSelectionMode(false)
-    setSelectedMeasures(new Set())
-    setLastSelectedMeasure(null)
   }
 
   const containerClasses = "container" + (darkMode ? " dark-mode" : "")

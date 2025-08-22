@@ -163,6 +163,9 @@
   font-size: 14px;
   background-color: #fafafa;
 }
+.dark-mode .page-placeholder {
+  background-color: #333;
+}
 
 .page-placeholder.left-blank::after {
   content: "Left page blank";

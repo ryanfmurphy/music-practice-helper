@@ -21,6 +21,7 @@ function PracticeTrackerPage({
   showSheetMusic,
   facingPages
 }) {
+  // single meassure select - opens a popup
   const [selectedMeasure, setSelectedMeasure] = useState(null)
   let currentMeasure = startingMeasure
 

@@ -24,11 +24,14 @@
 
 ## Planned Features
 
-- [ ] Add "show_progress" toggle (when unchecked remove the measure boxes)
+- [ ] Add a Song Builder page
 - [ ] Store % widths for measure boxes on song_page_line, and display measure boxes with min-width: X%
   - Allows lining up with sheet music better
 - [ ] Add bpm_denominator to song_measure. ENUM values = whole,half,quarter,dotted-quarter,8th,16th
 - [ ] Allow deleting a measure's details
+- [ ] ? Add "show_progress" toggle (when unchecked remove the measure boxes)
+- [ ] Indicate editorially corrected music lines with 📝 and allow switching back to the original with 🔄
+
 
 - [x] Add "facing_pages" toggle (allow larger 1-page mode)
 - [x] Dark mode
