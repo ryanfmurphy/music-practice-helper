@@ -271,7 +271,7 @@ function PracticeTrackerPage({
 
 
   return (
-    <div className="page">
+    <div className={`page ${!showPracticeProgress ? 'minimal-practice-spacing' : ''}`}>
       <div className="page-header">
         <span>p{pageNumber}</span>
       </div>
@@ -289,7 +289,7 @@ function PracticeTrackerPage({
         const shouldShowMeasureRow = showPracticeProgress || !lineData?.sheetMusicImgPath
 
         return (
-          <div key={lineIndex} className="line-container">
+          <div key={lineIndex} className={`line-container ${!showPracticeProgress && lineData?.sheetMusicImgPath ? 'minimal-spacing' : ''}`}>
             {shouldShowMeasureRow && (
               <div className="measure-row">
                 {measuresForThisLine.map(measureNumber => {

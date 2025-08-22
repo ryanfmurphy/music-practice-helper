@@ -53,6 +53,10 @@
   width: 100%;
 }
 
+.line-container.minimal-spacing {
+  margin-bottom: -15px;
+}
+
 .measure-row {
   /*margin: 0 15px;*/
 }
@@ -98,6 +102,17 @@
 
 .measure:hover {
   background-color: #e0e0e0;
+}
+
+/* Dark mode styling for measures without details */
+.dark-mode .measure {
+  background-color: #333;
+  color: #aaa;
+  border-color: #666;
+}
+
+.dark-mode .measure:hover {
+  background-color: #444;
 }
 
 .corner-confidence {
@@ -148,6 +163,11 @@
 
 .dark-mode .page {
   background-color: #555;
+}
+
+.dark-mode .page.minimal-practice-spacing {
+  background-color: #b6b6b6;
+  padding-bottom: 40px;
 }
 
 .page-placeholder {
@@ -210,7 +230,7 @@
   margin-bottom: 20px;
 }
 
-.book-selector, .song-selector, .user-selector, .selection-controls {
+.book-selector, .song-selector, .user-selector, .hands-selector, .selection-controls {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -222,12 +242,12 @@
 }
 
 
-.book-selector label, .song-selector label, .user-selector label {
+.book-selector label, .song-selector label, .user-selector label, .hands-selector label {
   font-weight: bold;
   white-space: nowrap;
 }
 
-.book-selector select, .song-selector select, .user-selector select {
+.book-selector select, .song-selector select, .user-selector select, .hands-selector select {
   padding: 5px 10px;
   font-size: 14px;
   border: 1px solid #ccc;
@@ -236,7 +256,7 @@
   min-width: 200px;
 }
 
-.book-selector select:disabled, .song-selector select:disabled, .user-selector select:disabled {
+.book-selector select:disabled, .song-selector select:disabled, .user-selector select:disabled, .hands-selector select:disabled {
   background-color: #f0f0f0;
   color: #888;
   cursor: not-allowed;
@@ -437,8 +457,9 @@
 }
 
 .dark-mode img.sheet-music-line-img {
-  opacity: .75;
+  filter: brightness(0.7) contrast(1.1);
 }
+
 
 .dark-mode select, .dark-mode input, .dark-mode textarea {
   background: #444;
