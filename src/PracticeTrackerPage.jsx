@@ -327,7 +327,6 @@ function PracticeTrackerPage({
                     <span>{getMeasureContent(pageNumber, lineNumber, measureNumber)}</span>
                     {confidenceRating && (
                       <span
-                        className='corner-confidence'
                         className={`corner-confidence ${
                           (typeof confidenceRating === 'string' && !['👥', '🙌', '👥🙌'].includes(confidenceRating))
                             ? 'low-opacity' : ''
@@ -349,7 +348,6 @@ function PracticeTrackerPage({
                   className="sheet-music-line-img"
                   src={`/sheet-music/${lineData.sheetMusicImgPath}`}
                   alt={`Sheet music for page ${pageNumber}, line ${lineNumber}`}
-                  className="sheet-music-line-img"
                 />
               </div>
             )}
