@@ -33,6 +33,7 @@ A fully functional React-based web application for interactive music practice tr
 - **Sticky Header Controls**: Selection controls stay visible in fixed header during scroll for easy access
 - **Keyboard Shortcuts**: Shift-click measures to auto-enable selection; Enter opens bulk edit for selected measures; ESC clears selection then exits selection mode; ESC closes modals
 - **Text Selection Prevention**: User text selection disabled in practice areas to prevent interference with measure selection
+- **Persistent Settings**: All sticky header selections (book, song, user, hands, BPM, checkboxes) automatically save to localStorage and restore on page refresh
 
 ## Keyboard Shortcuts
 - **Shift + Click Measure**: Auto-enable Selection Mode and select clicked measure

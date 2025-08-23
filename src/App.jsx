@@ -30,12 +30,19 @@ function App() {
   const [facingPages, setFacingPages] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
   const [showPracticeProgress, setShowPracticeProgress] = useState(true)
+  const [hasRestoredFromLocalStorage, setHasRestoredFromLocalStorage] = useState(false)
+  const [hasSkippedFirstSaveBecauseLocalStorage, setHasSkippedFirstSaveBecauseLocalStorage] = useState(false)
 
   const API_BASE = 'http://localhost:3001/api'
 
   useEffect(() => {
-    fetchBooks()
-    fetchSongs()
+    const initializeApp = async () => {
+      await fetchBooks()
+      const songsData = await fetchSongs()
+      // Now that all data is loaded, restore localStorage settings
+      loadFromLocalStorage(songsData)
+    }
+    initializeApp()
   }, [])
 
   useEffect(() => {
@@ -131,6 +138,67 @@ function App() {
     }
   }, [isSelectionMode, selectedMeasures.size]) // Re-run when selection mode or selection count changes
 
+  // Local storage functions
+  const saveToLocalStorage = () => {
+    const settings = {
+      selectedBook,
+      selectedSong: selectedSong ? { song_id: selectedSong.song_id, title: selectedSong.title, artist: selectedSong.artist } : null,
+      selectedUser,
+      selectedHands,
+      selectedBpm,
+      showSheetMusic,
+      facingPages,
+      darkMode,
+      showPracticeProgress
+    }
+    localStorage.setItem('musicPracticeHelper', JSON.stringify(settings))
+  }
+
+  const loadFromLocalStorage = (songsData) => {
+    try {
+      const saved = localStorage.getItem('musicPracticeHelper')
+      if (saved) {
+        const settings = JSON.parse(saved)
+        
+        if (settings.selectedBook) setSelectedBook(settings.selectedBook)
+        if (settings.selectedUser) setSelectedUser(settings.selectedUser)
+        if (settings.selectedHands) setSelectedHands(settings.selectedHands)
+        if (settings.selectedBpm) setSelectedBpm(settings.selectedBpm)
+        if (typeof settings.showSheetMusic === 'boolean') setShowSheetMusic(settings.showSheetMusic)
+        if (typeof settings.facingPages === 'boolean') setFacingPages(settings.facingPages)
+        if (typeof settings.darkMode === 'boolean') setDarkMode(settings.darkMode)
+        if (typeof settings.showPracticeProgress === 'boolean') setShowPracticeProgress(settings.showPracticeProgress)
+        
+        // Restore saved song selection using the passed songs data
+        if (settings.selectedSong && songsData) {
+          const savedSong = songsData.find(song => song.song_id === settings.selectedSong.song_id)
+          if (savedSong) {
+            setSelectedSong(savedSong)
+          }
+        }
+        
+        // Wait for all state updates to complete before enabling saves
+        setTimeout(() => {
+          setHasRestoredFromLocalStorage(true)
+        }, 0)
+      }
+    } catch (error) {
+      console.warn('Failed to load settings from localStorage:', error)
+    }
+  }
+
+  // Save settings whenever they change (but skip first save after localStorage restoration)
+  useEffect(() => {
+    if (hasRestoredFromLocalStorage) {
+      if (!hasSkippedFirstSaveBecauseLocalStorage) {
+        // Skip the first save (which is just restoration, not user changes)
+        setHasSkippedFirstSaveBecauseLocalStorage(true)
+      } else {
+        // Now save on actual user changes
+        saveToLocalStorage()
+      }
+    }
+  }, [selectedBook, selectedSong, selectedUser, selectedHands, selectedBpm, showSheetMusic, facingPages, darkMode, showPracticeProgress])
 
   const fetchBooks = async () => {
     try {
@@ -149,8 +217,10 @@ function App() {
       if (!response.ok) throw new Error('Failed to fetch songs')
       const songsData = await response.json()
       setSongs(songsData)
+      return songsData // Return the songs data
     } catch (err) {
       setError(err.message)
+      return []
     } finally {
       setLoading(false)
     }
@@ -165,17 +235,10 @@ function App() {
     
     setFilteredSongs(filtered)
     
-    // Auto-select song when filtering changes
-    if (filtered.length > 0 && (!selectedSong || !filtered.find(s => s.song_id === selectedSong.song_id))) {
-      // Try to auto-select Köln Concert Part I if available
-      const kolnConcert = filtered.find(song => 
-        song.title.includes('Köln') && song.title.includes('Part I')
-      )
-      if (kolnConcert) {
-        setSelectedSong(kolnConcert)
-      } else {
-        setSelectedSong(filtered[0])
-      }
+    // Auto-select song when filtering changes (only after localStorage restoration)
+    if (hasRestoredFromLocalStorage && filtered.length > 0 && (!selectedSong || !filtered.find(s => s.song_id === selectedSong.song_id))) {
+      // Current song is not in filtered list (wrong book), so auto-select first available song
+      setSelectedSong(filtered[0])
     } else if (filtered.length === 0) {
       setSelectedSong(null)
       setPages([])
