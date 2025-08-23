@@ -117,6 +117,11 @@ function App() {
           setIsSelectionMode(false)
         }
       }
+      
+      // Enter key: open bulk edit modal when measures are selected
+      if (event.key === 'Enter' && isSelectionMode && selectedMeasures.size > 0) {
+        setShowBulkEdit(true)
+      }
     }
 
     window.addEventListener('keydown', handleKeyDown)
