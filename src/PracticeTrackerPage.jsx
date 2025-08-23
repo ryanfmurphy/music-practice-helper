@@ -13,6 +13,7 @@ function PracticeTrackerPage({
   selectedBpm,
   onMeasureUpdate,
   isSelectionMode,
+  setIsSelectionMode,
   selectedMeasures,
   setSelectedMeasures,
   lastSelectedMeasure,
@@ -206,6 +207,16 @@ function PracticeTrackerPage({
   }
 
   const handleMeasureClick = (pageNum, lineNum, measureNum, event) => {
+    // Power user shortcut: Shift-click while NOT in selection mode
+    if (!isSelectionMode && event && event.shiftKey) {
+      // Enable selection mode and select this measure
+      setIsSelectionMode(true)
+      const measureKey = getMeasureLookupKey(pageNum, lineNum, measureNum)
+      setSelectedMeasures(new Set([measureKey]))
+      setLastSelectedMeasure({ page: pageNum, line: lineNum, measure: measureNum })
+      return
+    }
+    
     if (isSelectionMode) {
       const measureKey = getMeasureLookupKey(pageNum, lineNum, measureNum)
       

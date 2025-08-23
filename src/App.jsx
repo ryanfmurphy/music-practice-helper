@@ -509,6 +509,7 @@ function App() {
                         measureDetails={measureDetails}
                         onMeasureUpdate={handleMeasureUpdate}
                         isSelectionMode={isSelectionMode}
+                        setIsSelectionMode={setIsSelectionMode}
                         selectedMeasures={selectedMeasures}
                         setSelectedMeasures={setSelectedMeasures}
                         lastSelectedMeasure={lastSelectedMeasure}
@@ -532,6 +533,7 @@ function App() {
                         measureDetails={measureDetails}
                         onMeasureUpdate={handleMeasureUpdate}
                         isSelectionMode={isSelectionMode}
+                        setIsSelectionMode={setIsSelectionMode}
                         selectedMeasures={selectedMeasures}
                         setSelectedMeasures={setSelectedMeasures}
                         lastSelectedMeasure={lastSelectedMeasure}

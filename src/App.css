@@ -250,15 +250,7 @@
   gap: 10px;
 }
 
-/* When in sticky mode, stack rows horizontally instead of vertically */
-.selectors-fixed .selection-controls {
-  flex-direction: row;
-  gap: 10px;
-}
-
-.selectors-fixed .checkbox-row {
-  gap: 10px;
-}
+/* Selection controls maintain 2-row layout even in sticky mode */
 
 
 .book-selector label, .song-selector label, .user-selector label, .hands-selector label, .bpm-selector label {
