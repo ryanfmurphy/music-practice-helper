@@ -252,6 +252,22 @@
 
 /* Selection controls maintain 2-row layout even in sticky mode */
 
+/* Disable text selection to prevent interference with measure selection */
+.pages-grid, .page {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Re-enable text selection in modals */
+.popup-content {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
 
 .book-selector label, .song-selector label, .user-selector label, .hands-selector label, .bpm-selector label {
   font-weight: bold;

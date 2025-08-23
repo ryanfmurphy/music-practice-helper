@@ -23,6 +23,23 @@ function EditMeasureDetailsModal({
   const [selectedRecordData, setSelectedRecordData] = useState(null)
   const confidenceInputRef = useRef(null)
 
+  // ESC key handler
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown)
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, onClose])
+
   // Focus confidence input when popup opens and form is ready
   useEffect(() => {
     if (!showRecordSelection && selectedMeasure && confidenceInputRef.current) {

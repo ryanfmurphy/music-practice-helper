@@ -104,6 +104,28 @@ function App() {
       pages
   ]) // Re-run when pages change to recalculate offset
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      // ESC key behavior when in selection mode
+      if (event.key === 'Escape' && isSelectionMode) {
+        if (selectedMeasures.size > 0) {
+          // First ESC: clear selection but stay in selection mode
+          setSelectedMeasures(new Set())
+          setLastSelectedMeasure(null)
+        } else {
+          // Second ESC (or ESC with no selection): exit selection mode
+          setIsSelectionMode(false)
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isSelectionMode, selectedMeasures.size]) // Re-run when selection mode or selection count changes
+
 
   const fetchBooks = async () => {
     try {
@@ -561,6 +583,7 @@ function App() {
                     measureDetails={measureDetails}
                     onMeasureUpdate={handleMeasureUpdate}
                     isSelectionMode={isSelectionMode}
+                    setIsSelectionMode={setIsSelectionMode}
                     selectedMeasures={selectedMeasures}
                     setSelectedMeasures={setSelectedMeasures}
                     lastSelectedMeasure={lastSelectedMeasure}

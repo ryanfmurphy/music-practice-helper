@@ -31,6 +31,15 @@ A fully functional React-based web application for interactive music practice tr
 - **Bulk Editing**: Edit multiple selected measures simultaneously with shared confidence levels, notes, and BPM
 - **Smart Selection Styling**: White borders for colored measures, blue borders for empty measures, with dark outlines for visibility
 - **Sticky Header Controls**: Selection controls stay visible in fixed header during scroll for easy access
+- **Keyboard Shortcuts**: Shift-click measures to auto-enable selection; ESC clears selection then exits selection mode; ESC closes modals
+- **Text Selection Prevention**: User text selection disabled in practice areas to prevent interference with measure selection
+
+## Keyboard Shortcuts
+- **Shift + Click Measure**: Auto-enable Selection Mode and select clicked measure
+- **ESC (in Selection Mode)**: 
+  - First press: Clear selected measures (stay in Selection Mode)
+  - Second press: Exit Selection Mode entirely
+- **ESC (in Modals)**: Close any open modal
 
 ## Quick Start
 ```bash
@@ -38,7 +47,7 @@ A fully functional React-based web application for interactive music practice tr
 npm install && npm start
 
 # Frontend (from root directory)
-npm install && npm run dev
+npm run dev
 ```
 
 ## Database Tables Used

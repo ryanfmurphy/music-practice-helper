@@ -18,6 +18,23 @@ function BulkEditModal({
   const [isSaving, setIsSaving] = useState(false)
   const confidenceInputRef = useRef(null)
 
+  // ESC key handler
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown)
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, onClose])
+
   // Focus confidence input when popup opens
   useEffect(() => {
     if (isOpen && confidenceInputRef.current) {
