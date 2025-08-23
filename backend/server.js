@@ -123,7 +123,8 @@ app.get('/api/songs/:id/pages', async (req, res) => {
         numMeasures: line.num_measures,
         sheetMusicImgPath: line.sheet_music_img_path,
         startTimeSecs: line.start_time_secs,
-        lastMeasureOverflows: line.last_measure_overflows
+        lastMeasureOverflows: line.last_measure_overflows,
+        hideToMemorize: line.hide_to_memorize
       });
       currentMeasure += line.num_measures;
     });

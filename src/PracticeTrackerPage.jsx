@@ -344,8 +344,9 @@ function PracticeTrackerPage({
               <div className={`sheet-music-line-container ${
                 facingPages ? 'facing-pages' : 'single-page'
               }`}>
-                {lineData.hide_to_memorize ? (
+                {lineData.hideToMemorize ? (
                   <div className="memorization-placeholder">
+                    <div className="memorization-line-number">Page {pageNumber} Line {lineNumber}</div>
                     <span>You can know this music ✨</span>
                   </div>
                 ) : (
