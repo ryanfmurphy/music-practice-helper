@@ -32,6 +32,8 @@ function App() {
   const [showPracticeProgress, setShowPracticeProgress] = useState(true)
   const [hasRestoredFromLocalStorage, setHasRestoredFromLocalStorage] = useState(false)
   const [hasSkippedFirstSaveBecauseLocalStorage, setHasSkippedFirstSaveBecauseLocalStorage] = useState(false)
+  // Track whether user has manually changed book filter, to prevent auto-selecting songs on fresh start
+  const [userHasChangedBookFilter, setUserHasChangedBookFilter] = useState(false)
 
   const API_BASE = 'http://localhost:3001/api'
 
@@ -244,8 +246,8 @@ function App() {
     
     setFilteredSongs(filtered)
     
-    // Auto-select song when filtering changes (only after localStorage restoration)
-    if (hasRestoredFromLocalStorage && filtered.length > 0 && (!selectedSong || !filtered.find(s => s.song_id === selectedSong.song_id))) {
+    // Auto-select song when user changes book filter (but not on fresh start or restoration)
+    if (userHasChangedBookFilter && filtered.length > 0 && (!selectedSong || !filtered.find(s => s.song_id === selectedSong.song_id))) {
       // Current song is not in filtered list (wrong book), so auto-select first available song
       setSelectedSong(filtered[0])
     } else if (filtered.length === 0) {
@@ -256,6 +258,7 @@ function App() {
 
   const handleBookChange = (e) => {
     setSelectedBook(e.target.value)
+    setUserHasChangedBookFilter(true)
   }
 
   const handleSongChange = (e) => {
