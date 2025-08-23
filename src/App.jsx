@@ -180,10 +180,19 @@ function App() {
         // Wait for all state updates to complete before enabling saves
         setTimeout(() => {
           setHasRestoredFromLocalStorage(true)
+          // We actually restored data, so we should skip the first save (which is just restoration)
+          setHasSkippedFirstSaveBecauseLocalStorage(false)
         }, 0)
+      } else {
+        // No localStorage data - this is a fresh start, don't skip any saves
+        setHasRestoredFromLocalStorage(true)
+        setHasSkippedFirstSaveBecauseLocalStorage(true) // Skip nothing - save everything
       }
     } catch (error) {
       console.warn('Failed to load settings from localStorage:', error)
+      // On error, treat as fresh start
+      setHasRestoredFromLocalStorage(true) 
+      setHasSkippedFirstSaveBecauseLocalStorage(true)
     }
   }
 
@@ -669,7 +678,7 @@ function App() {
           })()}
         </div>
       ) : (
-        <div>No pages found for this song</div>
+        <div>{selectedSong ? "No pages found for this song" : "Select a song to practice"}</div>
       )}
 
       {/* Bulk Edit Modal */}
