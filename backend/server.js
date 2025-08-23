@@ -97,7 +97,7 @@ app.get('/api/songs/:id/pages', async (req, res) => {
   try {
     const song = await dbGet('SELECT first_page_position FROM songs WHERE song_id = ?', [req.params.id]);
     const pageLines = await dbAll(
-      `SELECT page_number, line_number_on_page, num_measures, last_measure_overflows, start_time_secs, sheet_music_img_path
+      `SELECT page_number, line_number_on_page, num_measures, last_measure_overflows, start_time_secs, sheet_music_img_path, hide_to_memorize
        FROM song_page_lines 
        WHERE song_id = ? 
        ORDER BY page_number, line_number_on_page`,

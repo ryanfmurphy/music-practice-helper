@@ -344,11 +344,17 @@ function PracticeTrackerPage({
               <div className={`sheet-music-line-container ${
                 facingPages ? 'facing-pages' : 'single-page'
               }`}>
-                <img
-                  className="sheet-music-line-img"
-                  src={`/sheet-music/${lineData.sheetMusicImgPath}`}
-                  alt={`Sheet music for page ${pageNumber}, line ${lineNumber}`}
-                />
+                {lineData.hide_to_memorize ? (
+                  <div className="memorization-placeholder">
+                    <span>You can know this music ✨</span>
+                  </div>
+                ) : (
+                  <img
+                    className="sheet-music-line-img"
+                    src={`/sheet-music/${lineData.sheetMusicImgPath}`}
+                    alt={`Sheet music for page ${pageNumber}, line ${lineNumber}`}
+                  />
+                )}
               </div>
             )}
           </div>
