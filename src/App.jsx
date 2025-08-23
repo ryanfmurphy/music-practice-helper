@@ -30,6 +30,7 @@ function App() {
   const [facingPages, setFacingPages] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
   const [showPracticeProgress, setShowPracticeProgress] = useState(true)
+  const [autoScroll, setAutoScroll] = useState(false)
   const [hasRestoredFromLocalStorage, setHasRestoredFromLocalStorage] = useState(false)
   const [hasSkippedFirstSaveBecauseLocalStorage, setHasSkippedFirstSaveBecauseLocalStorage] = useState(false)
   // Track whether user has manually changed book filter, to prevent auto-selecting songs on fresh start
@@ -140,6 +141,17 @@ function App() {
     }
   }, [isSelectionMode, selectedMeasures.size]) // Re-run when selection mode or selection count changes
 
+  // Auto-scroll functionality
+  useEffect(() => {
+    if (!autoScroll) return
+
+    const scrollInterval = setInterval(() => {
+      window.scrollBy(0, 2) // Scroll down 2px
+    }, 500) // Every 500ms
+
+    return () => clearInterval(scrollInterval)
+  }, [autoScroll])
+
   // Local storage functions
   const saveToLocalStorage = () => {
     const settings = {
@@ -151,7 +163,8 @@ function App() {
       showSheetMusic,
       facingPages,
       darkMode,
-      showPracticeProgress
+      showPracticeProgress,
+      autoScroll
     }
     localStorage.setItem('musicPracticeHelper', JSON.stringify(settings))
   }
@@ -170,6 +183,7 @@ function App() {
         if (typeof settings.facingPages === 'boolean') setFacingPages(settings.facingPages)
         if (typeof settings.darkMode === 'boolean') setDarkMode(settings.darkMode)
         if (typeof settings.showPracticeProgress === 'boolean') setShowPracticeProgress(settings.showPracticeProgress)
+        if (typeof settings.autoScroll === 'boolean') setAutoScroll(settings.autoScroll)
         
         // Restore saved song selection using the passed songs data
         if (settings.selectedSong && songsData) {
@@ -209,7 +223,7 @@ function App() {
         saveToLocalStorage()
       }
     }
-  }, [selectedBook, selectedSong, selectedUser, selectedHands, selectedBpm, showSheetMusic, facingPages, darkMode, showPracticeProgress])
+  }, [selectedBook, selectedSong, selectedUser, selectedHands, selectedBpm, showSheetMusic, facingPages, darkMode, showPracticeProgress, autoScroll])
 
   const fetchBooks = async () => {
     try {
@@ -550,6 +564,14 @@ function App() {
                 }}
               />
               Select Measures
+            </label>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={autoScroll}
+                onChange={(e) => setAutoScroll(e.target.checked)}
+              />
+              Scroll
             </label>
           </div>
           {selectedMeasures.size > 0 && (

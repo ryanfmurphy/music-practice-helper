@@ -33,6 +33,7 @@ A fully functional React-based web application for interactive music practice tr
 - **Sticky Header Controls**: Selection controls stay visible in fixed header during scroll for easy access
 - **Keyboard Shortcuts**: Shift-click measures to auto-enable selection; Enter opens bulk edit for selected measures; ESC clears selection then exits selection mode; ESC closes modals
 - **Text Selection Prevention**: User text selection disabled in practice areas to prevent interference with measure selection
+- **Auto-Scroll Feature**: Optional automatic scrolling functionality for hands-free reading during practice sessions
 - **Persistent Settings**: All sticky header selections (book, song, user, hands, BPM, checkboxes) automatically save to localStorage and restore on page refresh
 
 ## Keyboard Shortcuts
@@ -101,6 +102,7 @@ Production-ready with complete multi-user confidence visualization, unified meas
 - **Corner Confidence Display**: Confidence ratings shown in measure corners with bright stars for perfect 10s
 - **Backend Filtering**: Efficient API filtering by practicer and hands for improved performance
 - **Smart Defaults**: New measures automatically default to selected user and hands
+- **Auto-Scroll Feature**: Added "Scroll" checkbox that enables automatic page scrolling (2px every 500ms) for hands-free practice reading
 
 ## Component Structure
 - `App.jsx` - Main application with book/song selection and data fetching
