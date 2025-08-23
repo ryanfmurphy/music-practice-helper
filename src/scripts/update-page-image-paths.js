@@ -3,9 +3,9 @@
 /**
  * Script: update-page-image-paths.js
  * Purpose: Update sheet_music_img_path for all lines on a given page in the database
- * Usage: node update-page-image-paths.js <page_number> [book_id] [song_id]
+ * Usage: node update-page-image-paths.js <song_folder> <page_number> [book_id] [song_id]
  * 
- * Convention: Images are stored as Koln-Concert/p{page}/line{line}.png
+ * Convention: Images are stored as {song_folder}/p{page}/line{line}.png
  * Example: page 10, line 3 = "Koln-Concert/p10/line3.png"
  */
 
@@ -18,23 +18,25 @@ const DEFAULT_BOOK_ID = 1;
 const DEFAULT_SONG_ID = 4;
 
 // Check arguments
-if (process.argv.length < 3 || process.argv.length > 6) {
-    console.log('Usage: node update-page-image-paths.js <page_number> [book_id] [song_id]');
+if (process.argv.length < 4 || process.argv.length > 6) {
+    console.log('Usage: node update-page-image-paths.js <song_folder> <page_number> [book_id] [song_id]');
     console.log('');
     console.log('Arguments:');
+    console.log('  song_folder  - The song folder name (e.g., "Koln-Concert", "Well-Tempered-Clavier")');
     console.log('  page_number  - The page number to update (required)');
     console.log('  book_id      - Book ID (default: 1 for Köln Concert)');
-    console.log('  song_id      - Song ID (default:', DEFAULT_SONG_ID);
+    console.log('  song_id      - Song ID (default:', DEFAULT_SONG_ID, ')');
     console.log('');
     console.log('Examples:');
-    console.log('  node update-page-image-paths.js 10');
-    console.log('  node update-page-image-paths.js 15 1 2');
+    console.log('  node update-page-image-paths.js Koln-Concert 10');
+    console.log('  node update-page-image-paths.js Well-Tempered-Clavier 25 2 5');
     process.exit(1);
 }
 
-const pageNumber = parseInt(process.argv[2]);
-const bookId = process.argv[3] ? parseInt(process.argv[3]) : DEFAULT_BOOK_ID;
-const songId = process.argv[4] ? parseInt(process.argv[4]) : DEFAULT_SONG_ID;
+const songFolder = process.argv[2];
+const pageNumber = parseInt(process.argv[3]);
+const bookId = process.argv[4] ? parseInt(process.argv[4]) : DEFAULT_BOOK_ID;
+const songId = process.argv[5] ? parseInt(process.argv[5]) : DEFAULT_SONG_ID;
 
 // Validate page number
 if (isNaN(pageNumber) || pageNumber <= 0) {
@@ -96,7 +98,7 @@ async function updatePageImagePaths() {
         console.log(`Found ${lines.length} lines for page ${pageNumber}`);
         
         // Check if corresponding image directory exists
-        const imageDir = path.resolve(`public/sheet-music/Koln-Concert/p${pageNumber}`);
+        const imageDir = path.resolve(`public/sheet-music/${songFolder}/p${pageNumber}`);
         const imageDirExists = fs.existsSync(imageDir);
         
         if (!imageDirExists) {
@@ -110,7 +112,7 @@ async function updatePageImagePaths() {
         // Update each line
         for (const line of lines) {
             const lineNumber = line.line_number_on_page;
-            const imagePath = `Koln-Concert/p${pageNumber}/line${lineNumber}.png`;
+            const imagePath = `${songFolder}/p${pageNumber}/line${lineNumber}.png`;
             
             // Check if image file actually exists
             const imageFilePath = path.resolve(`public/sheet-music/${imagePath}`);

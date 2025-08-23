@@ -67,7 +67,12 @@ app.get('/api/books', async (req, res) => {
 // Get all songs
 app.get('/api/songs', async (req, res) => {
   try {
-    const songs = await dbAll('SELECT * FROM songs ORDER BY title');
+    const songs = await dbAll(`
+      SELECT DISTINCT s.* 
+      FROM songs s
+      INNER JOIN song_page_lines spl ON s.song_id = spl.song_id
+      ORDER BY s.title
+    `);
     res.json(songs);
   } catch (err) {
     res.status(500).json({ error: err.message });

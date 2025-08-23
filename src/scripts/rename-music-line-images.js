@@ -3,20 +3,47 @@
 /**
  * Script: rename-music-line-images.js
  * Purpose: Rename PNG files in a directory to line1.png, line2.png, etc. based on timestamp order
- * Usage: node rename-music-line-images.js <directory_path>
+ * Usage: node rename-music-line-images.js <song_folder> <page_number>
+ * Alternative: node rename-music-line-images.js <full_directory_path>
  */
 
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Check if directory argument is provided
-if (process.argv.length !== 3) {
-    console.log('Usage: node rename-music-line-images.js <directory_path>');
-    console.log('Example: node rename-music-line-images.js /path/to/sheet-music/Koln-Concert/p10');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Check arguments
+if (process.argv.length < 3 || process.argv.length > 4) {
+    console.log('Usage: node rename-music-line-images.js <song_folder> <page_number>');
+    console.log('   OR: node rename-music-line-images.js <full_directory_path>');
+    console.log('');
+    console.log('Examples:');
+    console.log('  node rename-music-line-images.js Koln-Concert 10');
+    console.log('  node rename-music-line-images.js Well-Tempered-Clavier 25');
+    console.log('  node rename-music-line-images.js /full/path/to/sheet-music/Koln-Concert/p10');
     process.exit(1);
 }
 
-const directoryPath = process.argv[2];
+let directoryPath;
+
+if (process.argv.length === 4) {
+    // Two arguments: song folder and page number
+    const songFolder = process.argv[2];
+    const pageNumber = process.argv[3];
+    
+    // Build path relative to the public/sheet-music directory
+    const publicSheetMusicPath = path.join(__dirname, '..', '..', 'public', 'sheet-music');
+    directoryPath = path.join(publicSheetMusicPath, songFolder, `p${pageNumber}`);
+    
+    console.log(`Working with song folder: ${songFolder}, page: ${pageNumber}`);
+    console.log(`Target directory: ${directoryPath}`);
+} else {
+    // One argument: full directory path (backward compatibility)
+    directoryPath = process.argv[2];
+    console.log(`Using provided directory path: ${directoryPath}`);
+}
 
 // Check if directory exists
 if (!fs.existsSync(directoryPath)) {
