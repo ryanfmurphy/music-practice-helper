@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import EditMeasureDetailsModal from './EditMeasureDetailsModal'
 
 function PracticeTrackerPage({ 
@@ -6,7 +6,8 @@ function PracticeTrackerPage({
   lines, 
   linesData,
   startingMeasure, 
-  measureDetails = {}, 
+  measureDetails = {},
+  userMeasureDetails,
   songId,
   selectedUser, 
   selectedHands, 
@@ -163,10 +164,6 @@ function PracticeTrackerPage({
   }
 
 
-  const getMeasureContent = (pageNum, lineNum, measureNum) => {
-    return measureNum
-  }
-
   const getConfidenceRating = (pageNum, lineNum, measureNum) => {
     // Don't show confidence ratings when practice progress is disabled
     if (!showPracticeProgress) return null
@@ -282,7 +279,6 @@ function PracticeTrackerPage({
     setSelectedMeasure(null)
   }
 
-
   return (
     <div className={`page ${!showPracticeProgress ? 'minimal-practice-spacing' : ''}`}>
       <div className="page-header">
@@ -308,13 +304,14 @@ function PracticeTrackerPage({
                 {measuresForThisLine.map(measureNumber => {
                 const confidenceRating = getConfidenceRating(pageNumber, lineNumber, measureNumber)
                 const measureClassNames = "measure"
-                    + (measureHasDetails(pageNumber, lineNumber, measureNumber)
-                      ? " with-details"
-                      : "")
-                    + (lineData?.sheetMusicImgPath && showSheetMusic
-                      ? " with-sheet-music"
-                      : "")
-                return (
+                    + (measureHasDetails(pageNumber, lineNumber, measureNumber) ? " with-details" : "")
+                    + (lineData?.sheetMusicImgPath && showSheetMusic ? " with-sheet-music" : "")
+                    + (userMeasureDetails[measureNumber]?.hideToMemorize && showSheetMusic
+                        ? " hide-to-memorize" : "")
+                  console.log('rendering measureNumber', measureNumber)
+                  console.log('userMeasureDetails', userMeasureDetails)
+                  console.log('measureClassNames', measureClassNames)
+                  return (
                   <div 
                     key={measureNumber} 
                     className={measureClassNames}
@@ -324,7 +321,7 @@ function PracticeTrackerPage({
                     }}
                     onClick={(event) => handleMeasureClick(pageNumber, lineNumber, measureNumber, event)}
                   >
-                    <span>{getMeasureContent(pageNumber, lineNumber, measureNumber)}</span>
+                    <span>{measureNumber}</span>
                     {confidenceRating && (
                       <span
                         className={`corner-confidence ${
@@ -347,7 +344,7 @@ function PracticeTrackerPage({
                 {lineData.hideToMemorize ? (
                   <div className="memorization-placeholder">
                     <div className="memorization-line-number">Page {pageNumber} Line {lineNumber}</div>
-                    <span>You can know this music ✨</span>
+                    <span>Play from memory ✨</span>
                   </div>
                 ) : (
                   <img

@@ -77,8 +77,8 @@ A web application for tracking music practice sessions, built with React fronten
 The app connects to `../../../sqlite_mcp_server.db` which contains:
 - **songs**: Song metadata (title, artist, year, URLs, book assignments)
 - **song_page_lines**: Page and measure layout data with optional sheet music image paths
-- **song_measure**: Individual measure confidence levels, practice notes, BPM, practicer, and hands tracking
-- **song_measure_history**: Historical versions of measure data with timestamps for complete audit trail
+- **measure_confidence**: Individual measure confidence levels, practice notes, BPM, practicer, and hands tracking
+- **measure_confidence_history**: Historical versions of measure data with timestamps for complete audit trail
 - **practice_session**: Practice tracking history
 - **music_book**: Book metadata for organization
 

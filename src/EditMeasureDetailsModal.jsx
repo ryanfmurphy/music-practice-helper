@@ -384,7 +384,7 @@ function EditMeasureDetailsModal({
                   ) : (
                     measureHistory.map((historyItem, index) => (
                       <div 
-                        key={`${historyItem.song_measure_id}-${historyItem.archived_at}`}
+                        key={`${historyItem.measure_confidence_id}-${historyItem.archived_at}`}
                         className="history-item"
                       >
                         <div className="history-item-header">

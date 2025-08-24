@@ -26,7 +26,7 @@ A fully functional React-based web application for interactive music practice tr
 - **Expandable History**: Click to view complete audit trail of confidence changes with timestamps and filtering
 - **Real-time Updates**: All changes immediately appear with correct color coding without page refresh
 - **Real-time Database Integration**: Connects directly to existing practice tracking system with automatic book_id resolution
-- **Automatic History Tracking**: All measure updates preserve previous data in `song_measure_history` table for complete audit trail
+- **Automatic History Tracking**: All measure updates preserve previous data in `measure_confidence_history` table for complete audit trail
 - **Global Measure Selection**: "Select Measures" mode in sticky header enables multi-measure selection across all pages
 - **Bulk Editing**: Edit multiple selected measures simultaneously with shared confidence levels, notes, and BPM
 - **Smart Selection Styling**: White borders for colored measures, blue borders for empty measures, with dark outlines for visibility
@@ -56,8 +56,8 @@ npm run dev
 ## Database Tables Used
 - `songs` - Song metadata and book assignments
 - `song_page_lines` - Page/line layout with measure counts
-- `song_measure` - Individual measure confidence levels, practice notes, BPM, practicer, and hands tracking
-- `song_measure_history` - Historical versions of measure data with timestamps for complete audit trail
+- `measure_confidence` - Individual measure confidence levels, practice notes, BPM, practicer, and hands tracking
+- `measure_confidence_history` - Historical versions of measure data with timestamps for complete audit trail
 - `music_book` - Book organization
 - `practice_session` - Practice history (future integration)
 

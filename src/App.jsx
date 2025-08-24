@@ -15,6 +15,7 @@ function App() {
   const [pages, setPages] = useState([])
   const [firstPagePosition, setFirstPagePosition] = useState('left')
   const [measureDetails, setMeasureDetails] = useState({})
+  const [userMeasureDetails, setUserMeasureDetails] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isSelectorsFixed, setIsSelectorsFixed] = useState(false)
@@ -52,6 +53,7 @@ function App() {
     if (selectedSong) {
       fetchPages(selectedSong.song_id)
       fetchMeasureDetails(selectedSong.song_id)
+      fetchUserMeasureDetails(selectedSong.song_id)
       // Reset selection state when song changes
       setSelectedMeasures(new Set())
       setLastSelectedMeasure(null)
@@ -354,7 +356,7 @@ function App() {
       measures.forEach(measure => {
         const key = `${measure.page_number}-${measure.line_number}-${measure.measure_number}`
         const measureDetail = {
-          id: measure.song_measure_id,
+          id: measure.measure_confidence_id,
           confidence: measure.confidence,
           time: measure.time,
           notes: measure.notes,
@@ -378,11 +380,46 @@ function App() {
     }
   }
 
+  const fetchUserMeasureDetails = async (songId) => {
+    try {
+      // Build URL with optional practicer and hands filters
+      let url = `${API_BASE}/songs/${songId}/song_measure_user_details`
+      const params = new URLSearchParams()
+
+      if (selectedUser) {
+        params.append('user', selectedUser)
+      }
+
+      if (params.toString()) {
+        url += `?${params.toString()}`
+      }
+
+      const response = await fetch(url)
+      if (!response.ok) throw new Error('Failed to fetch user measure details')
+      const measures = await response.json()
+
+      // Keep array of measures: 1-indexed, leave 0th measure blank
+      const userMeasureDetails = [null, ]
+      measures.forEach(measure => {
+        userMeasureDetails[measure.song_measure_no] = {
+          song_measure_user_id: measure.song_measure_user_id,
+          user: measure.user,
+          hideToMemorize: measure.hide_to_memorize
+        }
+      })
+      console.log('userMeasureDetails', userMeasureDetails)
+      setUserMeasureDetails(userMeasureDetails)
+    } catch (err) {
+      console.warn('Failed to fetch measure details:', err.message)
+      setUserMeasureDetails([])
+    }
+  }
+
   const handleMeasureUpdate = (savedMeasure) => {
     // Update the measureDetails state with the new/updated measure
     const key = `${savedMeasure.page_number}-${savedMeasure.line_number}-${savedMeasure.measure_number}`
     const measureDetail = {
-      id: savedMeasure.song_measure_id,
+      id: savedMeasure.measure_confidence_id,
       confidence: savedMeasure.confidence,
       time: savedMeasure.time,
       notes: savedMeasure.notes,
@@ -631,6 +668,7 @@ function App() {
                         selectedHands={selectedHands}
                         selectedBpm={selectedBpm}
                         measureDetails={measureDetails}
+                        userMeasureDetails={userMeasureDetails}
                         onMeasureUpdate={handleMeasureUpdate}
                         isSelectionMode={isSelectionMode}
                         setIsSelectionMode={setIsSelectionMode}
@@ -655,6 +693,7 @@ function App() {
                         selectedHands={selectedHands}
                         selectedBpm={selectedBpm}
                         measureDetails={measureDetails}
+                        userMeasureDetails={userMeasureDetails}
                         onMeasureUpdate={handleMeasureUpdate}
                         isSelectionMode={isSelectionMode}
                         setIsSelectionMode={setIsSelectionMode}
@@ -683,6 +722,7 @@ function App() {
                     selectedHands={selectedHands}
                     selectedBpm={selectedBpm}
                     measureDetails={measureDetails}
+                    userMeasureDetails={userMeasureDetails}
                     onMeasureUpdate={handleMeasureUpdate}
                     isSelectionMode={isSelectionMode}
                     setIsSelectionMode={setIsSelectionMode}

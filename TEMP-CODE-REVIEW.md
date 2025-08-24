@@ -425,8 +425,8 @@ const logger = winston.createLogger({
 3. **Database Improvements**:
 ```javascript
 // Add indexes for common queries
-CREATE INDEX idx_song_measure_lookup ON song_measure(song_id, page_number, line_number, measure_number);
-CREATE INDEX idx_measure_history_lookup ON song_measure_history(song_id, page_number, line_number, measure_number, archived_at);
+CREATE INDEX idx_measure_confidence_lookup ON measure_confidence(song_id, page_number, line_number, measure_number);
+CREATE INDEX idx_measure_history_lookup ON measure_confidence_history(song_id, page_number, line_number, measure_number, archived_at);
 ```
 
 ## 8. Recommendations Summary

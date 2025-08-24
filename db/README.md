@@ -13,8 +13,8 @@ The web application uses the following tables from the main `sqlite_mcp_server.d
 - **music_book** - Music books/collections
 - **songs** - Individual songs with metadata
 - **song_page_lines** - Page/line layout structure with measure counts
-- **song_measure** - Current confidence levels and practice data for individual measures
-- **song_measure_history** - Historical versions of measure data with timestamps
+- **measure_confidence** - Current confidence levels and practice data for individual measures
+- **measure_confidence_history** - Historical versions of measure data with timestamps
 
 ## Usage
 

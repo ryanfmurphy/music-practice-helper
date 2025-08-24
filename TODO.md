@@ -9,7 +9,7 @@
 
 ## Bugs
 - [x] Fix bug with sticky header - after switching hands and trying to scroll up, sticky header disappears
-- [ ] Fix time zone issue with song_measure timestamps
+- [ ] Fix time zone issue with measure_confidence timestamps
 - [ ] (Fixed?) Fix occasional bug when updating a measure detail with multiple records
   - The wrong color/emojis show up, but then when you refresh they're fixed
   - Steps to reproduce? Fixed?
@@ -25,9 +25,15 @@
 ## Planned Features
 
 - [ ] Add a Song Builder page
+- [ ] A measure-level "hide-to-memorize" flag
+  - Since the measures are denoted by the measure boxes, what we want to hide
+      is the sheet music directly below the measure box. You could have a blue dotted-lined-region that looks similar as the line-based one, but it comes straight down
+      from the left and right of the measure box - no white space in between the measure box and the "flag falling down and covering up that part of the sheet music. Same
+      or similar messaging: "Play from memory <sparkle>"
+- [ ] An option to toggle the hide-to-memorize for a line
 - [ ] Store % widths for measure boxes on song_page_line, and display measure boxes with min-width: X%
   - Allows lining up with sheet music better
-- [ ] Add bpm_denominator to song_measure. ENUM values = whole,half,quarter,dotted-quarter,8th,16th
+- [ ] Add bpm_denominator to measure_confidence. ENUM values = whole,half,quarter,dotted-quarter,8th,16th
 - [ ] Allow deleting a measure's details
 - [ ] ? Add "show_progress" toggle (when unchecked remove the measure boxes)
 - [ ] Indicate editorially corrected music lines with 📝 and allow switching back to the original with 🔄

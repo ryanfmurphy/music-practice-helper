@@ -197,30 +197,30 @@ app.post('/api/practice-sessions', async (req, res) => {
   }
 });
 
-// Get practice sessions for specific measures
-app.get('/api/songs/:id/measures/:from/:to/sessions', async (req, res) => {
-  try {
-    const sessions = await dbAll(
-      `SELECT * FROM practice_session 
-       WHERE song_id = ? 
-       AND ((from_measure <= ? AND to_measure >= ?) OR (from_measure IS NULL AND to_measure IS NULL))
-       ORDER BY practice_time DESC`,
-      [req.params.id, req.params.to, req.params.from]
-    );
-    res.json(sessions);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// // Get practice sessions for specific measures
+// app.get('/api/songs/:id/measures/:from/:to/sessions', async (req, res) => {
+//   try {
+//     const sessions = await dbAll(
+//       `SELECT * FROM practice_session
+//        WHERE song_id = ?
+//        AND ((from_measure <= ? AND to_measure >= ?) OR (from_measure IS NULL AND to_measure IS NULL))
+//        ORDER BY practice_time DESC`,
+//       [req.params.id, req.params.to, req.params.from]
+//     );
+//     res.json(sessions);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
 // Get measure confidence data for a song
 app.get('/api/songs/:id/measures', async (req, res) => {
   try {
     const { practicer, hands } = req.query;
     
-    let query = `SELECT song_measure_id, page_number, line_number, measure_number, 
+    let query = `SELECT measure_confidence_id, page_number, line_number, measure_number, 
                         confidence, time, notes, practicer, bpm, hands
-                 FROM song_measure 
+                 FROM measure_confidence 
                  WHERE song_id = ?`;
     let params = [req.params.id];
     
@@ -243,15 +243,39 @@ app.get('/api/songs/:id/measures', async (req, res) => {
   }
 });
 
+// Get user settings per measure, e.g. hide_to_memorize
+app.get('/api/songs/:id/song_measure_user_details', async (req, res) => {
+  try {
+    const { user } = req.query;
+
+    let query = `SELECT song_measure_user_id, song_measure_no, hide_to_memorize
+                 FROM song_measure_user 
+                 WHERE song_id = ?`;
+    let params = [req.params.id];
+
+    if (user) {
+      query += ` AND user = ?`;
+      params.push(user);
+    }
+
+    query += ` ORDER BY song_measure_no`;
+
+    const measures = await dbAll(query, params);
+    res.json(measures);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Get history for a specific measure
 app.get('/api/songs/:id/measures/:page/:line/:measure/history', async (req, res) => {
   try {
     const { id: songId, page, line, measure } = req.params;
     const { practicer, hands } = req.query;
     
-    let query = `SELECT song_measure_id, page_number, line_number, measure_number,
+    let query = `SELECT measure_confidence_id, page_number, line_number, measure_number,
                         confidence, time, notes, practicer, archived_at, bpm, hands
-                 FROM song_measure_history 
+                 FROM measure_confidence_history 
                  WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ?`;
     let params = [songId, page, line, measure];
     
@@ -319,7 +343,7 @@ app.post('/api/songs/:id/measures', async (req, res) => {
 
     // Check if record already exists for this specific practicer, hands, and measure
     const existing = await dbGet(
-      `SELECT * FROM song_measure 
+      `SELECT * FROM measure_confidence 
        WHERE song_id = ? AND page_number = ? AND line_number = ? AND measure_number = ? AND practicer = ? AND hands = ?`,
       [songId, page_number, line_number, measure_number, practicer, hands]
     );
@@ -328,12 +352,12 @@ app.post('/api/songs/:id/measures', async (req, res) => {
     if (existing) {
       // Save existing data to history table before updating
       await dbRun(
-        `INSERT INTO song_measure_history (
-          song_measure_id, book_id, song_id, page_number, line_number, measure_number,
+        `INSERT INTO measure_confidence_history (
+          measure_confidence_id, book_id, song_id, page_number, line_number, measure_number,
           confidence, time, notes, practicer, archived_at, bpm, hands
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)`,
         [
-          existing.song_measure_id, existing.book_id, existing.song_id, 
+          existing.measure_confidence_id, existing.book_id, existing.song_id, 
           existing.page_number, existing.line_number, existing.measure_number,
           existing.confidence, existing.time, existing.notes, existing.practicer, existing.bpm, existing.hands
         ]
@@ -341,16 +365,16 @@ app.post('/api/songs/:id/measures', async (req, res) => {
 
       // Update existing record
       result = await dbRun(
-        `UPDATE song_measure 
+        `UPDATE measure_confidence 
          SET confidence = ?, notes = ?, practicer = ?, bpm = ?, hands = ?, time = CURRENT_TIMESTAMP
-         WHERE song_measure_id = ?`,
-        [confidence, notes, practicer, bpm, hands, existing.song_measure_id]
+         WHERE measure_confidence_id = ?`,
+        [confidence, notes, practicer, bpm, hands, existing.measure_confidence_id]
       );
-      result.id = existing.song_measure_id;
+      result.id = existing.measure_confidence_id;
     } else {
       // Create new record
       result = await dbRun(
-        `INSERT INTO song_measure (
+        `INSERT INTO measure_confidence (
           book_id, song_id, page_number, line_number, measure_number, 
           confidence, notes, practicer, bpm, hands, time
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
@@ -360,10 +384,10 @@ app.post('/api/songs/:id/measures', async (req, res) => {
 
     // Return the created/updated record
     const newRecord = await dbGet(
-      `SELECT song_measure_id, page_number, line_number, measure_number, 
+      `SELECT measure_confidence_id, page_number, line_number, measure_number, 
               confidence, time, notes, practicer, bpm, hands
-       FROM song_measure 
-       WHERE song_measure_id = ?`,
+       FROM measure_confidence 
+       WHERE measure_confidence_id = ?`,
       [result.id]
     );
 

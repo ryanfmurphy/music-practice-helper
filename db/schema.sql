@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS "song_page_lines" (
     last_measure_overflows INTEGER NOT NULL DEFAULT 0,
     start_time_secs INTEGER
 , sheet_music_img_path TEXT, hide_to_memorize TINYINT(1) NOT NULL DEFAULT 0);
-CREATE TABLE song_measure (
-    song_measure_id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE measure_confidence (
+    measure_confidence_id INTEGER PRIMARY KEY AUTOINCREMENT,
     book_id INTEGER NOT NULL,
     song_id INTEGER,
     page_number INTEGER NOT NULL,
@@ -40,8 +40,8 @@ CREATE TABLE song_measure (
     FOREIGN KEY (book_id) REFERENCES music_book(book_id),
     FOREIGN KEY (song_id) REFERENCES songs(song_id)
 );
-CREATE TABLE song_measure_history (
-    song_measure_id INTEGER,
+CREATE TABLE measure_confidence_history (
+    measure_confidence_id INTEGER,
     book_id INTEGER NOT NULL,
     song_id INTEGER,
     page_number INTEGER NOT NULL,
@@ -52,5 +52,5 @@ CREATE TABLE song_measure_history (
     notes TEXT,
     practicer TEXT,
     archived_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, bpm REAL, hands TEXT NOT NULL DEFAULT 'both' CHECK (hands IN ('left', 'right', 'both')),
-    PRIMARY KEY (song_measure_id, archived_at)
+    PRIMARY KEY (measure_confidence_id, archived_at)
 );
