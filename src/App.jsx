@@ -793,6 +793,8 @@ function App() {
         selectedBpm={selectedBpm}
         onSave={handleBulkSave}
         onClose={handleBulkClose}
+        userMeasureDetails={userMeasureDetails}
+        onHideToMemorizeToggle={handleHideToMemorizeToggle}
       />
     </div>
   )

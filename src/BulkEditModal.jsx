@@ -8,7 +8,9 @@ function BulkEditModal({
   selectedUser, 
   selectedHands,
   selectedBpm,
-  onSave 
+  onSave,
+  userMeasureDetails,
+  onHideToMemorizeToggle
 }) {
   const [confidenceInput, setConfidenceInput] = useState('')
   const [notesInput, setNotesInput] = useState('')
@@ -17,6 +19,7 @@ function BulkEditModal({
   const [handsInput, setHandsInput] = useState('both')
   const [isSaving, setIsSaving] = useState(false)
   const confidenceInputRef = useRef(null)
+  const hideToMemorizeCheckboxRef = useRef(null)
 
   // ESC key handler
   useEffect(() => {
@@ -55,6 +58,33 @@ function BulkEditModal({
       setHandsInput(selectedHands || 'both')
     }
   }, [isOpen, selectedUser, selectedHands, selectedBpm])
+
+  // Calculate and update tri-state checkbox for hide_to_memorize
+  useEffect(() => {
+    if (isOpen && hideToMemorizeCheckboxRef.current) {
+      // Count how many selected measures are hidden
+      const measureList = Array.from(selectedMeasures)
+      const hiddenCount = measureList.filter(measureKey => 
+        userMeasureDetails[measureKey]?.hideToMemorize
+      ).length
+      
+      const checkbox = hideToMemorizeCheckboxRef.current
+      
+      if (hiddenCount === 0) {
+        // None hidden - unchecked
+        checkbox.checked = false
+        checkbox.indeterminate = false
+      } else if (hiddenCount === measureList.length) {
+        // All hidden - checked
+        checkbox.checked = true
+        checkbox.indeterminate = false
+      } else {
+        // Some hidden - indeterminate
+        checkbox.checked = false
+        checkbox.indeterminate = true
+      }
+    }
+  }, [isOpen, selectedMeasures, userMeasureDetails])
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
@@ -133,6 +163,39 @@ function BulkEditModal({
     }
   }
 
+  const handleBulkHideToMemorizeToggle = async () => {
+    if (!selectedUser) return
+    
+    // Calculate current state
+    const measureList = Array.from(selectedMeasures)
+    const hiddenCount = measureList.filter(measureKey => 
+      userMeasureDetails[measureKey]?.hideToMemorize
+    ).length
+    
+    // Determine target state based on tri-state logic
+    let targetHideState
+    if (hiddenCount === 0) {
+      // None hidden → hide all
+      targetHideState = true
+    } else if (hiddenCount === measureList.length) {
+      // All hidden → show all
+      targetHideState = false
+    } else {
+      // Mixed state → hide all (consistent with most UIs)
+      targetHideState = true
+    }
+    
+    // Apply to all selected measures
+    for (const measureKey of measureList) {
+      const [page, line, measure] = measureKey.split('-').map(Number)
+      try {
+        await onHideToMemorizeToggle(page, line, measure, targetHideState)
+      } catch (error) {
+        console.error(`Failed to toggle hide_to_memorize for measure ${measureKey}:`, error)
+      }
+    }
+  }
+
   const handleClose = () => {
     setConfidenceInput('')
     setNotesInput('')
@@ -177,6 +240,30 @@ function BulkEditModal({
                 </span>
               ))}
             </div>
+          </div>
+
+          {/* Hide to memorize toggle */}
+          <div style={{ 
+            marginTop: '15px',
+            marginBottom: '15px', 
+            paddingBottom: '15px', 
+            borderBottom: '1px solid #eee',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            opacity: !selectedUser ? 0.5 : 1
+          }}>
+            <label className="checkbox-label" style={{ 
+              cursor: !selectedUser ? 'not-allowed' : 'pointer'
+            }}>
+              <input
+                ref={hideToMemorizeCheckboxRef}
+                type="checkbox"
+                onChange={handleBulkHideToMemorizeToggle}
+                disabled={!selectedUser}
+              />
+              🙈 Hide for memorization practice {!selectedUser && <span style={{ fontSize: '12px', color: '#888' }}>(select a user first)</span>}
+            </label>
           </div>
 
           <div className="measure-edit-form">
