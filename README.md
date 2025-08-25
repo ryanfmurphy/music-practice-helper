@@ -24,6 +24,7 @@ A web application for tracking music practice sessions, built with React fronten
 - **Smart Defaults**: New measures automatically default to selected user and hands
 - **Global Measure Selection**: "Select Measures" checkbox in sticky header enables multi-measure selection across all pages
 - **Bulk Editing**: Edit multiple selected measures simultaneously with shared confidence levels, notes, and BPM
+- **Bulk Hide-to-Memorize**: Tri-state checkbox in bulk edit modal for managing memorization practice across multiple measures
 - **Smart Selection Styling**: White borders for colored measures, blue borders for empty measures, with dark outlines for visibility
 - **Sticky Header Controls**: Selection controls stay accessible in fixed header during scroll
 - **Sheet Music Image Display**: Visual sheet music images display below measure boxes for enhanced practice experience
@@ -125,6 +126,7 @@ The app displays practice progress through an intuitive color-coding system:
 - **Global Selection**: Selection works across all pages - scroll between pages while maintaining selections
 - **Visual Selection**: Selected measures show white borders (colored measures) or blue borders (empty measures) with dark outlines
 - **Bulk Operations**: Use "Edit Selected" to apply changes to multiple measures at once, or "Clear" to deselect all
+- **Bulk Hide-to-Memorize**: Tri-state checkbox showing unchecked (none hidden), checked (all hidden), or indeterminate/dash (mixed). Click toggles: none hidden → hide all, all hidden → show all, mixed → hide all
 - **Sticky Controls**: Selection controls remain accessible in the fixed header during scroll for easy access
 
 ## API Endpoints

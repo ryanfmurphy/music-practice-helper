@@ -29,6 +29,7 @@ A fully functional React-based web application for interactive music practice tr
 - **Automatic History Tracking**: All measure updates preserve previous data in `measure_confidence_history` table for complete audit trail
 - **Global Measure Selection**: "Select Measures" mode in sticky header enables multi-measure selection across all pages
 - **Bulk Editing**: Edit multiple selected measures simultaneously with shared confidence levels, notes, and BPM
+- **Bulk Hide-to-Memorize**: Tri-state checkbox in bulk edit modal for managing memorization practice across multiple measures
 - **Smart Selection Styling**: White borders for colored measures, blue borders for empty measures, with dark outlines for visibility
 - **Sticky Header Controls**: Selection controls stay visible in fixed header during scroll for easy access
 - **Keyboard Shortcuts**: Shift-click measures to auto-enable selection; Enter opens bulk edit for selected measures; ESC clears selection then exits selection mode; ESC closes modals
