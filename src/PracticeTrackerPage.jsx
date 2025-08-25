@@ -317,8 +317,6 @@ function PracticeTrackerPage({
                 const measureClassNames = "measure"
                     + (measureHasDetails(pageNumber, lineNumber, measureNumber) ? " with-details" : "")
                     + (lineData?.sheetMusicImgPath && showSheetMusic ? " with-sheet-music" : "")
-                    + (userMeasureDetails[`${pageNumber}-${lineNumber}-${measureNumber}`]?.hideToMemorize && showSheetMusic
-                        ? " hide-to-memorize" : "")
                 
                 // Parse custom flex-grow values from measureWidths
                 let flexGrow = 1 // default
@@ -350,6 +348,12 @@ function PracticeTrackerPage({
                       >
                         {confidenceRating}
                       </span>
+                    )}
+                    {/* Memorization overlay */}
+                    {userMeasureDetails[`${pageNumber}-${lineNumber}-${measureNumber}`]?.hideToMemorize && showSheetMusic && (
+                      <div className="measure-memorization-overlay">
+                        Play from memory ✨
+                      </div>
                     )}
                   </div>
                 )

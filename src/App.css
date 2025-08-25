@@ -58,10 +58,6 @@
 }
 
 .measure-row {
-  /*margin: 0 15px;*/
-}
-
-.measure-row {
   display: flex;
   gap: 5px;
   width: 96%;
@@ -100,17 +96,41 @@
   font-size: 18px;
 }
 
-/* covering up a the sheet music below so user can memorize */
-.measure.with-sheet-music.hide-to-memorize {
-  z-index: 1; /* on top of the sheet music */
+/* Memorization placeholder for individual measures */
+.measure-memorization-overlay {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  border: 2px dashed #87ceeb;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  color: #4682b4;
+  text-align: center;
+  padding: 4px;
+  box-sizing: border-box;
+  z-index: 1;
 }
-.facing-pages-container .measure.with-sheet-music.hide-to-memorize {
-  height: 190px;
-  margin-bottom: -160px;
+
+.facing-pages-container .measure-memorization-overlay {
+  height: 150px;
+  font-size: 9px;
 }
-.single-page-container .measure.with-sheet-music.hide-to-memorize {
-  height: 260px;
-  margin-bottom: -230px;
+
+.single-page-container .measure-memorization-overlay {
+  height: 200px;
+  font-size: 11px;
+}
+
+.dark-mode .measure-memorization-overlay {
+  background: linear-gradient(135deg, #2a3f5f 0%, #1e2a3a 100%);
+  border-color: #4a90e2;
+  color: #87ceeb;
 }
 
 .measure:hover {
