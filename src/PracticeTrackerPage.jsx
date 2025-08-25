@@ -13,6 +13,7 @@ function PracticeTrackerPage({
   selectedHands, 
   selectedBpm,
   onMeasureUpdate,
+  onHideToMemorizeToggle,
   isSelectionMode,
   setIsSelectionMode,
   selectedMeasures,
@@ -316,7 +317,7 @@ function PracticeTrackerPage({
                 const measureClassNames = "measure"
                     + (measureHasDetails(pageNumber, lineNumber, measureNumber) ? " with-details" : "")
                     + (lineData?.sheetMusicImgPath && showSheetMusic ? " with-sheet-music" : "")
-                    + (userMeasureDetails[measureNumber]?.hideToMemorize && showSheetMusic
+                    + (userMeasureDetails[`${pageNumber}-${lineNumber}-${measureNumber}`]?.hideToMemorize && showSheetMusic
                         ? " hide-to-memorize" : "")
                 
                 // Parse custom flex-grow values from measureWidths
@@ -328,10 +329,7 @@ function PracticeTrackerPage({
                   }
                 }
                 
-                console.log('rendering measureNumber', measureNumber)
-                console.log('userMeasureDetails', userMeasureDetails)
-                console.log('measureClassNames', measureClassNames)
-                  return (
+                return (
                   <div 
                     key={measureNumber} 
                     className={measureClassNames}
@@ -389,6 +387,8 @@ function PracticeTrackerPage({
         selectedHands={selectedHands}
         selectedBpm={selectedBpm}
         onSave={handleModalSave}
+        userMeasureDetails={userMeasureDetails}
+        onHideToMemorizeToggle={onHideToMemorizeToggle}
       />
     </div>
   )

@@ -35,6 +35,8 @@ A fully functional React-based web application for interactive music practice tr
 - **Text Selection Prevention**: User text selection disabled in practice areas to prevent interference with measure selection
 - **Auto-Scroll Feature**: Optional automatic scrolling functionality for hands-free reading during practice sessions
 - **Persistent Settings**: All sticky header selections (book, song, user, hands, BPM, checkboxes) automatically save to localStorage and restore on page refresh
+- **Custom Measure Widths**: Database-configurable flex-grow values for individual measures to match musical proportions (via `measure_widths` column)
+- **Line Spacing Control**: Optional invisible spacer before first measure on any line (via `width_before_first_measure` column)
 
 ## Keyboard Shortcuts
 - **Shift + Click Measure**: Auto-enable Selection Mode and select clicked measure
@@ -68,6 +70,7 @@ npm run dev
 - **Responsive Design**: Modal popups with measure details including confidence, notes, BPM, and practice metadata
 - **API Endpoints**: RESTful design with `/api/books`, `/api/songs`, `/api/songs/:id/pages`, `/api/songs/:id/measures`
 - **Page Positioning**: Supports songs starting on left or right pages for realistic book layout
+- **Flexible Measure Layout**: Custom measure widths via `measure_widths` column (comma-separated flex-grow values) and optional left spacing via `width_before_first_measure` column
 
 ## Development Status
 Production-ready with complete multi-user confidence visualization, unified measure editing interface, full database integration, and automatic history tracking. Features a consistent editable form experience with BPM tracking, expandable history display, and independent user data isolation. All measure updates are automatically preserved in history for complete audit trail. Includes global measure selection with bulk editing capabilities and intelligent sticky header controls. **Enhanced UI Features**: Dark mode, facing pages toggle, show/hide sheet music, visual styling improvements, and optimized UX performance. Ready for use with existing Köln Concert and Goldberg Variations data.
@@ -103,6 +106,8 @@ Production-ready with complete multi-user confidence visualization, unified meas
 - **Backend Filtering**: Efficient API filtering by practicer and hands for improved performance
 - **Smart Defaults**: New measures automatically default to selected user and hands
 - **Auto-Scroll Feature**: Added "Scroll" checkbox that enables automatic page scrolling (2px every 500ms) for hands-free practice reading
+- **Custom Measure Widths**: Added `measure_widths` database column and frontend support for proportional measure sizing using comma-separated flex-grow values
+- **Line Spacing Control**: Added `width_before_first_measure` database column for optional invisible spacer before first measure on any line
 
 ## Component Structure
 - `App.jsx` - Main application with book/song selection and data fetching

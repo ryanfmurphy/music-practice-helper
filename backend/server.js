@@ -250,7 +250,7 @@ app.get('/api/songs/:id/song_measure_user_details', async (req, res) => {
   try {
     const { user } = req.query;
 
-    let query = `SELECT song_measure_user_id, song_measure_no, hide_to_memorize
+    let query = `SELECT song_measure_user_id, page_number, line_number_on_page, measure_number_on_line, hide_to_memorize
                  FROM song_measure_user 
                  WHERE song_id = ?`;
     let params = [req.params.id];
@@ -260,7 +260,7 @@ app.get('/api/songs/:id/song_measure_user_details', async (req, res) => {
       params.push(user);
     }
 
-    query += ` ORDER BY song_measure_no`;
+    query += ` ORDER BY page_number, line_number_on_page, measure_number_on_line`;
 
     const measures = await dbAll(query, params);
     res.json(measures);
@@ -394,6 +394,61 @@ app.post('/api/songs/:id/measures', async (req, res) => {
     );
 
     res.json(newRecord);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update user-specific measure details
+app.put('/api/songs/:songId/measures/:page/:line/:measure/user-details', async (req, res) => {
+  try {
+    const songId = req.params.songId;
+    const pageNumber = parseInt(req.params.page);
+    const lineNumber = parseInt(req.params.line);
+    const measureNumber = parseInt(req.params.measure);
+    const { user } = req.query;
+    const { hide_to_memorize } = req.body;
+
+    // Validate required parameters
+    if (!user) {
+      return res.status(400).json({ error: 'User parameter is required' });
+    }
+
+    if (hide_to_memorize === undefined) {
+      return res.status(400).json({ error: 'hide_to_memorize field is required in request body' });
+    }
+
+    // Get the book_id for this song
+    const song = await dbGet('SELECT book_id FROM songs WHERE song_id = ?', [songId]);
+    if (!song) {
+      return res.status(404).json({ error: 'Song not found' });
+    }
+
+    // Check if record already exists
+    const existing = await dbGet(
+      `SELECT * FROM song_measure_user 
+       WHERE song_id = ? AND page_number = ? AND line_number_on_page = ? AND measure_number_on_line = ? AND user = ?`,
+      [songId, pageNumber, lineNumber, measureNumber, user]
+    );
+
+    if (existing) {
+      // Update existing record
+      await dbRun(
+        `UPDATE song_measure_user 
+         SET hide_to_memorize = ?
+         WHERE song_measure_user_id = ?`,
+        [hide_to_memorize ? 1 : 0, existing.song_measure_user_id]
+      );
+    } else {
+      // Create new record
+      await dbRun(
+        `INSERT INTO song_measure_user (book_id, song_id, page_number, line_number_on_page, measure_number_on_line, user, hide_to_memorize) 
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [song.book_id, songId, pageNumber, lineNumber, measureNumber, user, hide_to_memorize ? 1 : 0]
+      );
+    }
+
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -8,7 +8,9 @@ function EditMeasureDetailsModal({
   selectedUser, 
   selectedHands,
   selectedBpm,
-  onSave 
+  onSave,
+  userMeasureDetails,
+  onHideToMemorizeToggle
 }) {
   const [confidenceInput, setConfidenceInput] = useState('')
   const [notesInput, setNotesInput] = useState('')
@@ -211,6 +213,20 @@ function EditMeasureDetailsModal({
     setHandsInput(selectedHands || 'both')
   }
 
+  const handleHideToMemorizeToggle = async () => {
+    if (!selectedMeasure || !onHideToMemorizeToggle) return
+    
+    const measureKey = `${selectedMeasure.page}-${selectedMeasure.line}-${selectedMeasure.measure}`
+    const newHideState = !userMeasureDetails[measureKey]?.hideToMemorize
+    
+    try {
+      await onHideToMemorizeToggle(selectedMeasure.page, selectedMeasure.line, selectedMeasure.measure, newHideState)
+    } catch (error) {
+      console.error('Failed to toggle hide to memorize:', error)
+      // Could show user-friendly error here if needed
+    }
+  }
+
   const handleClose = () => {
     setConfidenceInput('')
     setNotesInput('')
@@ -249,6 +265,25 @@ function EditMeasureDetailsModal({
             )}
             Page {selectedMeasure.page}, Line {selectedMeasure.line}, Measure {selectedMeasure.measure}
           </h3>
+          
+          {/* Hide to memorize toggle */}
+          <div style={{ 
+            marginTop: '10px', 
+            paddingBottom: '10px', 
+            borderBottom: '1px solid #eee',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={userMeasureDetails[`${selectedMeasure.page}-${selectedMeasure.line}-${selectedMeasure.measure}`]?.hideToMemorize || false}
+                onChange={handleHideToMemorizeToggle}
+              />
+              🙈 Hide for memorization practice
+            </label>
+          </div>
           <button className="popup-close" onClick={handleClose}>
             ×
           </button>

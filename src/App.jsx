@@ -149,7 +149,7 @@ function App() {
 
     const scrollInterval = setInterval(() => {
       window.scrollBy(0, 2) // Scroll down 2px
-    }, 500) // Every 500ms
+    }, 400) // Every 500ms
 
     return () => clearInterval(scrollInterval)
   }, [autoScroll])
@@ -398,16 +398,16 @@ function App() {
       if (!response.ok) throw new Error('Failed to fetch user measure details')
       const measures = await response.json()
 
-      // Keep array of measures: 1-indexed, leave 0th measure blank
-      const userMeasureDetails = [null, ]
+      // Store as object with page-line-measure keys
+      const userMeasureDetails = {}
       measures.forEach(measure => {
-        userMeasureDetails[measure.song_measure_no] = {
+        const key = `${measure.page_number}-${measure.line_number_on_page}-${measure.measure_number_on_line}`
+        userMeasureDetails[key] = {
           song_measure_user_id: measure.song_measure_user_id,
           user: measure.user,
           hideToMemorize: measure.hide_to_memorize
         }
       })
-      console.log('userMeasureDetails', userMeasureDetails)
       setUserMeasureDetails(userMeasureDetails)
     } catch (err) {
       console.warn('Failed to fetch measure details:', err.message)
@@ -448,6 +448,38 @@ function App() {
         return { ...prev, [key]: [...existing, measureDetail] }
       }
     })
+  }
+
+  const handleHideToMemorizeToggle = async (page, line, measure, hideState) => {
+    try {
+      const response = await fetch(`${API_BASE}/songs/${selectedSong?.song_id}/measures/${page}/${line}/${measure}/user-details?user=${selectedUser}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          hide_to_memorize: hideState
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      // Update local state
+      const key = `${page}-${line}-${measure}`
+      setUserMeasureDetails(prevDetails => ({
+        ...prevDetails,
+        [key]: {
+          ...prevDetails[key],
+          hideToMemorize: hideState
+        }
+      }))
+
+    } catch (error) {
+      console.error('Failed to toggle hide to memorize:', error)
+      throw error // Re-throw so the modal can handle it
+    }
   }
 
   const handleBulkSave = (savedMeasure) => {
@@ -670,6 +702,7 @@ function App() {
                         measureDetails={measureDetails}
                         userMeasureDetails={userMeasureDetails}
                         onMeasureUpdate={handleMeasureUpdate}
+                        onHideToMemorizeToggle={handleHideToMemorizeToggle}
                         isSelectionMode={isSelectionMode}
                         setIsSelectionMode={setIsSelectionMode}
                         selectedMeasures={selectedMeasures}
@@ -695,6 +728,7 @@ function App() {
                         measureDetails={measureDetails}
                         userMeasureDetails={userMeasureDetails}
                         onMeasureUpdate={handleMeasureUpdate}
+                        onHideToMemorizeToggle={handleHideToMemorizeToggle}
                         isSelectionMode={isSelectionMode}
                         setIsSelectionMode={setIsSelectionMode}
                         selectedMeasures={selectedMeasures}
@@ -724,6 +758,7 @@ function App() {
                     measureDetails={measureDetails}
                     userMeasureDetails={userMeasureDetails}
                     onMeasureUpdate={handleMeasureUpdate}
+                    onHideToMemorizeToggle={handleHideToMemorizeToggle}
                     isSelectionMode={isSelectionMode}
                     setIsSelectionMode={setIsSelectionMode}
                     selectedMeasures={selectedMeasures}
