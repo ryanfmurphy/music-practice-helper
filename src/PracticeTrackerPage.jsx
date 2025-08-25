@@ -301,23 +301,44 @@ function PracticeTrackerPage({
           <div key={lineIndex} className={`line-container ${!showPracticeProgress && lineData?.sheetMusicImgPath ? 'minimal-spacing' : ''}`}>
             {shouldShowMeasureRow && (
               <div className="measure-row">
-                {measuresForThisLine.map(measureNumber => {
+                {/* Optional spacer before first measure */}
+                {lineData?.widthBeforeFirstMeasure && (
+                  <div
+                    style={{
+                      flexGrow: lineData.widthBeforeFirstMeasure,
+                      flexShrink: 0,
+                      minWidth: 0
+                    }}
+                  />
+                )}
+                {measuresForThisLine.map((measureNumber, measureIndex) => {
                 const confidenceRating = getConfidenceRating(pageNumber, lineNumber, measureNumber)
                 const measureClassNames = "measure"
                     + (measureHasDetails(pageNumber, lineNumber, measureNumber) ? " with-details" : "")
                     + (lineData?.sheetMusicImgPath && showSheetMusic ? " with-sheet-music" : "")
                     + (userMeasureDetails[measureNumber]?.hideToMemorize && showSheetMusic
                         ? " hide-to-memorize" : "")
-                  console.log('rendering measureNumber', measureNumber)
-                  console.log('userMeasureDetails', userMeasureDetails)
-                  console.log('measureClassNames', measureClassNames)
+                
+                // Parse custom flex-grow values from measureWidths
+                let flexGrow = 1 // default
+                if (lineData?.measureWidths) {
+                  const widthValues = lineData.measureWidths.split(',').map(w => parseFloat(w.trim()))
+                  if (measureIndex < widthValues.length && !isNaN(widthValues[measureIndex])) {
+                    flexGrow = widthValues[measureIndex]
+                  }
+                }
+                
+                console.log('rendering measureNumber', measureNumber)
+                console.log('userMeasureDetails', userMeasureDetails)
+                console.log('measureClassNames', measureClassNames)
                   return (
                   <div 
                     key={measureNumber} 
                     className={measureClassNames}
                     style={{
                       ...getConfidenceStyle(pageNumber, lineNumber, measureNumber),
-                      position: 'relative'
+                      position: 'relative',
+                      flexGrow: flexGrow
                     }}
                     onClick={(event) => handleMeasureClick(pageNumber, lineNumber, measureNumber, event)}
                   >
