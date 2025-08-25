@@ -99,7 +99,7 @@
 /* Memorization placeholder for individual measures */
 .measure-memorization-overlay {
   position: absolute;
-  top: 100%;
+  top: 105%; /* leave a little space under the measure box */
   left: 0;
   right: 0;
   display: flex;
@@ -123,7 +123,7 @@
 }
 
 .single-page-container .measure-memorization-overlay {
-  height: 200px;
+  height: 210px;
   font-size: 11px;
 }
 
