@@ -65,6 +65,7 @@ function App() {
   useEffect(() => {
     if (selectedSong) {
       fetchMeasureDetails(selectedSong.song_id)
+      fetchUserMeasureDetails(selectedSong.song_id)
     }
   }, [selectedSong, selectedUser, selectedHands])
 
@@ -381,15 +382,16 @@ function App() {
   }
 
   const fetchUserMeasureDetails = async (songId) => {
+    // no user? no user measure settings
+    if (!selectedUser) {
+      setUserMeasureDetails({})
+      return;
+    }
     try {
       // Build URL with optional practicer and hands filters
       let url = `${API_BASE}/songs/${songId}/song_measure_user_details`
       const params = new URLSearchParams()
-
-      if (selectedUser) {
-        params.append('user', selectedUser)
-      }
-
+      params.append('user', selectedUser)
       if (params.toString()) {
         url += `?${params.toString()}`
       }

@@ -214,7 +214,7 @@ function EditMeasureDetailsModal({
   }
 
   const handleHideToMemorizeToggle = async () => {
-    if (!selectedMeasure || !onHideToMemorizeToggle) return
+    if (!selectedMeasure || !onHideToMemorizeToggle || !selectedUser) return
     
     const measureKey = `${selectedMeasure.page}-${selectedMeasure.line}-${selectedMeasure.measure}`
     const newHideState = !userMeasureDetails[measureKey]?.hideToMemorize
@@ -273,15 +273,19 @@ function EditMeasureDetailsModal({
             borderBottom: '1px solid #eee',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px'
+            gap: '8px',
+            opacity: !selectedUser ? 0.5 : 1
           }}>
-            <label className="checkbox-label">
+            <label className="checkbox-label" style={{ 
+              cursor: !selectedUser ? 'not-allowed' : 'pointer'
+            }}>
               <input
                 type="checkbox"
-                checked={userMeasureDetails[`${selectedMeasure.page}-${selectedMeasure.line}-${selectedMeasure.measure}`]?.hideToMemorize || false}
+                checked={selectedUser ? userMeasureDetails[`${selectedMeasure.page}-${selectedMeasure.line}-${selectedMeasure.measure}`]?.hideToMemorize || false : false}
                 onChange={handleHideToMemorizeToggle}
+                disabled={!selectedUser}
               />
-              🙈 Hide for memorization practice
+              🙈 Hide for memorization practice {!selectedUser && <span style={{ fontSize: '12px', color: '#888' }}>(select a user first)</span>}
             </label>
           </div>
           <button className="popup-close" onClick={handleClose}>
