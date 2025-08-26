@@ -204,6 +204,28 @@ function PracticeTrackerPage({
     return details.confidence.toString()
   }
 
+  const getBpmDisplay = (pageNum, lineNum, measureNum) => {
+    // Don't show BPM when practice progress is disabled
+    if (!showPracticeProgress) return null
+    
+    const measureKey = `${pageNum}-${lineNum}-${measureNum}`
+    const detailsArray = measureDetails[measureKey]
+    
+    if (!detailsArray || detailsArray.length === 0) return null
+    
+    // Get BPM values from all records
+    const bpmValues = detailsArray
+      .filter(d => d.bpm && d.bpm > 0)
+      .map(d => d.bpm)
+    
+    if (bpmValues.length === 0) return null
+    
+    // If multiple different BPM values, show the most recent one
+    const bpm = bpmValues[bpmValues.length - 1]
+    
+    return `♩=${Math.round(bpm)}`
+  }
+
   const handleMeasureClick = (pageNum, lineNum, measureNum, event) => {
     // Power user shortcut: Shift-click while NOT in selection mode
     if (!isSelectionMode && event && event.shiftKey) {
@@ -311,6 +333,7 @@ function PracticeTrackerPage({
                 )}
                 {measuresForThisLine.map((measureNumber, measureIndex) => {
                 const confidenceRating = getConfidenceRating(pageNumber, lineNumber, measureNumber)
+                const bpmDisplay = getBpmDisplay(pageNumber, lineNumber, measureNumber)
                 const measureClassNames = "measure"
                     + (measureHasDetails(pageNumber, lineNumber, measureNumber) ? " with-details" : "")
                     + (lineData?.sheetMusicImgPath && showSheetMusic ? " with-sheet-music" : "")
@@ -336,6 +359,11 @@ function PracticeTrackerPage({
                     onClick={(event) => handleMeasureClick(pageNumber, lineNumber, measureNumber, event)}
                   >
                     <span>{measureNumber}</span>
+                    {bpmDisplay && (
+                      <span className="measure-bpm">
+                        {bpmDisplay}
+                      </span>
+                    )}
                     {confidenceRating && (
                       <span
                         className={`corner-confidence ${

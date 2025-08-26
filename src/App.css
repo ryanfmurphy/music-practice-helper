@@ -175,6 +175,32 @@
   font-size: 14px;
 }
 
+.measure-bpm {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  font-size: 10px;
+  color: #666;
+  font-weight: normal;
+  line-height: 1;
+}
+
+.facing-pages-container .measure-bpm {
+  font-size: 8px;
+  bottom: 1px;
+  left: 1px;
+}
+
+.single-page-container .measure-bpm {
+  font-size: 12px;
+  bottom: 2px;
+  left: 2px;
+}
+
+.dark-mode .measure-bpm {
+  color: #bbb;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
