@@ -19,6 +19,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isSelectorsFixed, setIsSelectorsFixed] = useState(false)
+  const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(false)
   const selectorsRef = useRef(null)
   const selectorsStickyOffsetRef = useRef(0)
   const [isSelectionMode, setIsSelectionMode] = useState(false)
@@ -116,6 +117,10 @@ function App() {
   }, [
       pages
   ]) // Re-run when pages change to recalculate offset
+
+  const toggleHeaderCollapse = () => {
+    setIsHeaderCollapsed(!isHeaderCollapsed)
+  }
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -511,7 +516,7 @@ function App() {
       
       <div 
         ref={selectorsRef}
-        className={`selectors ${isSelectorsFixed ? 'selectors-fixed' : ''}`}
+        className={`selectors ${isSelectorsFixed ? 'selectors-fixed' : ''} ${isHeaderCollapsed ? 'selectors-collapsed' : ''} ${isSelectorsFixed ? 'has-footer' : ''}`}
       >
         <div className="book-selector">
           <label htmlFor="book-select">Book: </label>
@@ -668,6 +673,15 @@ function App() {
             </div>
           )}
         </div>
+        
+        {/* Collapse/expand footer - only visible when sticky */}
+        {isSelectorsFixed && (
+          <div className="sticky-header-footer" onClick={toggleHeaderCollapse}>
+            <span className="collapse-arrow">
+              {isHeaderCollapsed ? '▲' : '▼'}
+            </span>
+          </div>
+        )}
       </div>
 
       {selectedSong && (
