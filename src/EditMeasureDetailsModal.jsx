@@ -406,7 +406,6 @@ function EditMeasureDetailsModal({
               <div 
                 className="history-header"
                 onClick={() => setShowHistory(!showHistory)}
-                className="history-header"
               >
                 <label style={{ margin: 0, cursor: 'pointer' }}>
                   History ({measureHistory.length} changes)

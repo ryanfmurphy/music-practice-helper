@@ -295,13 +295,10 @@ function PracticeTrackerPage({
         }
         currentMeasure += numMeasures
 
-        // Don't render measure boxes for lines with sheet music when practice progress is disabled
-        const shouldShowMeasureRow = showPracticeProgress || !lineData?.sheetMusicImgPath
-
         return (
           <div key={lineIndex} className={`line-container ${!showPracticeProgress && lineData?.sheetMusicImgPath ? 'minimal-spacing' : ''}`}>
-            {shouldShowMeasureRow && (
-              <div className="measure-row">
+            {/* Always render measure boxes, but make them invisible ghosts when practice progress is off */}
+            <div className={`measure-row ${!showPracticeProgress && lineData?.sheetMusicImgPath ? 'ghost-measures' : ''}`}>
                 {/* Optional spacer before first measure */}
                 {lineData?.widthBeforeFirstMeasure && (
                   <div
@@ -359,23 +356,15 @@ function PracticeTrackerPage({
                 )
               })}
               </div>
-            )}
             {lineData?.sheetMusicImgPath && showSheetMusic && (
               <div className={`sheet-music-line-container ${
                 facingPages ? 'facing-pages' : 'single-page'
               }`}>
-                {lineData.hideToMemorize ? (
-                  <div className="memorization-placeholder">
-                    <div className="memorization-line-number">Page {pageNumber} Line {lineNumber}</div>
-                    <span>Play from memory ✨</span>
-                  </div>
-                ) : (
-                  <img
-                    className="sheet-music-line-img"
-                    src={`/sheet-music/${lineData.sheetMusicImgPath}`}
-                    alt={`Sheet music for page ${pageNumber}, line ${lineNumber}`}
-                  />
-                )}
+                <img
+                  className="sheet-music-line-img"
+                  src={`/sheet-music/${lineData.sheetMusicImgPath}`}
+                  alt={`Sheet music for page ${pageNumber}, line ${lineNumber}`}
+                />
               </div>
             )}
           </div>

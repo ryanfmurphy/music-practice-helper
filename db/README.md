@@ -28,4 +28,4 @@ sqlite3 new_database.db < schema.sql
 
 - This schema is extracted from the main project database and only includes tables actually used by the web frontend
 - The `practice_session` table exists in the backend API but is not used by the web application frontend
-- Schema includes the latest additions like `hide_to_memorize` column in `song_page_lines`
+- Measure-level memorization tracking is handled via the `song_measure_user` table

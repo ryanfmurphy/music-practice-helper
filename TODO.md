@@ -30,7 +30,6 @@
       is the sheet music directly below the measure box. You could have a blue dotted-lined-region that looks similar as the line-based one, but it comes straight down
       from the left and right of the measure box - no white space in between the measure box and the "flag falling down and covering up that part of the sheet music. Same
       or similar messaging: "Play from memory <sparkle>"
-- [ ] An option to toggle the hide-to-memorize for a line
 - [ ] Store % widths for measure boxes on song_page_line, and display measure boxes with min-width: X%
   - Allows lining up with sheet music better
 - [ ] Add bpm_denominator to measure_confidence. ENUM values = whole,half,quarter,dotted-quarter,8th,16th

@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS "song_page_lines" (
     num_measures INTEGER NOT NULL,
     last_measure_overflows INTEGER NOT NULL DEFAULT 0,
     start_time_secs INTEGER
-, sheet_music_img_path TEXT, hide_to_memorize TINYINT(1) NOT NULL DEFAULT 0);
+, sheet_music_img_path TEXT);
 CREATE TABLE measure_confidence (
     measure_confidence_id INTEGER PRIMARY KEY AUTOINCREMENT,
     book_id INTEGER NOT NULL,
