@@ -678,7 +678,7 @@ function App() {
         {isSelectorsFixed && (
           <div className="sticky-header-footer" onClick={toggleHeaderCollapse}>
             <span className="collapse-arrow">
-              {isHeaderCollapsed ? '▲' : '▼'}
+              {isHeaderCollapsed ? '▼' : '▲'}
             </span>
           </div>
         )}
