@@ -223,30 +223,11 @@ function BulkEditModal({
       <div className="popup-content">
         <div className="popup-header">
           <h3>Bulk Edit {selectedMeasures.size} Measures</h3>
-          <button className="popup-close" onClick={handleClose}>
-            ×
-          </button>
-        </div>
-        
-        <div className="popup-body">
-          {/* Selected measures summary */}
-          <div className="measures-summary">
-            <h4 className="measures-summary-header">Selected Measures:</h4>
-            <div className="measures-summary-content">
-              {measureList.map((m, index) => (
-                <span key={m.key}>
-                  {index > 0 && ', '}
-                  p{m.page}L{m.line}M{m.measure}
-                </span>
-              ))}
-            </div>
-          </div>
-
+          
           {/* Hide to memorize toggle */}
           <div style={{ 
-            marginTop: '15px',
-            marginBottom: '15px', 
-            paddingBottom: '15px', 
+            marginTop: '10px', 
+            paddingBottom: '10px', 
             borderBottom: '1px solid #eee',
             display: 'flex',
             alignItems: 'center',
@@ -264,6 +245,24 @@ function BulkEditModal({
               />
               🙈 Hide for memorization practice {!selectedUser && <span style={{ fontSize: '12px', color: '#888' }}>(select a user first)</span>}
             </label>
+          </div>
+          <button className="popup-close" onClick={handleClose}>
+            ×
+          </button>
+        </div>
+        
+        <div className="popup-body">
+          {/* Selected measures summary */}
+          <div className="measures-summary">
+            <h4 className="measures-summary-header">Selected Measures:</h4>
+            <div className="measures-summary-content">
+              {measureList.map((m, index) => (
+                <span key={m.key}>
+                  {index > 0 && ', '}
+                  p{m.page}L{m.line}M{m.measure}
+                </span>
+              ))}
+            </div>
           </div>
 
           <div className="measure-edit-form">
