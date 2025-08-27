@@ -329,7 +329,7 @@ function PracticeTrackerPage({
         return (
           <div key={lineIndex} className={`line-container ${shouldUseMinimalSpacing ? 'minimal-spacing' : ''}`}>
             {/* Always render measure boxes, but make them invisible ghosts when practice progress is off */}
-            <div className={`measure-row ${!showPracticeProgress && hasSheetMusicImg ? 'ghost-measures' : ''}`}>
+            <div className={`measure-row ${!showPracticeProgress && (hasSheetMusicImg || hasLyrics) ? 'ghost-measures' : ''}`}>
                 {/* Optional spacer before first measure */}
                 {lineData?.widthBeforeFirstMeasure && (
                   <div
