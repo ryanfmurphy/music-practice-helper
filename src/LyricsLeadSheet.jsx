@@ -25,9 +25,9 @@ function LyricsLeadSheet({ lyricsLeadSheetTxt }) {
           elements.push({ type: 'text', content: textBefore })
         }
         
-        // Find the word immediately after the chord
+        // Find the word immediately after the chord (up to next chord or whitespace)
         const textAfterChord = line.substring(chordEnd)
-        const wordMatch = textAfterChord.match(/^(\S+)/)
+        const wordMatch = textAfterChord.match(/^([^\s\[]+)/)
         
         if (wordMatch) {
           const word = wordMatch[1]
