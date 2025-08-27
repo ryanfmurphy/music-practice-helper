@@ -406,7 +406,7 @@ function PracticeTrackerPage({
               </div>
             )}
             {/* Render lyrics for this line */}
-            {hasLyrics && (
+            {!!hasLyrics && (
               <LyricsLeadSheet
                 lyricsLeadSheetTxt={hasLyrics}
               />
