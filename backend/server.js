@@ -267,7 +267,14 @@ app.get('/api/songs/:id/song_measure_user_details', async (req, res) => {
     query += ` ORDER BY page_number, line_number_on_page, measure_number_on_line`;
 
     const measures = await dbAll(query, params);
-    res.json(measures);
+    
+    // Convert database integers to proper booleans
+    const processedMeasures = measures.map(measure => ({
+      ...measure,
+      hide_to_memorize: !!measure.hide_to_memorize
+    }));
+    
+    res.json(processedMeasures);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
