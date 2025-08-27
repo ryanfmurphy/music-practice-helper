@@ -3,12 +3,16 @@ import cors from 'cors';
 import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { config } from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Load environment variables from .env.local
+config({ path: join(__dirname, '.env.local') });
+
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.SERVER_PORT || 3001;
 
 // Database connection
 const dbPath = join(__dirname, '..', '..', '..', 'sqlite_mcp_server.db');
@@ -459,8 +463,10 @@ app.get('/api/health', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Music Practice Helper API running on port ${PORT}`);
+const HOST = process.env.SERVER_HOST || 'localhost';
+
+app.listen(PORT, HOST, () => {
+  console.log(`Music Practice Helper API running on ${HOST}:${PORT}`);
 });
 
 // Graceful shutdown

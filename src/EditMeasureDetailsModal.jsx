@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { API_BASE } from './config'
 
 function EditMeasureDetailsModal({ 
   isOpen, 
@@ -97,7 +98,7 @@ function EditMeasureDetailsModal({
     setIsLoadingHistory(true)
     try {
       // Build URL with specific practicer and hands filters
-      let url = `http://localhost:3001/api/songs/${songId}/measures/${pageNum}/${lineNum}/${measureNum}/history`
+      let url = `${API_BASE}/songs/${songId}/measures/${pageNum}/${lineNum}/${measureNum}/history`
       const params = new URLSearchParams()
       
       if (practicer) {
@@ -159,7 +160,7 @@ function EditMeasureDetailsModal({
     
     setIsSaving(true)
     try {
-      const response = await fetch(`http://localhost:3001/api/songs/${songId}/measures`, {
+      const response = await fetch(`${API_BASE}/songs/${songId}/measures`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

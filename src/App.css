@@ -177,24 +177,24 @@
 
 .measure-bpm {
   position: absolute;
-  bottom: 2px;
+  top: 2px;
   left: 2px;
   font-size: 10px;
   color: #666;
-  font-weight: normal;
+  font-weight: bold;
   line-height: 1;
 }
 
 .facing-pages-container .measure-bpm {
-  font-size: 8px;
-  bottom: 1px;
-  left: 1px;
+  font-size: 10px;
+  top: 4px;
+  left: 4px;
 }
 
-.single-page-container .measure-bpm {
-  font-size: 12px;
-  bottom: 2px;
-  left: 2px;
+.single-page-container .measure-bmp {
+  font-size: 14px;
+  top: 5px;
+  left: 5px;
 }
 
 .dark-mode .measure-bpm {

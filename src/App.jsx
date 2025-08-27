@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import './App.css'
 import PracticeTrackerPage from './PracticeTrackerPage'
 import BulkEditModal from './BulkEditModal'
+import { API_BASE } from './config'
 
 function App() {
   const [books, setBooks] = useState([])
@@ -38,7 +39,6 @@ function App() {
   // Track whether user has manually changed book filter, to prevent auto-selecting songs on fresh start
   const [userHasChangedBookFilter, setUserHasChangedBookFilter] = useState(false)
 
-  const API_BASE = 'http://localhost:3001/api'
 
   useEffect(() => {
     const initializeApp = async () => {

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { API_BASE } from './config'
 
 function BulkEditModal({ 
   isOpen, 
@@ -127,7 +128,7 @@ function BulkEditModal({
       // Save each measure individually
       const savedMeasures = []
       for (const { page, line, measure } of measureList) {
-        const response = await fetch(`http://localhost:3001/api/songs/${songId}/measures`, {
+        const response = await fetch(`${API_BASE}/songs/${songId}/measures`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
