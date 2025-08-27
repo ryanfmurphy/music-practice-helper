@@ -978,3 +978,47 @@
 .dark-mode .history-item-footer {
   color: #bbb;
 }
+
+/* Music Lead Sheet Styles */
+.music-lead-sheet {
+  font-family: 'Times New Roman', serif;
+  font-size: 18px;
+  line-height: 2.5;
+  max-width: 800px;
+  margin: 10px auto 30px;
+  padding: 30px 10px 0px;
+  border: solid 1px #777;
+  background-color: #f9f9f9;
+}
+
+.music-lead-sheet .song-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.music-lead-sheet .line {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.music-lead-sheet .chord-over-word {
+  position: relative;
+  display: inline-block;
+}
+
+.music-lead-sheet .chord {
+  position: absolute;
+  top: -25px;
+  left: 0;
+  font-weight: bold;
+  color: #0066cc;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.music-lead-sheet .word {
+  display: inline;
+}

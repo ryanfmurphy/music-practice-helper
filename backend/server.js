@@ -101,7 +101,7 @@ app.get('/api/songs/:id/pages', async (req, res) => {
   try {
     const song = await dbGet('SELECT first_page_position FROM songs WHERE song_id = ?', [req.params.id]);
     const pageLines = await dbAll(
-      `SELECT page_number, line_number_on_page, num_measures, last_measure_overflows, start_time_secs, sheet_music_img_path, measure_widths, width_before_first_measure
+      `SELECT page_number, line_number_on_page, num_measures, last_measure_overflows, start_time_secs, sheet_music_img_path, measure_widths, width_before_first_measure, lyrics_lead_sheet_txt
        FROM song_page_lines 
        WHERE song_id = ? 
        ORDER BY page_number, line_number_on_page`,
@@ -129,7 +129,8 @@ app.get('/api/songs/:id/pages', async (req, res) => {
         startTimeSecs: line.start_time_secs,
         lastMeasureOverflows: line.last_measure_overflows,
         measureWidths: line.measure_widths,
-        widthBeforeFirstMeasure: line.width_before_first_measure
+        widthBeforeFirstMeasure: line.width_before_first_measure,
+        lyricsLeadSheetTxt: line.lyrics_lead_sheet_txt
       });
       currentMeasure += line.num_measures;
     });
@@ -456,6 +457,7 @@ app.put('/api/songs/:songId/measures/:page/:line/:measure/user-details', async (
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Health check
 app.get('/api/health', (req, res) => {

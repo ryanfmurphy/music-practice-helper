@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import EditMeasureDetailsModal from './EditMeasureDetailsModal'
+import LyricsLeadSheet from './LyricsLeadSheet'
 
 function PracticeTrackerPage({ 
   pageNumber, 
@@ -317,10 +318,18 @@ function PracticeTrackerPage({
         }
         currentMeasure += numMeasures
 
+        // Check if this line has lyrics or sheet music
+        const hasLyrics = lineData?.lyricsLeadSheetTxt
+        const hasSheetMusicImg = lineData?.sheetMusicImgPath
+        const showReducedMeasures = hasLyrics
+        
+        // Apply minimal spacing when practice progress is off AND there's either sheet music or lyrics
+        const shouldUseMinimalSpacing = !showPracticeProgress && (hasSheetMusicImg || hasLyrics)
+
         return (
-          <div key={lineIndex} className={`line-container ${!showPracticeProgress && lineData?.sheetMusicImgPath ? 'minimal-spacing' : ''}`}>
+          <div key={lineIndex} className={`line-container ${shouldUseMinimalSpacing ? 'minimal-spacing' : ''}`}>
             {/* Always render measure boxes, but make them invisible ghosts when practice progress is off */}
-            <div className={`measure-row ${!showPracticeProgress && lineData?.sheetMusicImgPath ? 'ghost-measures' : ''}`}>
+            <div className={`measure-row ${!showPracticeProgress && hasSheetMusicImg ? 'ghost-measures' : ''}`}>
                 {/* Optional spacer before first measure */}
                 {lineData?.widthBeforeFirstMeasure && (
                   <div
@@ -337,6 +346,7 @@ function PracticeTrackerPage({
                 const measureClassNames = "measure"
                     + (measureHasDetails(pageNumber, lineNumber, measureNumber) ? " with-details" : "")
                     + (lineData?.sheetMusicImgPath && showSheetMusic ? " with-sheet-music" : "")
+                    + (showReducedMeasures ? " with-sheet-music" : "")
                 
                 // Parse custom flex-grow values from measureWidths
                 let flexGrow = 1 // default
@@ -349,38 +359,38 @@ function PracticeTrackerPage({
                 
                 return (
                   <div 
-                    key={measureNumber} 
+                    key={measureNumber}
                     className={measureClassNames}
-                    style={{
-                      ...getConfidenceStyle(pageNumber, lineNumber, measureNumber),
-                      position: 'relative',
-                      flexGrow: flexGrow
-                    }}
-                    onClick={(event) => handleMeasureClick(pageNumber, lineNumber, measureNumber, event)}
-                  >
-                    <span>{measureNumber}</span>
-                    {bpmDisplay && (
-                      <span className="measure-bpm">
-                        {bpmDisplay}
-                      </span>
-                    )}
-                    {confidenceRating && (
-                      <span
-                        className={`corner-confidence ${
-                          (typeof confidenceRating === 'string' && !['👥', '🙌', '👥🙌'].includes(confidenceRating))
-                            ? 'low-opacity' : ''
-                        }`}
-                      >
-                        {confidenceRating}
-                      </span>
-                    )}
-                    {/* Memorization overlay */}
-                    {userMeasureDetails[`${pageNumber}-${lineNumber}-${measureNumber}`]?.hideToMemorize && showSheetMusic && (
-                      <div className="measure-memorization-overlay">
-                        Play from memory ✨
-                      </div>
-                    )}
-                  </div>
+                      style={{
+                        ...getConfidenceStyle(pageNumber, lineNumber, measureNumber),
+                        position: 'relative',
+                        flexGrow: flexGrow
+                      }}
+                      onClick={(event) => handleMeasureClick(pageNumber, lineNumber, measureNumber, event)}
+                    >
+                      <span>{measureNumber}</span>
+                      {bpmDisplay && (
+                        <span className="measure-bpm">
+                          {bpmDisplay}
+                        </span>
+                      )}
+                      {confidenceRating && (
+                        <span
+                          className={`corner-confidence ${
+                            (typeof confidenceRating === 'string' && !['👥', '🙌', '👥🙌'].includes(confidenceRating))
+                              ? 'low-opacity' : ''
+                          }`}
+                        >
+                          {confidenceRating}
+                        </span>
+                      )}
+                      {/* Memorization overlay */}
+                      {userMeasureDetails[`${pageNumber}-${lineNumber}-${measureNumber}`]?.hideToMemorize && showSheetMusic && (
+                        <div className="measure-memorization-overlay">
+                          Play from memory ✨
+                        </div>
+                      )}
+                    </div>
                 )
               })}
               </div>
@@ -394,6 +404,12 @@ function PracticeTrackerPage({
                   alt={`Sheet music for page ${pageNumber}, line ${lineNumber}`}
                 />
               </div>
+            )}
+            {/* Render lyrics for this line */}
+            {hasLyrics && (
+              <LyricsLeadSheet
+                lyricsLeadSheetTxt={hasLyrics}
+              />
             )}
           </div>
         )
