@@ -31,10 +31,16 @@ function LyricsLeadSheet({ lyricsLeadSheetTxt }) {
         
         if (wordMatch) {
           const word = wordMatch[1]
+          
+          // Check if there's another chord after this word part (indicating a split word)
+          const remainingText = line.substring(chordEnd + word.length)
+          const hasFollowingChord = remainingText.match(/^\[/)
+          const needsHyphen = hasFollowingChord && word.match(/^[a-zA-Z]+$/) // Only hyphenate alphabetic words
+          
           elements.push({
             type: 'chord-over-word',
             chord: chordName,
-            word: word
+            word: needsHyphen ? word + ' -' : word
           })
           currentPosition = chordEnd + word.length
         } else {
@@ -64,8 +70,35 @@ function LyricsLeadSheet({ lyricsLeadSheetTxt }) {
         // Replace spaces with &nbsp; to preserve spacing
         return element.content.replace(/ /g, '\u00A0')
       } else if (element.type === 'chord-over-word') {
+        // Calculate if we need extra spacing for long chords
+        const chordLength = element.chord.length
+        const wordLength = element.word.length
+        const isChordOnly = element.word === '\u00A0' // Non-breaking space means chord-only
+        
+        // Check if next element is also a chord-only (for consecutive chords)
+        const nextElement = elements[index + 1]
+        const nextIsChordOnly = nextElement && nextElement.type === 'chord-over-word' && nextElement.word === '\u00A0'
+        
+        let extraSpacing = {}
+        
+        if (isChordOnly) {
+          // For chord-only elements, add minimum spacing based on chord length
+          const minSpacing = Math.max(chordLength * 0.3, 2) // At least 2em for chord-only
+          extraSpacing.paddingRight = `${minSpacing}em`
+        } else {
+          // For chord-over-word, add extra spacing if chord is significantly longer than the word
+          const needsExtraSpace = chordLength > wordLength + 2
+          if (needsExtraSpace) {
+            extraSpacing.paddingRight = `${(chordLength - wordLength) * 0.3}em`
+          }
+        }
+        
         return (
-          <span key={index} className="chord-over-word">
+          <span 
+            key={index} 
+            className="chord-over-word"
+            style={extraSpacing}
+          >
             <span className="chord">{element.chord}</span>
             <span className="word">{element.word}</span>
           </span>

@@ -999,6 +999,8 @@
 .music-lead-sheet .chord-over-word {
   position: relative;
   display: inline-block;
+  min-width: fit-content;
+  padding-right: 4px; /* Base spacing between chord-word pairs */
 }
 
 .music-lead-sheet .chord {
@@ -1007,10 +1009,21 @@
   left: 0;
   font-weight: bold;
   color: #0066cc;
-  font-size: 14px;
+  font-size: 20px;
   white-space: nowrap;
 }
 
 .music-lead-sheet .word {
   display: inline;
+}
+
+/* Larger text in single page mode */
+.single-page .music-lead-sheet {
+  font-size: 24px;
+  line-height: 2.8;
+}
+
+.single-page .music-lead-sheet .chord {
+  font-size: 28px;
+  top: -32px;
 }
