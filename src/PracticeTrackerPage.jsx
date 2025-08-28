@@ -327,7 +327,7 @@ function PracticeTrackerPage({
         const shouldUseMinimalSpacing = !showPracticeProgress && (hasSheetMusicImg || hasLyrics)
 
         return (
-          <div key={lineIndex} className={`line-container ${shouldUseMinimalSpacing ? 'minimal-spacing' : ''}`}>
+          <div key={lineIndex} className={`line-container ${shouldUseMinimalSpacing ? 'minimal-spacing' : ''} ${hasLyrics ? 'has-lyrics' : ''}`}>
             {/* Always render measure boxes, but make them invisible ghosts when practice progress is off */}
             <div className={`measure-row ${!showPracticeProgress && (hasSheetMusicImg || hasLyrics) ? 'ghost-measures' : ''}`}>
                 {/* Optional spacer before first measure */}
@@ -406,7 +406,7 @@ function PracticeTrackerPage({
               </div>
             )}
             {/* Render lyrics for this line */}
-            {!!hasLyrics && (
+            {!!hasLyrics && showSheetMusic && (
               <LyricsLeadSheet
                 lyricsLeadSheetTxt={hasLyrics}
               />

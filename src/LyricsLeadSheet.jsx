@@ -1,4 +1,48 @@
-import React from 'react'
+import React, { useRef, useEffect, useState } from 'react'
+
+function ChordOverWord({ chord, word, index, elements }) {
+  const chordRef = useRef()
+  const [chordWidth, setChordWidth] = useState(0)
+  const [wordWidth, setWordWidth] = useState(0)
+  
+  useEffect(() => {
+    if (chordRef.current) {
+      const chordElement = chordRef.current.querySelector('.chord')
+      const wordElement = chordRef.current.querySelector('.word')
+      
+      if (chordElement && wordElement) {
+        setChordWidth(chordElement.getBoundingClientRect().width)
+        setWordWidth(wordElement.getBoundingClientRect().width)
+      }
+    }
+  }, [chord, word])
+  
+  const isChordOnly = word === '\u00A0' // Non-breaking space means chord-only
+  
+  let extraSpacing = {}
+  
+  if (isChordOnly && chordWidth > 0) {
+    // For chord-only elements, provide generous spacing based on actual chord width
+    const spacingPx = Math.max(chordWidth * 1.2, 32) // At least 32px for chord-only
+    extraSpacing.paddingRight = `${spacingPx}px`
+  } else if (chordWidth > wordWidth && chordWidth > 0) {
+    // For chord-over-word, add extra spacing when chord is wider than word
+    const extraPx = (chordWidth - wordWidth) * 1.1 // 10% extra buffer
+    extraSpacing.paddingRight = `${extraPx}px`
+  }
+  
+  return (
+    <span 
+      ref={chordRef}
+      key={index} 
+      className="chord-over-word"
+      style={extraSpacing}
+    >
+      <span className="chord">{chord}</span>
+      <span className="word">{word}</span>
+    </span>
+  )
+}
 
 function LyricsLeadSheet({ lyricsLeadSheetTxt }) {
   const parseLeadSheetText = (text) => {
@@ -70,38 +114,14 @@ function LyricsLeadSheet({ lyricsLeadSheetTxt }) {
         // Replace spaces with &nbsp; to preserve spacing
         return element.content.replace(/ /g, '\u00A0')
       } else if (element.type === 'chord-over-word') {
-        // Calculate if we need extra spacing for long chords
-        const chordLength = element.chord.length
-        const wordLength = element.word.length
-        const isChordOnly = element.word === '\u00A0' // Non-breaking space means chord-only
-        
-        // Check if next element is also a chord-only (for consecutive chords)
-        const nextElement = elements[index + 1]
-        const nextIsChordOnly = nextElement && nextElement.type === 'chord-over-word' && nextElement.word === '\u00A0'
-        
-        let extraSpacing = {}
-        
-        if (isChordOnly) {
-          // For chord-only elements, add minimum spacing based on chord length
-          const minSpacing = Math.max(chordLength * 0.3, 2) // At least 2em for chord-only
-          extraSpacing.paddingRight = `${minSpacing}em`
-        } else {
-          // For chord-over-word, add extra spacing if chord is significantly longer than the word
-          const needsExtraSpace = chordLength > wordLength + 2
-          if (needsExtraSpace) {
-            extraSpacing.paddingRight = `${(chordLength - wordLength) * 0.3}em`
-          }
-        }
-        
         return (
-          <span 
-            key={index} 
-            className="chord-over-word"
-            style={extraSpacing}
-          >
-            <span className="chord">{element.chord}</span>
-            <span className="word">{element.word}</span>
-          </span>
+          <ChordOverWord
+            key={index}
+            chord={element.chord}
+            word={element.word}
+            index={index}
+            elements={elements}
+          />
         )
       }
       return null

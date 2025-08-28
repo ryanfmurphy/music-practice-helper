@@ -984,15 +984,15 @@
   font-family: 'Times New Roman', serif;
   font-size: 18px;
   line-height: 2.5;
-  max-width: 800px;
-  margin: 10px auto 30px;
-  padding: 30px 10px 0px;
+  width: 96%;
+  margin: 0px auto 0px;
+  padding: 15px 0px 0px;
   /*border: solid 1px #777;*/
   background-color: #f9f9f9;
 }
 
 .music-lead-sheet .line {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   position: relative;
 }
 
@@ -1021,9 +1021,15 @@
 .single-page .music-lead-sheet {
   font-size: 24px;
   line-height: 2.8;
+  padding: 10px 0px 0px;
 }
 
 .single-page .music-lead-sheet .chord {
   font-size: 28px;
   top: -32px;
+}
+
+/* Remove bottom margin from line containers that have lyrics */
+.line-container.has-lyrics {
+  margin-bottom: 0;
 }
