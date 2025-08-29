@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import EditMeasureDetailsModal from './EditMeasureDetailsModal'
 import LyricsLeadSheet from './LyricsLeadSheet'
 
@@ -25,7 +25,8 @@ function PracticeTrackerPage({
   keyToAbsoluteMeasureNoMap,
   showSheetMusic,
   facingPages,
-  showPracticeProgress
+  showPracticeProgress,
+  sheetMusicImgsFitLine
 }) {
   // single meassure select - opens a popup
   const [selectedMeasure, setSelectedMeasure] = useState(null)
@@ -304,7 +305,7 @@ function PracticeTrackerPage({
   }
 
   return (
-    <div className={`page ${!showPracticeProgress ? 'minimal-practice-spacing' : ''}`}>
+    <div className={`page ${!showPracticeProgress ? 'minimal-practice-spacing' : ''} ${!sheetMusicImgsFitLine ? 'natural-sized-sheet-music' : ''}`}>
       <div className="page-header">
         <span>p{pageNumber}</span>
       </div>

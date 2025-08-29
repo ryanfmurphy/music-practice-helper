@@ -1018,18 +1018,57 @@
 }
 
 /* Larger text in single page mode */
-.single-page .music-lead-sheet {
+.single-page-container .music-lead-sheet {
   font-size: 24px;
-  line-height: 2.8;
-  padding: 10px 0px 0px;
+  line-height: 3.2;
+  padding: 20px 0px 0px;
 }
 
-.single-page .music-lead-sheet .chord {
-  font-size: 28px;
+.single-page-container .music-lead-sheet .chord {
+  font-size: 26px;
   top: -32px;
+}
+
+.single-page-container .music-lead-sheet .line {
+  margin-bottom: 6px;
 }
 
 /* Remove bottom margin from line containers that have lyrics */
 .line-container.has-lyrics {
   margin-bottom: 0;
+}
+
+/* Dark mode for lyrics lead sheets */
+.dark-mode .music-lead-sheet {
+  background-color: transparent;
+  color: white;
+}
+
+.dark-mode .music-lead-sheet .chord {
+  color: #66b3ff; /* Lighter blue for better contrast on dark background */
+}
+
+/* Darker background for pages with lyrics in minimal practice spacing mode */
+.dark-mode .page.minimal-practice-spacing:has(.music-lead-sheet) {
+  background-color: #444;
+}
+
+/* Natural-sized sheet music images (when sheet_music_imgs_fit_line is 0) */
+.natural-sized-sheet-music .sheet-music-line-img {
+  max-width: 100%;
+  height: auto;
+}
+
+.natural-sized-sheet-music .sheet-music-line-container {
+  height: auto !important;
+}
+
+/* Allow variable row heights when natural sizing is enabled */
+.natural-sized-sheet-music .line-container {
+  height: auto;
+}
+
+.natural-sized-sheet-music .measure-row {
+  height: auto;
+  min-height: 40px; /* Ensure measures still have some minimum height */
 }

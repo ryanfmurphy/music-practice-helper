@@ -34,6 +34,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false)
   const [showPracticeProgress, setShowPracticeProgress] = useState(true)
   const [autoScroll, setAutoScroll] = useState(false)
+  const [sheetMusicImgsFitLine, setSheetMusicImgsFitLine] = useState(true)
   const [hasRestoredFromLocalStorage, setHasRestoredFromLocalStorage] = useState(false)
   const [hasSkippedFirstSaveBecauseLocalStorage, setHasSkippedFirstSaveBecauseLocalStorage] = useState(false)
   // Track whether user has manually changed book filter, to prevent auto-selecting songs on fresh start
@@ -55,6 +56,8 @@ function App() {
       fetchPages(selectedSong.song_id)
       fetchMeasureDetails(selectedSong.song_id)
       fetchUserMeasureDetails(selectedSong.song_id)
+      // Set sheet music image fitting mode from song data
+      setSheetMusicImgsFitLine(!!selectedSong.sheet_music_imgs_fit_line)
       // Reset selection state when song changes
       setSelectedMeasures(new Set())
       setLastSelectedMeasure(null)
@@ -335,6 +338,7 @@ function App() {
       setError(err.message)
     }
   }
+
 
   const fetchMeasureDetails = async (songId) => {
     try {
@@ -730,6 +734,7 @@ function App() {
                         showSheetMusic={showSheetMusic}
                         facingPages={facingPages}
                         showPracticeProgress={showPracticeProgress}
+                        sheetMusicImgsFitLine={sheetMusicImgsFitLine}
                       />
                     ) : null}
 
@@ -756,6 +761,7 @@ function App() {
                         showSheetMusic={showSheetMusic}
                         facingPages={facingPages}
                         showPracticeProgress={showPracticeProgress}
+                        sheetMusicImgsFitLine={sheetMusicImgsFitLine}
                       />
                     ) : isLastPage ? (
                       <div className="page-placeholder right-blank"></div>
@@ -785,6 +791,7 @@ function App() {
                     keyToAbsoluteMeasureNoMap={keyToAbsoluteMeasureNoMap}
                     showSheetMusic={showSheetMusic}
                     showPracticeProgress={showPracticeProgress}
+                    sheetMusicImgsFitLine={sheetMusicImgsFitLine}
                   />
                 </div>)
               }
