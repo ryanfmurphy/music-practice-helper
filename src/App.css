@@ -1053,25 +1053,6 @@
   background-color: #444;
 }
 
-/* Natural-sized sheet music images (when sheet_music_imgs_fit_line is 0) */
-.natural-sized-sheet-music .sheet-music-line-img {
-  max-width: 100%;
-  height: auto;
-}
-
-.natural-sized-sheet-music .sheet-music-line-container {
-  height: auto !important;
-}
-
-/* Allow variable row heights when natural sizing is enabled */
-.natural-sized-sheet-music .line-container {
-  height: auto;
-}
-
-.natural-sized-sheet-music .measure-row {
-  height: auto;
-  min-height: 40px; /* Ensure measures still have some minimum height */
-}
 
 /* Lyrics memorization placeholder */
 .lyrics-memorization-placeholder {

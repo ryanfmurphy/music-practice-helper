@@ -25,8 +25,7 @@ function PracticeTrackerPage({
   keyToAbsoluteMeasureNoMap,
   showSheetMusic,
   facingPages,
-  showPracticeProgress,
-  sheetMusicImgsFitLine
+  showPracticeProgress
 }) {
   // single meassure select - opens a popup
   const [selectedMeasure, setSelectedMeasure] = useState(null)
@@ -305,7 +304,7 @@ function PracticeTrackerPage({
   }
 
   return (
-    <div className={`page ${!showPracticeProgress ? 'minimal-practice-spacing' : ''} ${!sheetMusicImgsFitLine ? 'natural-sized-sheet-music' : ''}`}>
+    <div className={`page ${!showPracticeProgress ? 'minimal-practice-spacing' : ''}`}>
       <div className="page-header">
         <span>p{pageNumber}</span>
       </div>
