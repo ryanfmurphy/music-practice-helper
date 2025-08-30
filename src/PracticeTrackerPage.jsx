@@ -386,7 +386,7 @@ function PracticeTrackerPage({
                         </span>
                       )}
                       {/* Memorization overlay */}
-                      {userMeasureDetails[`${pageNumber}-${lineNumber}-${measureNumber}`]?.hideToMemorize && showSheetMusic && (
+                      {userMeasureDetails[`${pageNumber}-${lineNumber}-${measureNumber}`]?.hideToMemorize && showSheetMusic && !hasLyrics && (
                         <div className="measure-memorization-overlay">
                           Play from memory ✨
                         </div>
@@ -407,11 +407,26 @@ function PracticeTrackerPage({
               </div>
             )}
             {/* Render lyrics for this line */}
-            {!!hasLyrics && showSheetMusic && (
-              <LyricsLeadSheet
-                lyricsLeadSheetTxt={hasLyrics}
-              />
-            )}
+            {!!hasLyrics && showSheetMusic && (() => {
+              // Check if any measure in this line has hide to memorize enabled
+              const lineHasMemorization = measuresForThisLine.some(measureNumber => 
+                userMeasureDetails[`${pageNumber}-${lineNumber}-${measureNumber}`]?.hideToMemorize
+              )
+              
+              if (lineHasMemorization) {
+                return (
+                  <div className="lyrics-memorization-placeholder">
+                    Play from memory ✨
+                  </div>
+                )
+              } else {
+                return (
+                  <LyricsLeadSheet
+                    lyricsLeadSheetTxt={hasLyrics}
+                  />
+                )
+              }
+            })()}
           </div>
         )
       })}

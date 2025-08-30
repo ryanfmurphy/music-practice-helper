@@ -1072,3 +1072,25 @@
   height: auto;
   min-height: 40px; /* Ensure measures still have some minimum height */
 }
+
+/* Lyrics memorization placeholder */
+.lyrics-memorization-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  border: 2px dashed #87ceeb;
+  border-radius: 4px;
+  font-weight: bold;
+  margin: 15px auto 15px;
+  width: 96%;
+  font-size: 14px;
+}
+
+/* Dark mode for memorization placeholder */
+.dark-mode .lyrics-memorization-placeholder {
+  background: linear-gradient(135deg, #2a3f5f 0%, #1e2a3a 100%);
+  border-color: #4a90e2;
+  color: #87ceeb;
+}
