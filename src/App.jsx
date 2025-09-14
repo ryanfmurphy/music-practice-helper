@@ -140,6 +140,14 @@ function App() {
       if (event.key === 'Enter' && isSelectionMode && selectedMeasures.size > 0) {
         setShowBulkEdit(true)
       }
+      
+      // P key: toggle Show Practice Progress
+      if (event.key === 'p' || event.key === 'P') {
+        // Only trigger if not typing in an input/textarea
+        if (!['INPUT', 'TEXTAREA'].includes(event.target.tagName)) {
+          setShowPracticeProgress(!showPracticeProgress)
+        }
+      }
     }
 
     window.addEventListener('keydown', handleKeyDown)
@@ -147,7 +155,7 @@ function App() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [isSelectionMode, selectedMeasures.size]) // Re-run when selection mode or selection count changes
+  }, [isSelectionMode, selectedMeasures.size, showPracticeProgress]) // Re-run when selection mode, selection count, or showPracticeProgress changes
 
   // Auto-scroll functionality
   useEffect(() => {
@@ -688,7 +696,7 @@ function App() {
       {selectedSong && (
         <div className="song-info">
           <h2>{selectedSong.title}</h2>
-          <p>by {selectedSong.artist} ({selectedSong.year})</p>
+          <p>by {selectedSong.artist}{selectedSong.year ? ` (${selectedSong.year})` : ''}</p>
         </div>
       )}
 
