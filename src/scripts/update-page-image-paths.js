@@ -55,7 +55,7 @@ if (isNaN(songId) || songId <= 0) {
     process.exit(1);
 }
 
-const dbPath = path.resolve('../../sqlite_mcp_server.db');
+const dbPath = path.resolve('backend/music-practice-helper.db');
 
 // Check if database exists
 if (!fs.existsSync(dbPath)) {

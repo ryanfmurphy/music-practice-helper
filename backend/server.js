@@ -15,7 +15,7 @@ const app = express();
 const PORT = process.env.SERVER_PORT || 3001;
 
 // Database connection
-const dbPath = join(__dirname, '..', '..', '..', 'sqlite_mcp_server.db');
+const dbPath = join(__dirname, 'music-practice-helper.db');
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('Error opening database:', err.message);
