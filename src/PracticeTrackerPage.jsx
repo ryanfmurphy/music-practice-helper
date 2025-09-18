@@ -395,9 +395,16 @@ function PracticeTrackerPage({
               })}
               </div>
             {lineData?.sheetMusicImgPath && showSheetMusic && (
-              <div className={`sheet-music-line-container ${
+              <div
+                className={`sheet-music-line-container ${
                 facingPages ? 'facing-pages' : 'single-page'
-              }`}>
+              }`}
+                {...(lineData.customHeightPx && {
+                  style: {
+                    height: `${facingPages ? lineData.customHeightPx * 0.67 : lineData.customHeightPx}px`
+                  }
+                })}
+              >
                 <img
                   className="sheet-music-line-img"
                   src={`/sheet-music/${lineData.sheetMusicImgPath}`}
