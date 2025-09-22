@@ -108,6 +108,19 @@
   font-size: 18px;
 }
 
+/* Responsive font sizing for densely packed lines (6+ measures) */
+.measure-row.dense-line .measure {
+  font-size: 8px; /* 2/3 of base 12px */
+}
+
+.facing-pages-container .measure-row.dense-line .measure.with-sheet-music {
+  font-size: 8px; /* Keep consistent with reduced size */
+}
+
+.single-page-container .measure-row.dense-line .measure.with-sheet-music {
+  font-size: 12px; /* 2/3 of 18px */
+}
+
 /* Memorization placeholder for individual measures */
 .measure-memorization-overlay {
   position: absolute;
@@ -160,46 +173,56 @@
   background-color: #444;
 }
 
-.corner-confidence {
+.measure-confidence {
   position: absolute;
-  top: 1px;
+  /*top: 1px;*/
   right: 4px;
   font-weight: bold;
 }
 
-.facing-pages-container .corner-confidence {
+.facing-pages-container .measure-confidence {
   font-size: 10px;
 }
 
-.single-page-container .corner-confidence {
-  font-size: 14px;
+.single-page-container .measure-confidence {
+  font-size: 15px;
+}
+
+/* Dense line confidence font sizes */
+.measure-row.dense-line .measure-confidence {
+  font-size: 7px; /* 2/3 of facing pages 10px */
+}
+
+.single-page-container .measure-row.dense-line .measure-confidence {
+  font-size: 10px; /* 2/3 of single page 15px */
 }
 
 .measure-bpm {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  font-size: 10px;
-  color: #666;
+  /*top: 2px;*/
+  left: 4px;
+  font-size: 15px;
+  /*color: #666;*/
   font-weight: bold;
   line-height: 1;
 }
 
 .facing-pages-container .measure-bpm {
   font-size: 10px;
-  top: 4px;
-  left: 4px;
 }
 
-.single-page-container .measure-bmp {
-  font-size: 14px;
-  top: 5px;
-  left: 5px;
+/* Dense line BPM font sizes */
+.measure-row.dense-line .measure-bpm {
+  font-size: 7px; /* 2/3 of facing pages 10px */
 }
 
-.dark-mode .measure-bpm {
-  color: #bbb;
+.single-page-container .measure-row.dense-line .measure-bpm {
+  font-size: 10px; /* 2/3 of single page 15px */
 }
+
+/*.dark-mode .measure-bpm {*/
+/*  color: #bbb;*/
+/*}*/
 
 .container {
   max-width: 1200px;
@@ -691,10 +714,9 @@
   opacity: 0.9;
 }
 
-/* Corner confidence rating */
-.corner-confidence.low-opacity {
-  opacity: 0.5;
-}
+/*.measure-confidence.low-opacity {*/
+/*  opacity: 0.5;*/
+/*}*/
 
 /* Sheet music container */
 .sheet-music-line-container {

@@ -310,6 +310,7 @@ function PracticeTrackerPage({
       </div>
       
       {lines.map((numMeasures, lineIndex) => {
+        console.log("numMeasures", numMeasures)
         const lineNumber = lineIndex + 1
         const lineData = linesData?.[lineIndex]
         const measuresForThisLine = []
@@ -329,7 +330,7 @@ function PracticeTrackerPage({
         return (
           <div key={lineIndex} className={`line-container ${shouldUseMinimalSpacing ? 'minimal-spacing' : ''} ${hasLyrics ? 'has-lyrics' : ''}`}>
             {/* Always render measure boxes, but make them invisible ghosts when practice progress is off */}
-            <div className={`measure-row ${!showPracticeProgress && (hasSheetMusicImg || hasLyrics) ? 'ghost-measures' : ''}`}>
+            <div className={`measure-row ${!showPracticeProgress && (hasSheetMusicImg || hasLyrics) ? 'ghost-measures' : ''} ${numMeasures >= 6 ? 'dense-line' : ''}`}>
                 {/* Optional spacer before first measure */}
                 {lineData?.widthBeforeFirstMeasure && (
                   <div
@@ -376,7 +377,7 @@ function PracticeTrackerPage({
                       )}
                       {confidenceRating && (
                         <span
-                          className={`corner-confidence ${
+                          className={`measure-confidence ${
                             (typeof confidenceRating === 'string' && !['👥', '🙌', '👥🙌'].includes(confidenceRating))
                               ? 'low-opacity' : ''
                           }`}
