@@ -2,16 +2,16 @@ import React, {useState, useRef, useEffect} from 'react'
 import EditMeasureDetailsModal from './EditMeasureDetailsModal'
 import LyricsLeadSheet from './LyricsLeadSheet'
 
-function PracticeTrackerPage({ 
-  pageNumber, 
-  lines, 
+function PracticeTrackerPage({
+  pageNumber,
+  lines,
   linesData,
-  startingMeasure, 
+  startingMeasure,
   measureDetails = {},
   userMeasureDetails,
   songId,
-  selectedUser, 
-  selectedHands, 
+  selectedUser,
+  selectedHands,
   selectedBpm,
   onMeasureUpdate,
   onHideToMemorizeToggle,
@@ -30,6 +30,35 @@ function PracticeTrackerPage({
   // single meassure select - opens a popup
   const [selectedMeasure, setSelectedMeasure] = useState(null)
   let currentMeasure = startingMeasure
+
+  // Calculate font sizes based on number of measures in line
+  const getFontSizes = (numMeasures, hasSheetMusic) => {
+    // Base font sizes
+    const baseSizes = {
+      measure: facingPages ? 14 : 21,
+      measureWithSheet: facingPages ? 12 : 18,
+      confidence: facingPages ? 12 : 18,
+      confidenceWithSheet: facingPages ? 10 : 15,
+      bpm: facingPages ? 12 : 18,
+      bpmWithSheet: facingPages ? 10 : 15
+    }
+
+    // Scale factor based on number of measures
+    let scaleFactor = 1
+    if (numMeasures >= 8) {
+      scaleFactor = 0.6
+    } else if (numMeasures >= 6) {
+      scaleFactor = 0.75
+    } else if (numMeasures >= 4) {
+      scaleFactor = 0.9
+    }
+
+    return {
+      measure: Math.max(6, Math.round((hasSheetMusic ? baseSizes.measureWithSheet : baseSizes.measure) * scaleFactor)),
+      confidence: Math.max(5, Math.round((hasSheetMusic ? baseSizes.confidenceWithSheet : baseSizes.confidence) * scaleFactor)),
+      bpm: Math.max(5, Math.round((hasSheetMusic ? baseSizes.bpmWithSheet : baseSizes.bpm) * scaleFactor))
+    }
+  }
 
   // Helper function to select range of measures
   const selectMeasureRange = (startMeasure, endMeasure) => {
@@ -323,14 +352,18 @@ function PracticeTrackerPage({
         const hasLyrics = lineData?.lyricsLeadSheetTxt
         const hasSheetMusicImg = lineData?.sheetMusicImgPath
         const showReducedMeasures = hasLyrics
-        
+
         // Apply minimal spacing when practice progress is off AND there's either sheet music or lyrics
         const shouldUseMinimalSpacing = !showPracticeProgress && (hasSheetMusicImg || hasLyrics)
+
+        // Calculate font sizes for this line
+        const hasSheetMusic = hasSheetMusicImg && showSheetMusic
+        const fontSizes = getFontSizes(numMeasures, hasSheetMusic)
 
         return (
           <div key={lineIndex} className={`line-container ${shouldUseMinimalSpacing ? 'minimal-spacing' : ''} ${hasLyrics ? 'has-lyrics' : ''}`}>
             {/* Always render measure boxes, but make them invisible ghosts when practice progress is off */}
-            <div className={`measure-row ${!showPracticeProgress && (hasSheetMusicImg || hasLyrics) ? 'ghost-measures' : ''} ${numMeasures >= 6 ? 'dense-line' : ''}`}>
+            <div className={`measure-row ${!showPracticeProgress && (hasSheetMusicImg || hasLyrics) ? 'ghost-measures' : ''}`}>
                 {/* Optional spacer before first measure */}
                 {lineData?.widthBeforeFirstMeasure && (
                   <div
@@ -359,19 +392,20 @@ function PracticeTrackerPage({
                 }
                 
                 return (
-                  <div 
+                  <div
                     key={measureNumber}
                     className={measureClassNames}
                       style={{
                         ...getConfidenceStyle(pageNumber, lineNumber, measureNumber),
                         position: 'relative',
-                        flexGrow: flexGrow
+                        flexGrow: flexGrow,
+                        fontSize: `${fontSizes.measure}px`
                       }}
                       onClick={(event) => handleMeasureClick(pageNumber, lineNumber, measureNumber, event)}
                     >
                       <span>{measureNumber}</span>
                       {bpmDisplay && (
-                        <span className="measure-bpm">
+                        <span className="measure-bpm" style={{ fontSize: `${fontSizes.bpm}px` }}>
                           {bpmDisplay}
                         </span>
                       )}
@@ -381,6 +415,7 @@ function PracticeTrackerPage({
                             (typeof confidenceRating === 'string' && !['👥', '🙌', '👥🙌'].includes(confidenceRating))
                               ? 'low-opacity' : ''
                           }`}
+                          style={{ fontSize: `${fontSizes.confidence}px` }}
                         >
                           {confidenceRating}
                         </span>

@@ -108,18 +108,7 @@
   font-size: 18px;
 }
 
-/* Responsive font sizing for densely packed lines (6+ measures) */
-.measure-row.dense-line .measure {
-  font-size: 8px; /* 2/3 of base 12px */
-}
-
-.facing-pages-container .measure-row.dense-line .measure.with-sheet-music {
-  font-size: 8px; /* Keep consistent with reduced size */
-}
-
-.single-page-container .measure-row.dense-line .measure.with-sheet-music {
-  font-size: 12px; /* 2/3 of 18px */
-}
+/* Font sizes will be set dynamically via JavaScript and style attribute */
 
 /* Memorization placeholder for individual measures */
 .measure-memorization-overlay {
@@ -180,22 +169,7 @@
   font-weight: bold;
 }
 
-.facing-pages-container .measure-confidence {
-  font-size: 10px;
-}
-
-.single-page-container .measure-confidence {
-  font-size: 15px;
-}
-
-/* Dense line confidence font sizes */
-.measure-row.dense-line .measure-confidence {
-  font-size: 7px; /* 2/3 of facing pages 10px */
-}
-
-.single-page-container .measure-row.dense-line .measure-confidence {
-  font-size: 10px; /* 2/3 of single page 15px */
-}
+/* Confidence font sizes will be set dynamically via JavaScript */
 
 .measure-bpm {
   position: absolute;
@@ -207,18 +181,7 @@
   line-height: 1;
 }
 
-.facing-pages-container .measure-bpm {
-  font-size: 10px;
-}
-
-/* Dense line BPM font sizes */
-.measure-row.dense-line .measure-bpm {
-  font-size: 7px; /* 2/3 of facing pages 10px */
-}
-
-.single-page-container .measure-row.dense-line .measure-bpm {
-  font-size: 10px; /* 2/3 of single page 15px */
-}
+/* BPM font sizes will be set dynamically via JavaScript */
 
 /*.dark-mode .measure-bpm {*/
 /*  color: #bbb;*/
