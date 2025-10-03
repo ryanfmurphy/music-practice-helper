@@ -573,6 +573,7 @@ function App() {
             <option value="">-- Select User --</option>
             <option value="Ryan">Ryan</option>
             <option value="Cliff">Cliff</option>
+            <option value="Ev">Ev</option>
           </select>
         </div>
 
