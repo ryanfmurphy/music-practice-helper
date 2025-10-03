@@ -4,6 +4,9 @@ import PracticeTrackerPage from './PracticeTrackerPage'
 import BulkEditModal from './BulkEditModal'
 import { API_BASE } from './config'
 
+console.log("Starting App")
+console.log("API_BASE = ", API_BASE)
+
 function App() {
   const [books, setBooks] = useState([])
   const [selectedBook, setSelectedBook] = useState('')
